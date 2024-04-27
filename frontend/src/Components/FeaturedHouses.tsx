@@ -24,10 +24,10 @@ function FeaturedHouses() {
             <button className="bg-button-primary hover:bg-button-primaryHover text-white flex justify-center items-center p-2 rounded-xl h-10 w-10" onClick={() => handleScrollRight(200)}><RightOutlined /></button>
           </div>
         </div>
-        <div className="scroll-pl snap-x flex flex-row overflow-x-auto" ref={containerRef}>
-          {homes.map(({ id, name, photo, price, type, coordinates }) => (
+        <div className="snap-x flex flex-row overflow-x-auto" ref={containerRef}>
+          {homes.map(({ id, name, photo, price, type, coordinates, address, owner }) => (
             <div className="snap-start" key={id}>
-              <HomeCard key={id} home={{ id, name, photo, price, type, coordinates }} />
+              <HomeCard key={id} home={{ id, name, photo, price, type, coordinates, address, owner}} />
             </div>
           ))}
         </div>

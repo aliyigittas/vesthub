@@ -1,44 +1,88 @@
-import logo from './../logo.svg';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button } from 'reactstrap';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-
-interface User {
-    name: string;
-    //LastName: string;
-  }
-
+import { useState, useEffect } from 'react';
+import { Tab } from '@headlessui/react';
+import AOS from 'aos'; // Import AOS
+import 'aos/dist/aos.css'; // Import CSS for AOS
 
 function ProfilePage() {
-    const [User, setUser] = useState<User[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<boolean>(false);
-    useEffect(() => {
-        axios.get<User[]>('http://localhost:8080/getFromDB') //array olarak dönüyor
-        .then((response) => {
-            setLoading(false); // Loading'i kapatıyor
-            setUser(response.data);
-            console.log('Data fetched:', response.data);
-        })
-        .catch((error) => {
-            setLoading(false);
-            setError(true); 
-            console.error('Error fetching data:', error);
-        });
-    }, []); 
+  
+
+
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+
+  useEffect(() => {
+    AOS.init(); // Initialize AOS
+  }, []); // Ensure this effect runs only once after initial render
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Button color="danger"
-        onClick={() => { 
-            window.location.href = '/'; // Bu şekilde anasayfaya dönülebiliyor
-          }}>Geri git</Button>
-        {error ? <p>Backendde sorun var!</p> : loading ? <p>Yükleniyor...</p> : <p>Merhaba {User[3].name}!</p>} 
-        {/* Error olmazsa exception atıyor backend olmadığında, Loading koymayınca user gelmiyor */}
-      </header>
+    <div className="flex flex-wrap-reverse min-h-full pb-10 gap-20 justify-center bg-inherit">
+      <div data-aos="fade-right" data-aos-duration="1200" className="flex flex-col">
+        <div  className="flex flex-col items-center justify-center space-y-2"> {/* Add flex and flex-col classes */}
+          <h1>Profile Page</h1>
+          <div className="flex flex-col items-center space-y-2"> {/* Wrap image and text in a flex container */}
+            <img src='https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw' alt='Customer' className="w-48 h-48 rounded-full shadow-xl mb-2" />
+            <label>Ali Taş</label>
+          </div>
+        </div>
+        <div className="mt-8 w-full max-w-[600px] p-4">
+          <Tab.Group>
+            <Tab.List className="flex justify-between p-1 space-x-1 bg-gray-300 rounded-2xl">
+              <Tab className={({ selected }) =>
+                `${selected ? 'bg-button-primary text-white' : 'text-gray-600'} px-4 py-2 rounded-xl focus:outline-none`
+              }>
+                Profile Info
+              </Tab>
+              <Tab className={({ selected }) =>
+                `${selected ? 'bg-button-primary text-white' : 'text-gray-600'} px-4 py-2 rounded-xl focus:outline-none`
+              }>
+                Change Password
+              </Tab>
+              <Tab className={({ selected }) =>
+                `${selected ? 'bg-button-primary text-white' : 'text-gray-600'} px-4 py-2 rounded-xl focus:outline-none`
+              }>
+                Adress Settings
+              </Tab>
+            </Tab.List>
+            <Tab.Panels className="mt-2">
+              <Tab.Panel>
+                <form className="flex flex-col space-y-2">
+                  <div className="flex flex-row space-x-2">
+                    <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                    <input type="text" placeholder="Surname" value={surname} onChange={(e) => setSurname(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                  </div>
+                  <div className="flex flex-row space-x-2">
+                    <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                    <input type="tel" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                  </div>
+                </form>
+              </Tab.Panel>
+              <Tab.Panel>
+                <form className="flex flex-col">
+                  <input type="password" placeholder="Current Password" autoComplete="current-password" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                  <input type="password" placeholder="New Password" autoComplete="new-password" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                  <input type="password" placeholder="Confirm Password" autoComplete="new-password" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                </form>
+              </Tab.Panel>
+              <Tab.Panel>
+                <form className="flex flex-col">
+                  <input type="text" placeholder="Address" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                  <input type="text" placeholder="City" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                  <input type="text" placeholder="Country" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                </form>
+              </Tab.Panel>
+            </Tab.Panels>
+          </Tab.Group>
+          <div className=' flex justify-center pt-4'>
+            <button className="flex w-full justify-center rounded-md bg-button-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-button-primaryHover" type="button">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+
+      
     </div>
   );
 }

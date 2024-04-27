@@ -1,2 +1,0 @@
-# vesthub
-e-commerce website

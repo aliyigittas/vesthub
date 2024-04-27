@@ -4,6 +4,7 @@ import { ButtonGroup } from 'reactstrap';
 import FeaturedHouses from '../Components/FeaturedHouses';
 import HomeModal from '../Components/HomeModal';
 import homes from '../Components/TempHomes';
+import About from '../Components/About';
 
 //if href contains home id, open modal i.e. /home/EvID
 
@@ -26,8 +27,8 @@ function HomePage({ home }: { home?: boolean }) {
   return (
     <div>
       <main className="min-h-full place-items-center bg-backColor px-6 py-6 lg:px-8">
-        <div className="text-center">
-          <div className="relative h-[25rem]">
+        <div className="">
+          <div className="relative h-[25rem] text-center">
             <img
               src={House2}
               alt="House"
@@ -48,35 +49,7 @@ function HomePage({ home }: { home?: boolean }) {
             window.location.href = '/';
             setShow(false);
           }} home={homes[homeID]} />}
-          <div className="mt-10 flex items-center justify-center gap-x-6">
-            <button
-              className="rounded-md bg-button-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover"
-              onClick={() => (window.location.href = "/login")}
-            >
-              Go to Sign in page
-            </button>
-            <button
-              className="rounded-md bg-button-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover"
-              onClick={() => (window.location.href = "/notFound")}
-            >
-              Go to Not Found page{" "}
-            </button>
-            <button
-              className="rounded-md bg-button-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover"
-              onClick={() => (window.location.href = "/addHouse")}
-            >
-              Go to Add House page
-            </button>
-            <button
-              className="rounded-md bg-button-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover"
-              onClick={() => {
-                window.location.href = "/search";
-                console.log("Open Modal");
-              }}
-            >
-              Open Modal
-            </button>
-          </div>
+          <About/>
         </div>
       </main>
     </div>
@@ -88,9 +61,9 @@ function HomePage({ home }: { home?: boolean }) {
     const [selectedValue, setSelectedValue] = useState("sale");
     return (
       <div>
-        <ButtonGroup className="p-[3.5px] mt-3 bg-gray-600 bg-opacity-60">
-          <button className={`${selectedValue == "sale" ? "bg-button-secondary" : "bg-opacity-40"} ${selectedValue == "sale" ? "" : "hover:bg-gray-600"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("sale")}>Sale</button> {/*eslint-disable-line eqeqeq*/}
-          <button className={`${selectedValue == "rent" ? "bg-button-secondary" : "bg-opacity-10"} ${selectedValue == "rent" ? "" : "hover:bg-gray-600"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("rent")}>Rent</button> {/*eslint-disable-line eqeqeq*/}
+        <ButtonGroup className="p-[3.5px] mt-3 bg-gray-800 bg-opacity-60">
+          <button className={`${selectedValue == "sale" ? "bg-button-secondary" : "bg-opacity-40"} ${selectedValue == "sale" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("sale")}>Sale</button> {/*eslint-disable-line eqeqeq*/}
+          <button className={`${selectedValue == "rent" ? "bg-button-secondary" : "bg-opacity-10"} ${selectedValue == "rent" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("rent")}>Rent</button> {/*eslint-disable-line eqeqeq*/}
         </ButtonGroup>
         <div className="z-10 mt-5 md:px-32">
           <form className="relative" action="#" method="POST" onSubmit={(e) => getSearchText(e, selectedValue)}>

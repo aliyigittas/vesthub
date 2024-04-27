@@ -6,11 +6,11 @@ function SingleMarkerMap({marker} : {marker: { id: number, coordinates: {lat: nu
     const isLoaded = LoadMaps(); 
     
     return isLoaded ? (
-      <div className="mt-10 relative">
+      <div className="relative">
         <GoogleMap
           mapContainerStyle={{
             height: "50vh",
-            width: "60vw",
+            width: "100%",
             margin: "auto",
             borderRadius: "0.75rem",
             boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.8)",

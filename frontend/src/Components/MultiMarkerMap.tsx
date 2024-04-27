@@ -1,11 +1,10 @@
 import { useState, useMemo } from "react";
 import { GoogleMap, InfoBoxF, MarkerF } from "@react-google-maps/api";
 import Homepin from '../homePin.png';
-//import homes from './TempHomes';
 import HomeCard from "./HomeCard";
 import LoadMaps from "./GmapsHelper";
 
-function MultiMarkerMap({homes}: {homes:{ id: number, name: string, photo: string, price: string, type: string, coordinates: { lat: number, lng: number } }[]}) {
+function MultiMarkerMap({homes}: {homes:{ id: number, name: string, photo: string[], price: string, type: string, coordinates: { lat: number, lng: number }, address:string, owner:string }[]}) {
 
     const isLoaded = LoadMaps();
 
@@ -38,17 +37,14 @@ function MultiMarkerMap({homes}: {homes:{ id: number, name: string, photo: strin
           }}
           zoom={17}
           center={center}
-          //onMouseOver={() => setActiveMarker(null)}
-          //onMouseOut={() => setActiveMarker(null)}
           onClick={(ev) => {
             console.log("latitide = ", ev.latLng?.lat());
             console.log("longitude = ", ev.latLng?.lng());
-            //return setActiveMarker(null);
           }}
         >
           {homes.map((home) => (
             <MarkerF
-                animation={google.maps.Animation.DROP}
+              animation={google.maps.Animation.DROP}
               icon={
                 {
                 url: Homepin,
@@ -65,15 +61,12 @@ function MultiMarkerMap({homes}: {homes:{ id: number, name: string, photo: strin
             >
               {activeMarker === home.id ? (
                 <InfoBoxF onCloseClick={() => setActiveMarker(null)}
-                //close info box when mouse is out of the box
-                
                 options={{
                   pane: "overlayMouseTarget",
                   pixelOffset: new google.maps.Size(-200, -45),
                   alignBottom: true,
                   closeBoxURL : ""
               }}
-
                 >
                     <HomeCard key={home.id} home={home} />
                 </InfoBoxF>

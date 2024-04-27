@@ -1,8 +1,11 @@
+import Cookies from 'js-cookie';
 import vesthublogo from '../vesthublogo.png';
 import axios from 'axios';
 
-function RegisterPage()
-{
+function RegisterPage(){
+    if (Cookies.get("loggedIn") === 'true') {
+        window.location.href = '/';
+    }
     return (
         <div className="min-w-screen min-h-screen place-items-center flex sm:flex-row flex-col p-4 bg-backColor space-y-4">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
