@@ -93,7 +93,7 @@ function MeetingsPage() {
   ];
 
   return (
-    <div className="flex flex-wrap justify-center min-h-full w-full bg-inherit items-center gap-4">
+    <div className="flex flex-wrap justify-center min-h-full w-full bg-inherit items-top gap-4">
       <HomeModal show={show} setShow={() => setShow(false)} home={homes[meetings[2].homeid]} />
 
       <div className="flex flex-col items-center space-y-2"> {/* Add flex and flex-col classes */}

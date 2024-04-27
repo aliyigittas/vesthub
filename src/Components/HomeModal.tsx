@@ -1,7 +1,7 @@
 import { Modal } from 'antd';
 import { currentUrl } from '../Pages/SearchPage';
 import SingleMarkerMap from './SingleMarkerMap';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
 import { HeartTwoTone, HeartFilled } from '@ant-design/icons';
 import Avatar from 'antd/es/avatar/avatar';
@@ -100,7 +100,7 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                             <Avatar size={85} src="https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw" />
                             <div className="flex flex-col text-left gap-1 text-gray-900">
                                 <label className="text-[25px]">Ali Taş</label>
-                                <label className="text-[12px]">+90 555 555 55 55</label>
+                                <a href='tel:+905300493683' className="text-button-primary hover:text-button-primaryHover text-[12px]">+90 530 049 36 83</a>
                                 <a href='mailto:aliyigittas@ali.com' className="text-button-primary hover:text-button-primaryHover">aliyigittas@ali.com</a>
                             </div>
                         </div>
@@ -132,14 +132,26 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
     {
         const [isLiked, setIsLiked] = useState(false);
         const [isLikeHovered, setIsLikeHovered] = useState(false);
+        const [images, setImages] = useState<HTMLImageElement[]>([]);
 
-        var image = new Image();
-        image.src = home.photo[0];
-        const homephoto1dimensions = {width: image.width, height: image.height};
-        image.src = home.photo[1];
-        const homephoto2dimensions = {width: image.width, height: image.height};
-        image.src = home.photo[2];
-        const homephoto3dimensions = {width: image.width, height: image.height};
+        for (let i = 0; i < home.photo.length; i++) {
+            const image = new Image();
+            image.src = home.photo[i];
+            images.push(image);
+        }
+
+        useEffect(() => {
+            const loadedImages: HTMLImageElement[] = [];
+            for (let i = 0; i < home.photo.length; i++) {
+              const image = new Image();
+              image.onload = () => {
+                loadedImages.push(image);
+                setImages(loadedImages);
+              };
+              image.src = home.photo[i];
+            }
+          }, []);
+
         return (
             <div className="relative">
                 <div className={`absolute m-1 z-10 top-1 left-1 p-1 px-2 ${home.type=="Sale" ? "bg-green-500": "bg-button-secondary"} rounded-lg shadow-md flex items-center justify-center`}> {/*eslint-disable-line eqeqeq*/}
@@ -179,8 +191,8 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                             <Item cropped
                                 original={home.photo[0]}
                                 thumbnail={home.photo[0]}
-                                height={homephoto1dimensions.height}
-                                width={homephoto1dimensions.width}
+                                height={images[0].height}
+                                width={images[0].width}
                                 >
                                 {({ ref, open }) => (
                                     <img ref={ref} onClick = {open} src={home.photo[0]} alt="House" className="w-full h-full flex cursor-pointer"/>
@@ -191,8 +203,8 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                             <Item 
                                 original={home.photo[1]}
                                 thumbnail={home.photo[1]}
-                                height={homephoto2dimensions.height}
-                                width={homephoto2dimensions.width}
+                                height={images[1].height}
+                                width={images[1].width}
                                 >
                                 {({ ref, open }) => (
                                     <img ref={ref} onClick = {open} src={home.photo[1]} alt="House" className="flex w-full h-full cursor-pointer"/>
@@ -203,8 +215,8 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                             <Item 
                                 original={home.photo[2]}
                                 thumbnail={home.photo[2]}
-                                height={homephoto3dimensions.height}
-                                width={homephoto3dimensions.width}
+                                height={images[2].height}
+                                width={images[2].width}
                                 >
                                 {({ ref, open }) => (
                                     <img ref={ref} onClick = {open} src={home.photo[2]} alt="House" className="flex w-full h-full cursor-pointer"/>
@@ -219,20 +231,13 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                     */}
                     {
                         home.photo.slice(3).map((photo, index) => {
-                            const img = new Image();
-                            img.src = photo;
-                            var imgwidth = img.width;
-                            var imgheight = img.height;
-                            img.onload = () => {
-                                imgwidth = img.width;
-                                imgheight = img.height;
-                            }
+                            
                             return (
                                 <Item 
                                     original={photo}
                                     thumbnail={photo}
-                                    height={imgheight}
-                                    width={imgwidth}
+                                    height={images[index+3].height}
+                                    width={images[index+3].width}
                                     >
                                     {({ ref, open }) => (
                                         <img ref={ref} onClick = {open} src={photo} alt="House" className="w-0 h-0"/>
@@ -241,8 +246,7 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                             );
                         })
                     }
-                    
-                </Gallery>
+                </Gallery> 
             </div>
         );
     }
