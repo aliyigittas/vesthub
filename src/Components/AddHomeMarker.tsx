@@ -81,8 +81,8 @@ function AddHomeMarker() {
         </GoogleMap>
         <button className="flex p-2 mt-2 justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover" 
         onClick={() => {
-          //GeoCodeFromGeoApify(); 
-          GeoCodeFromGMaps();
+          GeoCodeFromGeoApify(); 
+          //GeoCodeFromGMaps();
         }}
         >Get Address</button>
         <div className="mt-3 text-center"> 
