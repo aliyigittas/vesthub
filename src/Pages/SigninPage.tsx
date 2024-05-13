@@ -14,7 +14,7 @@ function SigninPage() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form className="space-y-6" action="#" method="POST" onSubmit={handleLoginDummy}>
+            <form className="space-y-6" action="#" method="POST" onSubmit={handleLogin}>
                 <div>
                     <label className="block text-sm font-medium leading-6">Email address</label>
                     <input id="email" name="email" type="email" autoComplete="email" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary"/>

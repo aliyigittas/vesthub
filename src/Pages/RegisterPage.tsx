@@ -90,7 +90,13 @@ function handleRegister(event: React.FormEvent<HTMLFormElement>) {
         password: password
     })
     .then(function (response) {
-        console.log(response);
+        //make a popup to inform the user that the registration is successful
+        if (response.data === false)
+        {
+            alert("User already exists");
+            return;
+        }
+        alert("Registration successful");
         window.location.href = '/login';
     })
     .catch(function (error) {
