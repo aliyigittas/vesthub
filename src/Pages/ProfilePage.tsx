@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Tab } from '@headlessui/react';
 import AOS from 'aos'; // Import AOS
 import 'aos/dist/aos.css'; // Import CSS for AOS
+import Cookies from 'js-cookie';
 
 function ProfilePage() {
   
@@ -23,7 +24,7 @@ function ProfilePage() {
           <h1>Profile Page</h1>
           <div className="flex flex-col items-center space-y-2"> {/* Wrap image and text in a flex container */}
             <img src='https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw' alt='Customer' className="w-48 h-48 rounded-full shadow-xl mb-2" />
-            <label>Ali Taş</label>
+            <label> {Cookies.get("Name")} {Cookies.get("Surname")} </label>
           </div>
         </div>
         <div className="mt-8 w-full max-w-[600px] p-4">
@@ -49,27 +50,27 @@ function ProfilePage() {
               <Tab.Panel>
                 <form className="flex flex-col space-y-2">
                   <div className="flex flex-row space-x-2">
-                    <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
-                    <input type="text" placeholder="Surname" value={surname} onChange={(e) => setSurname(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                    <input type="text" placeholder="Name" defaultValue={Cookies.get ("Name")} onChange={(e) => setName(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                    <input type="text" placeholder="Surname" defaultValue={Cookies.get ("Surname")} onChange={(e) => setSurname(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
                   </div>
                   <div className="flex flex-row space-x-2">
-                    <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
-                    <input type="tel" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                    <input type="email" placeholder="Email" defaultValue={Cookies.get ("Email")} onChange={(e) => setEmail(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                    <input type="tel" placeholder="Phone" defaultValue={Cookies.get ("Phone")} onChange={(e) => setPhone(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
                   </div>
                 </form>
               </Tab.Panel>
               <Tab.Panel>
                 <form className="flex flex-col">
-                  <input type="password" placeholder="Current Password" autoComplete="current-password" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                  <input type="password" placeholder="Current Password" defaultValue={Cookies.get ("Password")} onChange={(e) => setName(e.target.value)} autoComplete="current-password" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
                   <input type="password" placeholder="New Password" autoComplete="new-password" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
                   <input type="password" placeholder="Confirm Password" autoComplete="new-password" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
                 </form>
               </Tab.Panel>
               <Tab.Panel>
                 <form className="flex flex-col">
-                  <input type="text" placeholder="Address" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
-                  <input type="text" placeholder="City" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
-                  <input type="text" placeholder="Country" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                  <input type="text" placeholder="Address" defaultValue={Cookies.get ("fullAddress")} onChange={(e) => setName(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                  <input type="text" placeholder="City"  defaultValue={Cookies.get ("City")} onChange={(e) => setName(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+                  <input type="text" placeholder="Country" defaultValue={Cookies.get ("Country")} onChange={(e) => setName(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
                 </form>
               </Tab.Panel>
             </Tab.Panels>
