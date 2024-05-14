@@ -46,8 +46,20 @@ function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     })
     .then(function (response) {
         console.log(response);
-        Cookies.set("Name", "Ali", { expires: 1 }); //expires in 1 day
-        Cookies.set("Surname", "Tas", { expires: 1 }); //expires in 1 day
+        //if there is no such a user
+        if(response.data === ""){
+            alert("User not found");
+            return;
+        }
+        Cookies.set("Name", response.data.name, { expires: 1 }); //expires in 1 day
+        Cookies.set("Surname", response.data.surname, { expires: 1 }); //expires in 1 day
+        Cookies.set("Email", response.data.email, { expires: 1 }); //expires in 1 day
+        Cookies.set("loggedIn", "true", { expires: 1 }); //expires in 1 day
+        Cookies.set("Phone", response.data.phone, { expires: 1 }); //expires in 1 day
+        Cookies.set("fullAddress", response.data.fullAddress, { expires: 1 }); //expires in 1 day
+        Cookies.set("City", response.data.city, { expires: 1 }); //expires in 1 day
+        Cookies.set("Country", response.data.country, { expires: 1 }); //expires in 1 day
+        Cookies.set("Password", response.data.password, { expires: 1 }); //expires in 1 day
         window.location.href = '/profile';
     })
     .catch(function (error) {
@@ -56,18 +68,7 @@ function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     });
   }
 
-  function handleLoginDummy(event: React.FormEvent<HTMLFormElement>){
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = data.get('email') as string;
-    //const password = data.get('password') as string;
-
-    Cookies.set("loggedIn", "true", { expires: 1 }); //expires in 1 day
-    Cookies.set("Name", "Ali", { expires: 1 }); //expires in 1 day
-    Cookies.set("Surname", "Tas", { expires: 1 }); //expires in 1 day
-    Cookies.set("Email", email, { expires: 1 }); //expires in 1 day
-    window.location.href = '/';
-  }
+  
 
 
 export default SigninPage;

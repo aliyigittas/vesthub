@@ -196,6 +196,11 @@ function logout(){
   Cookies.remove("Surname");
   Cookies.remove("Email");
   Cookies.set("loggedIn", "false", { expires: 1 });
+  Cookies.remove("Phone");
+  Cookies.remove("fullAddress");
+  Cookies.remove("City");
+  Cookies.remove("Country");
+  Cookies.remove("Password");
   //reload page
   window.location.reload();
 }
