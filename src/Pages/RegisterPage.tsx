@@ -25,9 +25,29 @@ function RegisterPage(){
                             <input id="surname" name="surname" type="text" autoComplete="surname" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
                         </div>
                     </div>
+                    <div className='flex flex-row space-x-2 justify-between'>
+                        <div>
+                            <label className="block text-sm font-medium ">Email address</label>
+                            <input id="email" name="email" type="email" autoComplete="email" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium ">Phone Number</label>
+                            <input id="phone" name="phone" type="tel" autoComplete="phone" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        </div>
+                    </div>
+                    <div className="flex flex-row space-x-2 justify-between">
+                        <div>
+                            <label className="block font-medium text-sm">Country</label>
+                            <input id="Country" name="Country" type="text" autoComplete="Country" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        </div>
+                        <div>
+                            <label className="block font-medium text-sm">City</label>
+                            <input id="City" name="City" type="text" autoComplete="City" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        </div>
+                    </div>
                     <div>
-                        <label className="block text-sm font-medium ">Email address</label>
-                        <input id="email" name="email" type="email" autoComplete="email" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        <label className="block font-medium text-sm">Address</label>
+                        <input id="address" name="address" type="text" autoComplete="address" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
                     </div>
                     <div className="flex flex-row space-x-2 justify-between">
                         <div>
@@ -67,6 +87,10 @@ function handleRegister(event: React.FormEvent<HTMLFormElement>) {
     const name = data.get('name') as string;
     const surname = data.get('surname') as string;
     const email = data.get('email') as string;
+    const phone = data.get('phone') as string;
+    const country = data.get('Country') as string;
+    const city = data.get('City') as string;
+    const address = data.get('address') as string;
     const password = data.get('password') as string;
     const confirmPassword = data.get('confirmPassword') as string;
     const checkbox = data.get('checkbox') as string;
@@ -87,7 +111,11 @@ function handleRegister(event: React.FormEvent<HTMLFormElement>) {
         name: name,
         surname: surname,
         email: email,
-        password: password
+        password: password,
+        phone: phone,
+        country: country,
+        city: city,
+        address: address
     })
     .then(function (response) {
         //make a popup to inform the user that the registration is successful
