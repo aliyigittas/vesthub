@@ -95,15 +95,20 @@ function handleRegister(event: React.FormEvent<HTMLFormElement>) {
     const confirmPassword = data.get('confirmPassword') as string;
     const checkbox = data.get('checkbox') as string;
     console.log(checkbox);
-    if (checkbox!== "true")
-    {
+    if (checkbox !== "true") {
         alert("You must agree to the terms and conditions");
         return;
     }
 
-    if (password !== confirmPassword)
-    {
+    if (password !== confirmPassword) {
         alert("Passwords do not match");
+        return;
+    }
+
+    // Phone number validation for Turkish numbers starting with 5 and followed by 9 digits
+    const phoneRegex = /^5[0-9]{9}$/;
+    if (!phoneRegex.test(phone)) {
+        alert("Please enter a valid Turkish phone number starting with 5");
         return;
     }
 
@@ -119,8 +124,7 @@ function handleRegister(event: React.FormEvent<HTMLFormElement>) {
     })
     .then(function (response) {
         //make a popup to inform the user that the registration is successful
-        if (response.data === false)
-        {
+        if (response.data === false) {
             alert("User already exists");
             return;
         }
@@ -132,5 +136,6 @@ function handleRegister(event: React.FormEvent<HTMLFormElement>) {
         window.location.href = '/';
     });
 }
+
 
 export default RegisterPage;
