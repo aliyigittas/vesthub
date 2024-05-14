@@ -1,6 +1,7 @@
 import Dragger from 'antd/es/upload/Dragger';
 import AddHomeMarker from '../Components/AddHomeMarker';
 import { InboxOutlined } from '@ant-design/icons';
+import axios from 'axios';
 
 function CreateListingPage()
 {
@@ -65,7 +66,7 @@ function CreateListingPage()
             </div>
 
             <div className="mx-auto w-full max-w-sm">
-                <form className="space-y-6" action="#" method="POST">
+                <form className="space-y-6" action="#" method="POST" onSubmit={() => {}}>
                     <div>
                         <label className="block text-sm font-medium ">Title</label>
                         <input id="name" name="name" type="text" autoComplete="name" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
@@ -107,6 +108,21 @@ function CreateListingPage()
             </div>
         </div>
     );
+
+    function handleCreateListing()
+    {
+        axios.post('http://localhost:8080/api/CreateListing', {
+            title: document.getElementById('title')?.nodeValue,
+            address: document.getElementById('address')?.nodeValue,
+            price: document.getElementById('price')?.nodeValue,
+            description: document.getElementById('description')?.nodeValue,
+            keyFeatures: keyFeatures
+        }).then((response) => {
+            console.log(response);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
   
 }
 
