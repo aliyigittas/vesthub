@@ -47,7 +47,7 @@ function RegisterPage(){
                     </div>
                     <div>
                         <label className="block font-medium text-sm">Address</label>
-                        <input id="address" name="address" type="text" autoComplete="address" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        <input id="fullAddress" name="fullAddress" type="text" autoComplete="fullAddress" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
                     </div>
                     <div className="flex flex-row space-x-2 justify-between">
                         <div>
@@ -90,7 +90,7 @@ function handleRegister(event: React.FormEvent<HTMLFormElement>) {
     const phone = data.get('phone') as string;
     const country = data.get('Country') as string;
     const city = data.get('City') as string;
-    const address = data.get('address') as string;
+    const fullAddress = data.get('fullAddress') as string;
     const password = data.get('password') as string;
     const confirmPassword = data.get('confirmPassword') as string;
     const checkbox = data.get('checkbox') as string;
@@ -115,7 +115,7 @@ function handleRegister(event: React.FormEvent<HTMLFormElement>) {
         phone: phone,
         country: country,
         city: city,
-        address: address
+        fullAddress: fullAddress
     })
     .then(function (response) {
         //make a popup to inform the user that the registration is successful
