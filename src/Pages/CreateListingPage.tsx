@@ -113,13 +113,13 @@ function CreateListingPage()
     {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        const name = data.get('name') as string;
+        const title = data.get('name') as string;
         const fullAddress = data.get('fullAddress') as string;
         const price = data.get('price') as string;
         const description = data.get('description') as string;
         const keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
         axios.post('http://localhost:8080/api/CreateListing', {
-            name: name,
+            title: title,
             fullAddress: fullAddress,
             price: price,
             description: description,
