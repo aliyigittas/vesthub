@@ -2,9 +2,15 @@ import Dragger from 'antd/es/upload/Dragger';
 import AddHomeMarker from '../Components/AddHomeMarker';
 import { InboxOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import Cookies from 'js-cookie';
+import { useState } from 'react';
+import { LoadingOutlined } from '@ant-design/icons';
 
 function CreateListingPage()
 {
+
+    const [address, setAddress] = useState<string | null>(null);
+    const [getAddressLoading, setGetAddressLoading] = useState(false);
     const keyFeatures =[{
         name: "Fiber Internet",
         isAvailable: false
@@ -73,7 +79,29 @@ function CreateListingPage()
                     </div>
                     <div>
                         <label className="block text-sm font-medium ">Address</label>
+                        
                         <input id="fullAddress" name="fullAddress" type="text" autoComplete="address" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        <button type="button" className="mt-2 flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover disabled:bg-opacity-50" onClick={async ()=>{
+                            const address= await GeoCodeFromGMaps();
+                            if (address !== "Address could not be found.")
+                            {
+                                document.getElementById("fullAddress")?.setAttribute("value", address);
+                            }
+                            else
+                            {
+                                alert("Address could not be found. Please make sure location services are enabled.");
+                            }
+                        }}
+                        disabled={getAddressLoading}
+                        
+                        >
+                            {!getAddressLoading ? "Get Address from Current Location" : 
+                            <div className="flex justify-center items-center gap-2">
+                                <LoadingOutlined />
+                                <span>Loading...</span>
+                            </div>
+                            }
+                        </button>
                     </div>
                     <div>
                         <label className="block text-sm font-medium ">Price</label>
@@ -112,6 +140,7 @@ function CreateListingPage()
     function handleCreateListing(event: React.FormEvent<HTMLFormElement>)
     {
         event.preventDefault();
+        Cookies.remove("homefullAddress");
         const data = new FormData(event.currentTarget);
         const title = data.get('name') as string;
         const fullAddress = data.get('fullAddress') as string;
@@ -133,9 +162,46 @@ function CreateListingPage()
             console.log(error);
             //window.location.href = '/';
         });
-
     }
-  
+
+    //bu daha net ve hızlı ama limitli
+    async function GeoCodeFromGMaps() :Promise<string> {
+        setGetAddressLoading(true);
+        try
+        {
+            const response =await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${Cookies.get("latitude")},${Cookies.get("longitude")}&key=AIzaSyADLFlKMT50syOfOGB0H0gavooIOrjC3m4`);
+            console.log(response.data.results);
+            Cookies.set("homefullAddress", response.data.results[0].formatted_address, { expires: (1 / 1440) * 60 }); // 1 hour
+            setAddress(response.data.results[0].formatted_address);
+            setGetAddressLoading(false);
+            return response.data.results[0].formatted_address;
+        }
+        catch(error)
+        {
+            setGetAddressLoading(false);
+            console.log(error);
+            setAddress("Address could not be found.");
+            return "Address could not be found.";
+        }
+    }
+
+    //bu bedava
+    //eslint-disable-next-line
+    function GeoCodeFromGeoApify()
+    {
+        setGetAddressLoading(true);
+        axios.get(`https://api.geoapify.com/v1/geocode/reverse?lat=${Cookies.get("latitude")}&lon=${Cookies.get("longitude")}&apiKey=8af1068cc41e4c56b9103ad4db20ecff`)
+        .then((response) => {
+        console.log(response.data.features);
+        setAddress(response.data.features[0].properties.formatted);
+        setGetAddressLoading(false);
+        })
+        .catch((error) => {
+        setGetAddressLoading(false);
+        console.log(error);
+        setAddress("Address could not be found.");
+        });
+    }
 }
 
 export default CreateListingPage;

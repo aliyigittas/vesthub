@@ -21,6 +21,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import MeetingsPage from './Pages/MeetingsPage';
 import EditListingPage from './Pages/EditListingPage';
+import AdminPanel from './Pages/AdminPanel';
 
 
 const items: MenuProps['items'] = [
@@ -69,7 +70,17 @@ const items: MenuProps['items'] = [
       </div>
     ),
     danger: true,
-  }
+  },
+  Cookies.get("Email")==="admin@vesthub.com" ?
+  {
+    key: '6',
+    label: (
+      <div className="flex flex-row justify-start items-center" onClick={() => window.location.href = '/adminPanel'}>
+        <UserOutlined className="text-gray-900 text-[20px]"/>
+        <button className="p-2 lg:px-4 md:mx-2 text-gray-900 text-[15px] rounded">Admin Panel<span className="block max-w-0 transition-all duration-500 h-0.5 bg-gray-600"></span></button>
+      </div>
+    ),
+  } : null
 ];
 
 function App() {
@@ -173,6 +184,7 @@ function App() {
             <Route path='/addHome' element={<CreateListingPage />} />
             <Route path='/myListings' element={<MyListingsPage/>} />
             <Route path='/editListing/:id' element={<EditListingPage />} />
+            <Route path='/adminPanel' element={<AdminPanel />} />
             <Route path='/search/*' element={<SearchPage/>} />
             <Route path='/home/*' element={<HomePage home={true}/>} />
             <Route path='*' element={<NotFoundPage/>} />
