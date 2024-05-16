@@ -66,14 +66,14 @@ function CreateListingPage()
             </div>
 
             <div className="mx-auto w-full max-w-sm">
-                <form className="space-y-6" action="#" method="POST" onSubmit={() => {}}>
+                <form className="space-y-6" action="#" method="POST" onSubmit={handleCreateListing}>
                     <div>
                         <label className="block text-sm font-medium ">Title</label>
                         <input id="name" name="name" type="text" autoComplete="name" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
                     </div>
                     <div>
                         <label className="block text-sm font-medium ">Address</label>
-                        <input id="address" name="address" type="text" autoComplete="address" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        <input id="fullAddress" name="fullAddress" type="text" autoComplete="address" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
                     </div>
                     <div>
                         <label className="block text-sm font-medium ">Price</label>
@@ -109,19 +109,31 @@ function CreateListingPage()
         </div>
     );
 
-    function handleCreateListing()
+    function handleCreateListing(event: React.FormEvent<HTMLFormElement>)
     {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const name = data.get('name') as string;
+        const fullAddress = data.get('fullAddress') as string;
+        const price = data.get('price') as string;
+        const description = data.get('description') as string;
+        const keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
         axios.post('http://localhost:8080/api/CreateListing', {
-            title: document.getElementById('title')?.nodeValue,
-            address: document.getElementById('address')?.nodeValue,
-            price: document.getElementById('price')?.nodeValue,
-            description: document.getElementById('description')?.nodeValue,
-            keyFeatures: keyFeatures
-        }).then((response) => {
+            name: name,
+            fullAddress: fullAddress,
+            price: price,
+            description: description,
+            keyFeatures: keyFeaturesToSend
+        })
+        .then(function (response) {
             console.log(response);
-        }).catch((error) => {
+            //window.location.href = '/';
+        })
+        .catch(function (error) {
             console.log(error);
+            //window.location.href = '/';
         });
+
     }
   
 }
