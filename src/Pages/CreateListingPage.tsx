@@ -52,22 +52,17 @@ function CreateListingPage()
         isAvailable: false
     }
     ];
-
+    const [files, setFiles] = useState<FileList | null>(null);
+    console.log(files);
     return (
         <div className="min-w-screen min-h-screen place-items-center flex sm:flex-row flex-col p-4 bg-backColor space-y-4 gap-4">
             <div className="flex justify-center items-center flex-col sm:mx-auto sm:w-full sm:max-w-sm gap-4">
-            <Dragger
-                name="file"
-                multiple={true}
-                listType="picture"
-                className="w-full bg-gray-300 text-white rounded-md"
-            >
-                <p className="ant-upload-drag-icon text-button-primary">
-                <InboxOutlined className='text-white'/>
-                </p>
-                <p className="ant-upload-text">Click or drag photo(s) to this area to upload</p>
-                <p className="ant-upload-hint">Upload a photo of the house.</p>
-            </Dragger>
+                <div className='flex gap-3'>
+                    <input onChange={(e) =>setFiles(e.target.files)} className='p-3 border border-gray-300 rounded w-full bg-gray-100' type='file' accept='image/*' multiple/>
+                    <button type='button' className='p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80 bg-blue-100'>
+                        Upload
+                    </button>
+                </div>
                 <AddHomeMarker />
             </div>
 
