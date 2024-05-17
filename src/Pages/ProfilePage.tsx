@@ -23,7 +23,7 @@ function ProfilePage() {
         <div  className="flex flex-col items-center justify-center space-y-2"> {/* Add flex and flex-col classes */}
           <h1>Profile Page</h1>
           <div className="flex flex-col items-center space-y-2"> {/* Wrap image and text in a flex container */}
-            <img src='https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw' alt='Customer' className="w-48 h-48 rounded-full shadow-xl mb-2" />
+            <img src='https://pbs.twimg.com/profile_images/1379094653774008320/jwzwQYBS_400x400.jpg' alt='Customer' className="w-48 h-48 rounded-full shadow-xl mb-2" />
             <label> {Cookies.get("Name")} {Cookies.get("Surname")} </label>
           </div>
         </div>
