@@ -5,12 +5,44 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
+import { Image, Upload } from 'antd';
+import type { GetProp, UploadFile, UploadProps } from 'antd';
+
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+const getBase64 = (file: FileType): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
 
 function CreateListingPage()
 {
 
     const [address, setAddress] = useState<string | null>(null);
     const [getAddressLoading, setGetAddressLoading] = useState(false);
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [fileList, setFileList] = useState<UploadFile[]>([
+    ]);
+    const handlePreview = async (file: UploadFile) => {
+        if (!file.url && !file.preview) {
+          file.preview = await getBase64(file.originFileObj as FileType);
+        }
+    
+        setPreviewImage(file.url || (file.preview as string));
+        setPreviewOpen(true);
+      };
+    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
+        setFileList(newFileList);
+    const uploadButton = (
+        <button style={{ border: 0, background: 'none' }} type="button">
+          <PlusOutlined />
+          <div style={{ marginTop: 8 }}>Upload</div>
+        </button>
+      );
     const keyFeatures =[{
         name: "Fiber Internet",
         isAvailable: false
@@ -52,20 +84,35 @@ function CreateListingPage()
         isAvailable: false
     }
     ];
-    const [files, setFiles] = useState<FileList | null>(null);
-    console.log(files);
     return (
         <div className="min-w-screen min-h-screen place-items-center flex sm:flex-row flex-col p-4 bg-backColor space-y-4 gap-4">
             <div className="flex justify-center items-center flex-col sm:mx-auto sm:w-full sm:max-w-sm gap-4">
-                <div className='flex gap-3'>
-                    <input onChange={(e) =>setFiles(e.target.files)} className='p-3 border border-gray-300 rounded w-full bg-gray-100' type='file' accept='image/*' multiple/>
-                    <button type='button' className='p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80 bg-blue-100'>
-                        Upload
-                    </button>
+                <div className='flex flex-col gap-3'>
+                    <>
+                        <Upload
+                            //action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                            listType="picture-card"
+                            fileList={fileList}
+                            onPreview={handlePreview}
+                            onChange={handleChange}
+                        >
+                            {fileList.length >= 8 ? null : uploadButton}
+                        </Upload>
+                        {previewImage && (
+                            <Image
+                            wrapperStyle={{ display: 'none' }}
+                            preview={{
+                                visible: previewOpen,
+                                onVisibleChange: (visible) => setPreviewOpen(visible),
+                                afterOpenChange: (visible) => !visible && setPreviewImage(''),
+                            }}
+                            src={previewImage}
+                            />
+                        )}
+                    </>
                 </div>
                 <AddHomeMarker />
             </div>
-
             <div className="mx-auto w-full max-w-sm">
                 <form className="space-y-6" action="#" method="POST" onSubmit={handleCreateListing}>
                     <div>
