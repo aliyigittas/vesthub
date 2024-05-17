@@ -105,6 +105,42 @@ function handleRegister(event: React.FormEvent<HTMLFormElement>) {
         return;
     }
 
+    //username must be alphabetical and cannot be more than 45 characters
+    //TODO: Add regex for alphabetical characters
+    
+    if (name.length > 45) {
+        alert("Name must be alphabetical and cannot be more than 45 characters");
+        return;
+    }
+
+    if (surname.length > 45) {
+        alert("Surname must be alphabetical and cannot be more than 45 characters");
+        return;
+    }
+
+    //password must be at least 8 characters long and cannot be more than 16 characters, also it must contain at least one number, one uppercase letter and one lowercase letter
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/;
+    if (!passwordRegex.test(password)) {
+        alert("Password must be at least 8 characters long and cannot be more than 16 characters, also it must contain at least one number, one uppercase letter and one lowercase letter");
+        return;
+    }
+
+    //full address cannot be more than 45 characters
+    if (fullAddress.length > 45) {
+        alert("Full address cannot be more than 250 characters");
+        return;
+    }
+
+    if(city.length > 45){ 
+        alert("City cannot be more than 45 characters");
+        return;
+    }
+
+    if(country.length > 45){
+        alert("Country cannot be more than 45 characters");
+        return;
+    }
+
     // Phone number validation for Turkish numbers starting with 5 and followed by 9 digits
     const phoneRegex = /^5[0-9]{9}$/;
     if (!phoneRegex.test(phone)) {
