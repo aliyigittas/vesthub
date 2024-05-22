@@ -8,6 +8,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
 import { Image, Upload } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
+import { get } from 'http';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 const getBase64 = (file: FileType): Promise<string> =>
@@ -31,7 +32,7 @@ function CreateListingPage()
         if (!file.url && !file.preview) {
           file.preview = await getBase64(file.originFileObj as FileType);
         }
-    
+        
         setPreviewImage(file.url || (file.preview as string));
         setPreviewOpen(true);
       };
@@ -95,6 +96,12 @@ function CreateListingPage()
                             fileList={fileList}
                             onPreview={handlePreview}
                             onChange={handleChange}
+                            beforeUpload={(file) => {
+                                setFileList([...fileList, file]);
+                                return false;
+                            
+                            }
+                            }
                         >
                             {fileList.length >= 8 ? null : uploadButton}
                         </Upload>
@@ -169,7 +176,9 @@ function CreateListingPage()
                         </div>
 
                     </div>
-                    <input type="submit" className="flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover" value="Add House" onClick={()=>{}}/>
+                    <input type="submit" className="flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover" value="Add House" onClick={()=>{
+
+                    }}/>
                 </form>
                 <div className="mt-3 flex flex-row items-center justify-between">
                     <label>Return to the main page?</label>
@@ -179,7 +188,7 @@ function CreateListingPage()
         </div>
     );
 
-    function handleCreateListing(event: React.FormEvent<HTMLFormElement>)
+    async function handleCreateListing (event: React.FormEvent<HTMLFormElement>)
     {
         event.preventDefault();
         Cookies.remove("homefullAddress");
@@ -188,13 +197,31 @@ function CreateListingPage()
         const fullAddress = data.get('fullAddress') as string;
         const price = data.get('price') as string;
         const description = data.get('description') as string;
-        const keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
+        var keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
+
+        if(fileList.length < 3){
+            alert("Please upload at least three image.");
+            return;
+        }        
+
+
+        var file_to_send: string[] = [];
+        for (let i = 0; i < fileList.length; i++) {
+            fileList[i].preview = await getBase64(fileList[i].originFileObj as FileType);
+            file_to_send.push(fileList[i].preview?.toString() as string);
+        }
+
+
+
         axios.post('http://localhost:8080/api/CreateListing', {
             title: title,
             fullAddress: fullAddress,
             price: price,
+            saleRent: "Sale",
             description: description,
-            keyFeatures: keyFeaturesToSend
+            keyFeatures: keyFeaturesToSend,
+            images: file_to_send
+            
         })
         .then(function (response) {
             console.log(response);
@@ -204,6 +231,11 @@ function CreateListingPage()
             console.log(error);
             //window.location.href = '/';
         });
+
+        axios.get('http://localhost:8080/api/GetPhoto')
+        .then(function (response) {
+            console.log(response);
+        })
     }
 
     //bu daha net ve hızlı ama limitli
