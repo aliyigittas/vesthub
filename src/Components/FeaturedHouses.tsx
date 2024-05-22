@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import HomeCard from './HomeCard';
 import homes from './TempHomes';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import axios from 'axios';
 
 function FeaturedHouses() {
 
@@ -14,6 +15,9 @@ function FeaturedHouses() {
   const handleScrollRight = (scrollAmount:any) => {
     containerRef.current!.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   }
+  axios.get('http://localhost:8080/api/featuredHomes').then(response => {
+    console.log(response.data);
+  });
 
     return (
       <div>
