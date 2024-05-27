@@ -243,7 +243,7 @@ function CreateListingPage()
         setGetAddressLoading(true);
         try
         {
-            const response =await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${Cookies.get("latitude")},${Cookies.get("longitude")}&key=AIzaSyADLFlKMT50syOfOGB0H0gavooIOrjC3m4`);
+            const response =await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${Cookies.get("latitude")},${Cookies.get("longitude")}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
             console.log(response.data.results);
             Cookies.set("homefullAddress", response.data.results[0].formatted_address, { expires: (1 / 1440) * 60 }); // 1 hour
             setAddress(response.data.results[0].formatted_address);

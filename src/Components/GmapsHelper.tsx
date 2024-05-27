@@ -1,9 +1,13 @@
 import { useJsApiLoader } from "@react-google-maps/api";
 
+
+const api = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+const mapId = process.env.MAP_ID;
+
 function LoadMaps(){
     const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: "", //AIzaSyADLFlKMT50syOfOGB0H0gavooIOrjC3m4
-        //mapIds: ["4afa231f91b58f2f"],
+        googleMapsApiKey: api!,
+        mapIds: [mapId!],
         version: "3.55",
         //language: "tr",
       });  
