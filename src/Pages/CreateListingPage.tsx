@@ -198,6 +198,8 @@ function CreateListingPage()
         const price = data.get('price') as string;
         const description = data.get('description') as string;
         var keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
+        
+        
 
         if(fileList.length < 3){
             alert("Please upload at least three image.");
@@ -216,6 +218,11 @@ function CreateListingPage()
             price: price,
             saleRent: "Sale",
             description: description,
+            distinct: Cookies.get("homeDistinct"),
+            city: Cookies.get("homeCity"),
+            street: Cookies.get("homeStreet"),
+            lat: Cookies.get("latitude"),
+            lng: Cookies.get("longitude"),
             keyFeatures: keyFeaturesToSend,
             images: file_to_send
             
@@ -243,7 +250,9 @@ function CreateListingPage()
             const response =await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${Cookies.get("latitude")},${Cookies.get("longitude")}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
             console.log(response.data.results);
             Cookies.set("homefullAddress", response.data.results[0].formatted_address, { expires: (1 / 1440) * 60 }); // 1 hour
-            setAddress(response.data.results[0].formatted_address);
+            Cookies.set("homeCity", response.data.results[0].address_components[4].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
+            Cookies.set("homeDistinct", response.data.results[0].address_components[3].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
+            Cookies.set("homeStreet", response.data.results[0].address_components[2].long_name, { expires: (1 / 1440) * 60 }); // 1 hour            setAddress(response.data.results[0].formatted_address);
             setGetAddressLoading(false);
             return response.data.results[0].formatted_address;
         }
