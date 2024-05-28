@@ -204,14 +204,11 @@ function CreateListingPage()
             return;
         }        
 
-
         var file_to_send: string[] = [];
         for (let i = 0; i < fileList.length; i++) {
             fileList[i].preview = await getBase64(fileList[i].originFileObj as FileType);
             file_to_send.push(fileList[i].preview?.toString() as string);
         }
-
-
 
         axios.post('http://localhost:8080/api/CreateListing', {
             title: title,
@@ -232,7 +229,7 @@ function CreateListingPage()
             //window.location.href = '/';
         });
 
-        axios.get('http://localhost:8080/api/GetPhoto')
+        axios.get('http://localhost:8080/api/getPhotos/21')
         .then(function (response) {
             console.log(response);
         })
