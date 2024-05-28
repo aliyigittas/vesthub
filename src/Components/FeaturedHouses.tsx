@@ -1,11 +1,16 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import HomeCard from './HomeCard';
-import homes from './TempHomes';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import homes from './TempHomes';
+import H1 from "../homePhotos/home1/1.jpeg";
+import H2 from "../homePhotos/home1/2.jpeg";
+import H3 from "../homePhotos/home1/3.jpeg";
+
+
 
 function FeaturedHouses() {
-
+  let temphomes: any[] = [];
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleScrollLeft = (scrollAmount:any) => {
@@ -15,9 +20,49 @@ function FeaturedHouses() {
   const handleScrollRight = (scrollAmount:any) => {
     containerRef.current!.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   }
-  axios.get('http://localhost:8080/api/featuredHomes').then(response => {
-    console.log(response.data);
-  });
+
+  const [homes, setHomes] = useState<any[]>([]);
+
+    useEffect(() => {
+        // Function to fetch data
+        const fetchHomes = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/featuredHomes'); //`${Cookies.get('Email')}`
+                console.log(response.data);
+
+                //parse homes one by one to display them in HomeCard component
+                const parsedHomes = response.data.map((home: any) => ({
+                    id: home.id,
+                    title: home.title,
+                    photo: [H1,H2,H3],
+                    price: home.price.toString(),
+                    type: home.saleRent,
+                    coordinates: { lat: home.lat, lng: home.lng },
+                    address: home.fullAddress,
+                    ownerMail: home.ownerMail,
+                    description: home.description,
+                    keyFeatures: {
+                        fiberInternet: home.fiberInternet === 1 ? true : false,
+                        airConditioner: home.airConditioner === 1 ? true : false,
+                        floorHeating: home.floorHeating === 1 ? true : false,
+                        fireplace: home.fireplace === 1 ? true : false,
+                        terrace: home.terrace === 1 ? true : false,
+                        satellite: home.satellite === 1 ? true : false,
+                        parquet: home.parquet === 1 ? true : false,
+                        steelDoor: home.steelDoor === 1 ? true : false,
+                        furnished: home.furnished === 1 ? true : false,
+                        insulation: home.insulation === 1 ? true : false,
+                    },
+                }));
+
+                setHomes(parsedHomes);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchHomes();
+    }, []); // Empty dependency array means this effect runs once when the component mounts
 
     return (
       <div>
@@ -29,9 +74,9 @@ function FeaturedHouses() {
           </div>
         </div>
         <div className="snap-x flex flex-row overflow-x-auto" ref={containerRef}>
-          {homes.map(({ id, name, photo, price, type, coordinates, address, owner }) => (
+          {homes.map(({ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description}) => (
             <div className="snap-start" key={id}>
-              <HomeCard key={id} home={{ id, name, photo, price, type, coordinates, address, owner}} />
+              <HomeCard key={id} home={{ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description}} />
             </div>
           ))}
         </div>

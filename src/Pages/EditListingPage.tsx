@@ -44,9 +44,9 @@ function EditListingPage()
                 <form className="space-y-6" action="#" method="POST">
                     <div>
                         <label className="block text-sm font-medium ">Title</label>
-                        <input id="name" name="name" type="text" autoComplete="name" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={home?.name} onChange={
+                        <input id="name" name="name" type="text" autoComplete="name" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={home?.title} onChange={
                             (e) => {
-                                home!.name = e.target.value;
+                                home!.title = e.target.value;
                             }
                         }/>
                     </div>

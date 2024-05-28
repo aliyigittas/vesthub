@@ -223,6 +223,7 @@ function CreateListingPage()
             street: Cookies.get("homeStreet"),
             lat: Cookies.get("latitude"),
             lng: Cookies.get("longitude"),
+            ownerMail: Cookies.get("Email"),
             keyFeatures: keyFeaturesToSend,
             images: file_to_send
             

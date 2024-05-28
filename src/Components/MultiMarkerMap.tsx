@@ -4,7 +4,7 @@ import Homepin from '../homePin.png';
 import HomeCard from "./HomeCard";
 import LoadMaps from "./GmapsHelper";
 
-function MultiMarkerMap({homes}: {homes:{ id: number, name: string, photo: string[], price: string, type: string, coordinates: { lat: number, lng: number }, address:string, owner:string }[]}) {
+function MultiMarkerMap({homes}: {homes:{ id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean} }[]}) {
 
     const isLoaded = LoadMaps();
 

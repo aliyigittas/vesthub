@@ -18,7 +18,7 @@ function AdminPanel() {
                     <div className="flex flex-row space-x-2">
                         <img src={Home.photo[0]} alt="placeholder" className="w-24 h-24 rounded-lg cursor-pointer" onClick={() => setShow(true)} />
                         <div className="flex flex-col">
-                            <label className="text-lg font-bold">{Home.name}</label>
+                            <label className="text-lg font-bold">{Home.title}</label>
                             <label className="text-sm">{Home.address}</label>
                             <label className="text-sm">{Home.price}</label>
                             <label className="text-sm text-ellipsis line-clamp-3">{Home.description}</label>

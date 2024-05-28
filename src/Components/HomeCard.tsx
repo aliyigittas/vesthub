@@ -1,19 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import HomeModal from './HomeModal';
 import { HeartTwoTone, HeartFilled, EditFilled } from '@ant-design/icons';
-import homes from './TempHomes';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
-function HomeCard({ home }: { home: { id: number, name: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, address:string, owner: string}}) {
+function HomeCard({ home }: { home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean} }}) {
   const [isLiked, setIsLiked] = useState(false);
   const [isLikeHovered, setIsLikeHovered] = useState(false);
   var [show, setShow] = useState(false);
   const currentUrl = window.location.href;
   const [clickedHomeId, setClickedHomeId] = useState(null);
+  const filteredHomes = home;
+  /*
+  let isLikedBefore = false;
+  useEffect(() => {
+    if (Cookies.get('loggedIn') === 'true') {
+      axios.get(`http://localhost:8080/api/checkFavorite/`, {params: {houseID: home.id, ownerMail: Cookies.get("Email")}}) //`${Cookies.get('Email')}
+      .then(response => {
+        console.log(response.data);
+        if (response.data === "true") {
+          isLikedBefore = true;
+          setIsLiked(true);
+        }
+      });
+    }
+  }, []);
+  */
 
-  const handleClick = (id:any) => {
+
+  const handleClick = (id:any) =>  {
     setClickedHomeId(id);
   };
+
+  
 
   return (
     <div className="w-[300px] rounded-lg shadow-sm m-2 bg-white cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
@@ -22,11 +41,11 @@ function HomeCard({ home }: { home: { id: number, name: string, photo: string[] 
         !show && setShow(true);
         window.history.pushState({}, '', show ?  currentUrl : '/home/' + home.id);
         handleClick(home.id);
+        console.log(home);
        }
       }>
-      {homes.filter((home) => home.id === clickedHomeId).map((home) => (
-        <HomeModal key={home.id} show={show} setShow={() => setShow(false)} home={home} />
-      ))}
+        
+      {<HomeModal key={home.id} show={show} setShow={() => setShow(false)} home={filteredHomes} />}
       <div className="relative" >
         <img src={home.photo[0]} alt="House" className="w-full rounded-t-lg h-44"/>
         <div className="absolute bottom-0 right-0 mb-2 mr-2 text-white text-[30px] cursor-pointer" onClick={() => {}}> 
@@ -35,10 +54,28 @@ function HomeCard({ home }: { home: { id: number, name: string, photo: string[] 
             (e) => {
 
               if (Cookies.get('loggedIn') === 'true') {
-                if (home.owner === Cookies.get("Name")) {
+                if (home.ownerMail === Cookies.get("Email")) {
                   window.location.href = '/editListing/' + home.id;
                 } else {
-                  setIsLiked(!isLiked);
+                  //setIsLiked(!isLiked);
+                  if (!isLiked) {
+                    axios.post('http://localhost:8080/api/addFavorite', {houseID: home.id, ownerMail: Cookies.get("Email")})
+                    .then(response => {
+                      console.log(response.data);
+                      if (response.data === true) {
+                        setIsLiked(true);
+                      }
+                    });
+                  }else
+                  {
+                    axios.post('http://localhost:8080/api/removeFavorite', {houseID: home.id, ownerMail: Cookies.get("Email")})
+                    .then(response => {
+                      console.log(response.data);
+                      if (response.data === true) {
+                        setIsLiked(false);
+                      }
+                    });
+                  }
                 }
               } else {
                 window.location.href = '/login';
@@ -49,7 +86,8 @@ function HomeCard({ home }: { home: { id: number, name: string, photo: string[] 
           onMouseEnter={() => setIsLikeHovered(true)}
           onMouseLeave={() => setIsLikeHovered(false)}
           >
-          {home.owner === Cookies.get("Name") ? ( // Check if the owner is 'Baran'
+          
+          {home.ownerMail === Cookies.get("Email") ? ( // Check if the owner is 
               isLiked ? <EditFilled className='text-[#6fa3f7]' /> : isLikeHovered ? <EditFilled className='text-[#6fa3f7]' /> : <EditFilled className='text-[#e2e9ef]' />
               ) : ( //if the owner is not matching, use default heart icons
               isLiked ? <HeartFilled className='text-red-500'/> : isLikeHovered ? <HeartTwoTone twoToneColor={'#ef4444'}/> : <HeartTwoTone twoToneColor={'#9ca3af'}/>)
@@ -63,7 +101,7 @@ function HomeCard({ home }: { home: { id: number, name: string, photo: string[] 
         </div>
       </div>
       <div className="px-4 py-2">
-        <div className="font-bold text-xl text-ellipsis line-clamp-3">{home.name}</div>
+        <div className="font-bold text-xl text-ellipsis line-clamp-3">{home.title}</div>
         <label className="font-bold text-[14px]">{home.price}₺</label>
         <div className="flex flex-row gap-2 text-[14px]">
           <div className="">

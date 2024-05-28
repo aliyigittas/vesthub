@@ -19,13 +19,13 @@ const loremIpsum =
 const homes = [
   {
     id: 0,
-    name: "Mevlanakapı kara surları arkası Değerli konum 2+1 3.kat Deniz manzaralı önü kapanmaz iskanlı",
-    photo: [H1, H2, H3],
+    title: "Mevlanakapı kara surları arkası Değerli konum 2+1 3.kat Deniz manzaralı önü kapanmaz iskanlı",
+    photo: [], //H1, H2, H3
     price: "230.001",
     type: "Sale",
     coordinates: { lat: 41.0082, lng: 28.9784 },
     address: "Mevlanakapı, Fatih/İstanbul, Türkiye",
-    owner: "Baran",
+    ownerMail: "Baran",
     description: loremIpsum,
     keyFeatures: {
       fiberInternet: true,
@@ -42,13 +42,13 @@ const homes = [
   },
   {
     id: 1,
-    name: "Direkt Mülkiyet sahibinden kiralık daire",
+    title: "Direkt Mülkiyet sahibinden kiralık daire",
     photo: [H4, H5, H6, H7, H8],
     price: "18.000",
     type: "Rent",
     coordinates: { lat: 40.3812, lng: 28.9784 },
     address: "Gazi Mustafa Kemal Bulvarı, No: 1, 34100 Fatih/İstanbul, Türkiye",
-    owner: "Ali",
+    ownerMail: "Ali",
     description: loremIpsum,
     keyFeatures: {
       fiberInternet: false,
@@ -65,13 +65,13 @@ const homes = [
   },
   {
     id: 2,
-    name: "Sayapark Civarı İSKANLI + DOĞALGAZ+ ANKASTRE + HAVUZLU + JENERATÖRLÜ",
+    title: "Sayapark Civarı İSKANLI + DOĞALGAZ+ ANKASTRE + HAVUZLU + JENERATÖRLÜ",
     photo: [H9, H10, H11, H12],
     price: "4.000.000",
     type: "Rent",
     coordinates: { lat: 41.0082, lng: 28.9082 },
     address: "Bayrampaşa, İstanbul, Türkiye",
-    owner: "Baran",
+    ownerMail: "Baran",
     description: loremIpsum,
     keyFeatures: {
       fiberInternet: false,
@@ -88,13 +88,13 @@ const homes = [
   },
   {
     id: 3,
-    name: "ISPARTAKULE 3+1 DAİRELERİMİZDE FIRSATLAR DEVAM EDİYOR.",
+    title: "ISPARTAKULE 3+1 DAİRELERİMİZDE FIRSATLAR DEVAM EDİYOR.",
     photo: [H13, House3, House2],
     price: "3.500.000",
     type: "Sale",
     coordinates: { lat: 41.0182, lng: 28.9684 },
     address: "Ispartakule, İstanbul, Türkiye",
-    owner: "Ali",
+    ownerMail: "Ali",
     description: loremIpsum,
     keyFeatures: {
       fiberInternet: true,
@@ -111,13 +111,13 @@ const homes = [
   },
   {
     id: 4,
-    name: "Alibeyköy'de 3+1 2. Kat bu fırsatı kaçırmayın",
+    title: "Alibeyköy'de 3+1 2. Kat bu fırsatı kaçırmayın",
     photo: [H2, H9, H3],
     price: "2.500.000",
     type: "Sale",
     coordinates: { lat: 41.0082, lng: 28.9784 },
     address: "Alibeyköy, İstanbul, Türkiye",
-    owner: "Ali",
+    ownerMail: "Ali",
     description: loremIpsum,
     keyFeatures: {
       fiberInternet: false,
@@ -134,13 +134,13 @@ const homes = [
   },
   {
     id: 5,
-    name: "EV5",
+    title: "EV5",
     photo: [House2, House3, H8],
     price: "230.006",
     type: "Rent",
     coordinates: { lat: 40.3833, lng: 28.9784 },
     address: "Topkapı, İstanbul, Türkiye",
-    owner: "Baran",
+    ownerMail: "Baran",
     description: loremIpsum,
     keyFeatures: {
       fiberInternet: true,
@@ -157,13 +157,13 @@ const homes = [
   },
   {
     id: 6,
-    name: "EV6",
+    title: "EV6",
     photo: [H8, House3, House2],
     price: "230.007",
     type: "Sale",
     coordinates: { lat: 41.0033, lng: 28.9082 },
     address: "Zeytinburnu, İstanbul, Türkiye",
-    owner: "Ali",
+    ownerMail: "Ali",
     description: loremIpsum,
     keyFeatures: {
       fiberInternet: false,
@@ -180,13 +180,13 @@ const homes = [
   },
   {
     id: 7,
-    name: "EV7",
+    title: "EV7",
     photo: [House2, House3, H4],
     price: "230.008",
     type: "Sale",
     coordinates: { lat: 41.0133, lng: 28.9684 },
     address: "Eminönü, İstanbul, Türkiye",
-    owner: "Ali",
+    ownerMail: "Ali",
     description: loremIpsum,
     keyFeatures: {
       fiberInternet: true,
@@ -203,13 +203,13 @@ const homes = [
   },
   {
     id: 8,
-    name: "EV8",
+    title: "EV8",
     photo: [H3, House2, H2],
     price: "230.009",
     type: "Rent",
     coordinates: { lat: 41.0033, lng: 28.9784 },
     address: "Şişli, İstanbul, Türkiye",
-    owner: "Baran",
+    ownerMail: "Baran",
     description: loremIpsum,
     keyFeatures: {
       fiberInternet: false,
@@ -226,13 +226,13 @@ const homes = [
   },
   {
     id: 9,
-    name: "EV9",
+    title: "EV9",
     photo: [House3, House3, H7],
     price: "230.010",
     type: "Sale",
     coordinates: { lat: 40.3332, lng: 28.9784 },
     address: "Beylikdüzü, İstanbul, Türkiye",
-    owner: "Ali",
+    ownerMail: "Ali",
     description: loremIpsum,
     keyFeatures: {
       fiberInternet: true,
@@ -249,13 +249,13 @@ const homes = [
   },
   {
     id: 10,
-    name: "EV10",
+    title: "EV10",
     photo: [House2, House2, H4],
     price: "230.011",
     type: "Rent",
     coordinates: { lat: 41.3382, lng: 28.9082 },
     address: "Bakırköy, İstanbul, Türkiye",
-    owner: "Baran",
+    ownerMail: "Baran",
     description: loremIpsum,
     keyFeatures: {
       fiberInternet: false,

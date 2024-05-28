@@ -17,9 +17,9 @@ import { Gallery, Item } from 'react-photoswipe-gallery'
 
 
 
-function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void; home: { id: number, name: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, owner: string, description: string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean} }}) {
+function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void; home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean} }}) {
     const [value, setValue] = useState<Dayjs | null>(dayjs(null)); //eslint-disable-line
-    
+    //console.log("SDKDSJDFSBJDSFBDJSFBSBDJFBJDSFJBDSFJBDSFJDSFBBJSDJDBSBDJSF");
     return (
         <Modal
             open={show}
@@ -34,10 +34,10 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
         >
             <div className="mt-4 h-full">
                 <div className="rounded-lg overflow-hidden">
-                    <Images />
+                    {/*<Images />*/}
                 </div>
                 <div className="flex justify-between mt-3">
-                    <h1 className="text-2xl font-bold">{home.name}</h1>
+                    <h1 className="text-2xl font-bold">{home.title}</h1>
                     <h1 className="text-2xl font-bold">{home.price}₺</h1>
                 </div>
                 <div className="flex flex-col items-start mt-2">
@@ -163,7 +163,7 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                         (e) => {
 
                         if (Cookies.get('loggedIn') === 'true') {
-                            if (home.owner === Cookies.get("Name")) {
+                            if (home.ownerMail === Cookies.get("Email")) {
                                 window.location.href = '/editListing/' + home.id;
                               } else {
                                 setIsLiked(!isLiked);
@@ -177,7 +177,7 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                     onMouseEnter={() => setIsLikeHovered(true)}
                     onMouseLeave={() => setIsLikeHovered(false)}
                     >
-                        {home.owner === Cookies.get("Name") ? ( // Check if the owner is 'Baran'
+                        {home.ownerMail === Cookies.get("Email") ? ( // Check if the owner is 'Baran'
                             isLiked ? <EditFilled className='text-[#6fa3f7]' /> : isLikeHovered ? <EditFilled className='text-[#6fa3f7]' /> : <EditFilled className='text-[#e2e9ef]' />
                             ) : ( //if the owner is not matching, use default heart icons
                             isLiked ? <HeartFilled className='text-red-500'/> : isLikeHovered ? <HeartTwoTone twoToneColor={'#ef4444'}/> : <HeartTwoTone twoToneColor={'#9ca3af'}/>)
