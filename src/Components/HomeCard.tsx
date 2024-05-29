@@ -4,7 +4,7 @@ import { HeartTwoTone, HeartFilled, EditFilled } from '@ant-design/icons';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
-function HomeCard({ home }: { home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean} }}) {
+function HomeCard({ home }: { home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number}}) {
   const [isLiked, setIsLiked] = useState(false);
   const [isLikeHovered, setIsLikeHovered] = useState(false);
   var [show, setShow] = useState(false);
@@ -102,18 +102,20 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
       </div>
       <div className="px-4 py-2">
         <div className="font-bold text-xl text-ellipsis line-clamp-3">{home.title}</div>
-        <label className="font-bold text-[14px]">{home.price}₺</label>
+        <label className="font-bold text-[14px]">{
+          home.type === "Sale" ? home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " ₺" : home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₺/month"
+        }</label>
         <div className="flex flex-row gap-2 text-[14px]">
           <div className="">
-            <span className="pr-1 font-bold">5</span>bds
+            <span className="pr-1 font-bold">{home.numOfBedroom}</span>bds
           </div>
           <span className="text-gray-500">|</span>
           <div className="">
-            <span className="pr-1 pl-2 font-bold">3</span>ba
+            <span className="pr-1 pl-2 font-bold">{home.numOfBathroom}</span>ba
           </div>
           <span className="text-gray-500">|</span>
           <div className="">
-            <span className="pr-1 pl-2 font-bold">2,327</span>m2
+            <span className="pr-1 pl-2 font-bold">{home.area}</span>m2
           </div>
         </div>
         <div className="">

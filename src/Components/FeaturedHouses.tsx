@@ -2,15 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import HomeCard from './HomeCard';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import homes from './TempHomes';
-import H1 from "../homePhotos/home1/1.jpeg";
-import H2 from "../homePhotos/home1/2.jpeg";
-import H3 from "../homePhotos/home1/3.jpeg";
 
 
 
 function FeaturedHouses() {
-  let temphomes: any[] = [];
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleScrollLeft = (scrollAmount:any) => {
@@ -30,17 +25,25 @@ function FeaturedHouses() {
                 const response = await axios.get('http://localhost:8080/api/featuredHomes'); //`${Cookies.get('Email')}`
                 console.log(response.data);
 
+                
+
                 //parse homes one by one to display them in HomeCard component
                 const parsedHomes = response.data.map((home: any) => ({
                     id: home.id,
                     title: home.title,
-                    photo: [H1,H2,H3],
+                    photo: home.images, //[H1,H2,H3]
                     price: home.price.toString(),
                     type: home.saleRent,
                     coordinates: { lat: home.lat, lng: home.lng },
                     address: home.fullAddress,
                     ownerMail: home.ownerMail,
                     description: home.description,
+                    numOfBathroom: home.numOfBathroom,
+                    numOfBedroom: home.numOfBedroom,
+                    numOfRooms: home.numOfRooms,
+                    area: home.area,
+                    floor: home.floor,
+                    totalFloor: home.totalFloor,
                     keyFeatures: {
                         fiberInternet: home.fiberInternet === 1 ? true : false,
                         airConditioner: home.airConditioner === 1 ? true : false,
@@ -74,9 +77,9 @@ function FeaturedHouses() {
           </div>
         </div>
         <div className="snap-x flex flex-row overflow-x-auto" ref={containerRef}>
-          {homes.map(({ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description}) => (
+          {homes.map(({ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description, numOfBathroom, numOfBedroom, numOfRooms, area}) => (
             <div className="snap-start" key={id}>
-              <HomeCard key={id} home={{ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description}} />
+              <HomeCard key={id} home={{ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description, numOfBathroom, numOfBedroom, numOfRooms, area}} />
             </div>
           ))}
         </div>

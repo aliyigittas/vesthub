@@ -4,7 +4,7 @@ import homes from "../Components/TempHomes";
 import MultiMarkerMap from "../Components/MultiMarkerMap";
 
 
-export const currentUrl = window.location.href; 
+export const currentUrl = window.location.href;
 const searchParamMatch = currentUrl.match(/\/search\/([^&]*)/);
 const typeParamMatch = currentUrl.match(/&type=([^&]*)/);
 const typeValue = typeParamMatch && typeParamMatch[1] ? typeParamMatch[1] : 'sale'; //sale is default
@@ -21,8 +21,8 @@ const initialDisplayedHouses = [homes[0], homes[1], homes[2], homes[3], homes[4]
 const homeType = [
   {
     key: '1',
-    label: 'Not Selected',
-    value: 'Not Selected',
+    label: 'All',
+    value: 'All',
   },
   {
     key: '2',
@@ -41,11 +41,11 @@ const homeType = [
   },
 ];
 
-const roomCount = [
+const roomCountOpt = [
   {
     key: '1',
-    label: 'NotSelected',
-    value: 'NotSelected',
+    label: 'All',
+    value: 'All',
   },
   {
     key: '2',
@@ -79,21 +79,21 @@ function SearchPage() {
   const [displayedHouses, setDisplayedHouses] = useState(initialDisplayedHouses);
   const [showMap, setShowMap] = useState(false);
 
-  var filter1 = 'Not Selected';
-  var filter2 = 'Not Selected';
+  var houseType = 'All';
+  var roomCount = 'All';
   var minPrice = -1;
   var maxPrice = -1;
   var listingDate = "Not Selected"; //eslint-disable-line no-unused-vars
 
 
   if (window.location.href.includes('houseType')) {
-    filter1 = window.location.href.split('houseType=')[1].split('&')[0];
-    console.log(filter1);
+    houseType = window.location.href.split('houseType=')[1].split('&')[0];
+    console.log(houseType);
   }
 
-  if (window.location.href.includes('filter2')) {
-    filter2 = window.location.href.split('filter2=')[1].split('&')[0];
-    console.log(filter2);
+  if (window.location.href.includes('roomCount')) {
+    roomCount = window.location.href.split('roomCount=')[1].split('&')[0];
+    console.log(roomCount);
   }
 
   if (window.location.href.includes('minPrice')) {
@@ -103,6 +103,11 @@ function SearchPage() {
 
   if (window.location.href.includes('maxPrice')) {
     maxPrice = parseInt(window.location.href.split('maxPrice=')[1].split('&')[0]);
+    console.log(maxPrice);
+  }
+
+  if (window.location.href.includes('area')) {
+    maxPrice = parseInt(window.location.href.split('area=')[1].split('&')[0]);
     console.log(maxPrice);
   }
 
@@ -154,7 +159,7 @@ function SearchPage() {
       <input type="search" id="search" className="w-full p-3 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder={searchValue} onChange={(e) => { searchtext = e.target.value}} defaultValue={searchtext} required/>
       <div className="flex flex-row w-full justify-between">
       <label className="text-white items-center flex">House Type</label>
-        <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" defaultValue={filter1} onChange={(e) => {
+        <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" defaultValue={houseType} onChange={(e) => {
           addSearchFilter('houseType', e.target.value);
           }}
           >
@@ -165,11 +170,11 @@ function SearchPage() {
       </div>
       <div className="flex flex-row w-full justify-between">
       <label className="text-white items-center flex">Room Count</label>
-        <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" defaultValue={filter2} onChange={(e) => {
+        <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" defaultValue={roomCount} onChange={(e) => {
           addSearchFilter('filter2', e.target.value);
           }}
           >
-            {roomCount.map((item) => (
+            {roomCountOpt.map((item) => (
               <option key={item.key}>{item.label}</option>
             ))}
         </select>
@@ -180,6 +185,14 @@ function SearchPage() {
         <div className="flex gap-2 flex-row">
           <input type="number" id="minPrice" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Min" min={0}/>
           <input type="number" id="maxPrice" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Max" min={0}/>
+        </div>
+      </div>
+
+      <div className=" flex flex-row w-full justify-between">
+        <label className="text-white">Area (m2)</label>
+        <div className="flex gap-2 flex-row">
+          <input type="number" id="minArea" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Min" min={0}/>
+          <input type="number" id="maxArea" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Max" min={0}/>
         </div>
       </div>
 

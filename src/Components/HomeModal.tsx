@@ -17,7 +17,7 @@ import { Gallery, Item } from 'react-photoswipe-gallery'
 
 
 
-function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void; home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean} }}) {
+function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void; home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number }}) {
     const [value, setValue] = useState<Dayjs | null>(dayjs(null)); //eslint-disable-line
     //console.log("SDKDSJDFSBJDSFBDJSFBSBDJFBJDSFJBDSFJBDSFJDSFBBJSDJDBSBDJSF");
     return (
@@ -34,11 +34,13 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
         >
             <div className="mt-4 h-full">
                 <div className="rounded-lg overflow-hidden">
-                    {/*<Images />*/}
+                    {<Images />}
                 </div>
                 <div className="flex justify-between mt-3">
                     <h1 className="text-2xl font-bold">{home.title}</h1>
-                    <h1 className="text-2xl font-bold">{home.price}₺</h1>
+                    <h1 className="text-2xl font-bold">{
+                        home.type === "Sale" ? home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " ₺" : home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₺/month"
+                    }</h1>
                 </div>
                 <div className="flex flex-col items-start mt-2">
                     <h1 className="text-xl font-bold">Description</h1>
@@ -185,7 +187,6 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                     </div>
                 </div>
                 <Gallery>
-
                     <div className="grid grid-cols-5 grid-rows-6 gap-1 max-h-[512px]">
                         <div className="col-span-3 row-span-6 flex w-full">
                             <Item cropped
