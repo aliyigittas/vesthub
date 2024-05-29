@@ -28,6 +28,50 @@ function CreateListingPage()
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState<UploadFile[]>([
     ]);
+    const roomCount = [
+        {
+          key: '1',
+          label: '1+1',
+          value: '1+1',
+        },
+        {
+          key: '2',
+          label: '2+1',
+          value: '2+1',
+        },
+        {
+          key: '3',
+          label: '3+1',
+          value: '3+1',
+        },
+        {
+          key: '4',
+          label: '4+1',
+          value: '4+1',
+        },
+        {
+          key: '5',
+          label: '5+1',
+          value: '5+1',
+        },
+      ];
+      const homeType = [
+        {
+          key: '1',
+          label: 'Apartment',
+          value: 'Apartment',
+        },
+        {
+          key: '2',
+          label: 'Villa',
+          value: 'Villa',
+        },
+        {
+          key: '3',
+          label: 'Studio',
+          value: 'Studio',
+        },
+      ];
     const handlePreview = async (file: UploadFile) => {
         if (!file.url && !file.preview) {
           file.preview = await getBase64(file.originFileObj as FileType);
@@ -85,6 +129,10 @@ function CreateListingPage()
         isAvailable: false
     }
     ];
+    function addSearchFilter(arg0: string, value: string) {
+        throw new Error('Function not implemented.');
+    }
+
     return (
         <div className="min-w-screen min-h-screen place-items-center flex sm:flex-row flex-col p-4 bg-backColor space-y-4 gap-4">
             <div className="flex justify-center items-center flex-col sm:mx-auto sm:w-full sm:max-w-sm gap-4">
@@ -121,14 +169,27 @@ function CreateListingPage()
                 <AddHomeMarker />
             </div>
             <div className="mx-auto w-full max-w-sm">
-                <form className="space-y-6" action="#" method="POST" onSubmit={handleCreateListing}>
-                    <div>
+                <form className="space-y-6" action="#" method="POST" onSubmit={handleCreateListing}>    
+                <div>
                         <label className="block text-sm font-medium ">Title</label>
                         <input id="name" name="name" type="text" autoComplete="name" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
                     </div>
+                    <div className= "flex flex-row gap-2">
+                        <div>
+                            <label className="block text-sm font-medium ">City</label>
+                            <input id="city" name="city" type="text" autoComplete="city" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" value={Cookies.get("homeCity")}/>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium ">District</label>
+                            <input id="distinct" name="distinct" type="text" autoComplete="distinct" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" value={Cookies.get("homeDistinct")}/>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium ">Street</label>
+                            <input id="street" name="street" type="text" autoComplete="street" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" value={Cookies.get("homeStreet")}/>
+                        </div>    
+                    </div>
                     <div>
                         <label className="block text-sm font-medium ">Address</label>
-                        
                         <input id="fullAddress" name="fullAddress" type="text" autoComplete="address" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
                         <button type="button" className="mt-2 flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover disabled:bg-opacity-50" onClick={async ()=>{
                             const address= await GeoCodeFromGMaps();
@@ -151,6 +212,52 @@ function CreateListingPage()
                             </div>
                             }
                         </button>
+                    </div>
+                    <div className='flex flex-row gap-2'>
+                        <div>
+                            <label className="block text-sm font-medium ">Number Of Bedrooms</label>
+                            <input id="bedroom" name="bedroom" type="number" autoComplete="bedroom" required min={0} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium ">Number Of Bathrooms</label>
+                            <input id="bathroom" name="bathroom" type="number" autoComplete="bathroom" required min={0} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        </div>
+                    </div>
+                    <div className='flex flex-row gap-2'>
+                        <div>
+                            <label className="block text-sm font-medium ">Area</label>
+                            <input id="area" name="area" type="number" autoComplete="area" required min={0} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium ">Floor</label>
+                            <input id="floor" name="floor" type="number" autoComplete="floor" required min={-2} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium ">Total Floor</label>
+                            <input id="totalFloor" name="totalFloor" type="number" autoComplete="totalFloor" required min={0} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        </div> 
+                    </div>
+                    <div className='flex'>
+                        <div className='flex flex-row gap-2'>
+                            <label className="text-black items-center flex">Room Count</label>
+                            <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" onChange={(e) => {
+                                addSearchFilter('filter2', e.target.value);
+                                }}
+                                >
+                                {roomCount.map((item) => (
+                                <option key={item.key}>{item.label}</option>
+                                ))}
+                            </select>
+                            <label className="text-black items-center flex">House Type</label>
+                                <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" onChange={(e) => {
+                                addSearchFilter('houseType', e.target.value);
+                                }}
+                                >
+                                    {homeType.map((item) => (
+                                    <option key={item.key}>{item.label}</option>
+                                    ))}
+                                </select>
+                        </div>
                     </div>
                     <div>
                         <label className="block text-sm font-medium ">Price</label>
