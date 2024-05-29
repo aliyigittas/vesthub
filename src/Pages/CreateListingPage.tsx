@@ -304,6 +304,13 @@ function CreateListingPage()
         const fullAddress = data.get('fullAddress') as string;
         const price = data.get('price') as string;
         const description = data.get('description') as string;
+        const bedroom = parseInt(data.get('bedroom') as string);
+        const bathroom = parseInt(data.get('bathroom') as string);
+        const area = parseInt(data.get('area') as string);
+        const floor = parseInt(data.get('floor') as string);
+        const totalFloor = parseInt(data.get('totalFloor') as string);
+        const roomCount = data.get('roomCount') as string;
+        const houseType = data.get('houseType') as string;
         var keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
         
         
