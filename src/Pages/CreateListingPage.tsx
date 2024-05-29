@@ -190,11 +190,12 @@ function CreateListingPage()
                     </div>
                     <div>
                         <label className="block text-sm font-medium ">Address</label>
-                        <input id="fullAddress" name="fullAddress" type="text" autoComplete="address" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
-                        <button type="button" className="mt-2 flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover disabled:bg-opacity-50" onClick={async ()=>{
+                        <input id="fullAddress" name="fullAddress" type="text" autoComplete="address" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" />
+                        <button type="button" className="mt-2 flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover disabled:bg-opacity-50"  onClick={async ()=>{
                             const address= await GeoCodeFromGMaps();
                             if (address !== "Address could not be found.")
                             {
+                                
                                 document.getElementById("fullAddress")?.setAttribute("value", address);
                             }
                             else

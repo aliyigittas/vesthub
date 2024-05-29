@@ -42,13 +42,19 @@ function ListMyHouse() {
                 const parsedHomes = response.data.map((home: any) => ({
                     id: home.id,
                     title: home.title,
-                    photo: [H1,H2,H3],
+                    photo: home.images, //[H1,H2,H3]
                     price: home.price.toString(),
                     type: home.saleRent,
                     coordinates: { lat: home.lat, lng: home.lng },
                     address: home.fullAddress,
                     ownerMail: home.ownerMail,
                     description: home.description,
+                    numOfBathroom: home.numOfBathroom,
+                    numOfBedroom: home.numOfBedroom,
+                    numOfRooms: home.numOfRooms,
+                    area: home.area,
+                    floor: home.floor,
+                    totalFloor: home.totalFloor,
                     keyFeatures: {
                         fiberInternet: home.fiberInternet === 1 ? true : false,
                         airConditioner: home.airConditioner === 1 ? true : false,
@@ -62,7 +68,6 @@ function ListMyHouse() {
                         insulation: home.insulation === 1 ? true : false,
                     },
                 }));
-
                 setHomes(parsedHomes);
             } catch (error) {
                 console.error(error);

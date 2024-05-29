@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HomeCard from "../Components/HomeCard";
-import homes from "../Components/TempHomes";
 import MultiMarkerMap from "../Components/MultiMarkerMap";
+import axios from "axios";
 
 
 export const currentUrl = window.location.href;
@@ -12,9 +12,6 @@ const searchValue = searchParamMatch && searchParamMatch[1] ? searchParamMatch[1
 var searchtext = decodeURIComponent(searchValue);
 
 console.log(typeValue);
-
-
-const initialDisplayedHouses = [homes[0], homes[1], homes[2], homes[3], homes[4], homes[5]];
 
 //const dummyArray = [0,1,2,3];
 
@@ -76,7 +73,6 @@ const roomCountOpt = [
 
 function SearchPage() {
   const [isChecked, setIsChecked] = useState(false);
-  const [displayedHouses, setDisplayedHouses] = useState(initialDisplayedHouses);
   const [showMap, setShowMap] = useState(false);
 
   var houseType = 'All';
@@ -116,12 +112,56 @@ function SearchPage() {
     setShowMap(!isChecked);
   };
 
-  const handleShowAllHouses = () => {
-    setDisplayedHouses(homes);
-  };
 
+  const [homes, setHomes] = useState<any[]>([]);
 
-  //backendden liste alınacak burada
+    useEffect(() => {
+        // Function to fetch data
+        const fetchHomes = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/result/${window.location.port}`); //`${Cookies.get('Email')}`
+                console.log(response.data);
+
+                //parse homes one by one to display them in HomeCard component
+                const parsedHomes = response.data.map((home: any) => ({
+                  id: home.id,
+                  title: home.title,
+                  photo: home.images, //[H1,H2,H3]
+                  price: home.price.toString(),
+                  type: home.saleRent,
+                  coordinates: { lat: home.lat, lng: home.lng },
+                  address: home.fullAddress,
+                  ownerMail: home.ownerMail,
+                  description: home.description,
+                  numOfBathroom: home.numOfBathroom,
+                  numOfBedroom: home.numOfBedroom,
+                  numOfRooms: home.numOfRooms,
+                  area: home.area,
+                  floor: home.floor,
+                  totalFloor: home.totalFloor,
+                  keyFeatures: {
+                      fiberInternet: home.fiberInternet === 1 ? true : false,
+                      airConditioner: home.airConditioner === 1 ? true : false,
+                      floorHeating: home.floorHeating === 1 ? true : false,
+                      fireplace: home.fireplace === 1 ? true : false,
+                      terrace: home.terrace === 1 ? true : false,
+                      satellite: home.satellite === 1 ? true : false,
+                      parquet: home.parquet === 1 ? true : false,
+                      steelDoor: home.steelDoor === 1 ? true : false,
+                      furnished: home.furnished === 1 ? true : false,
+                      insulation: home.insulation === 1 ? true : false,
+                  },
+              }));
+
+                setHomes(parsedHomes);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchHomes();
+    }, []); // Empty dependency array means this effect runs once when the component mounts
+
 
   return (
     <div className= "bg-inherit p-6 flex min-h-full flex-row">
@@ -139,15 +179,15 @@ function SearchPage() {
         <div className="flex items-start justify-center w-full h-full">
         {showMap ? 
           <div className="px-6 w-full h-full relative">
-            <MultiMarkerMap homes={displayedHouses} />
+            <MultiMarkerMap homes={homes} />
           </div> :
           <div className="flex flex-wrap justify-center">
-            {displayedHouses.map((house, index) => (<HomeCard key={index} home={house} />))}
+            {homes.map((house, index) => (<HomeCard key={index} home={house} />))}
           </div>
         }
         </div>
         <div className="flex justify-center">
-          <button className="rounded-md bg-button-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover" onClick={() => handleShowAllHouses()}>Show All Houses</button>
+          {/*<button className="rounded-md bg-button-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover" onClick={() => handleShowAllHouses()}>Show All Houses</button>*/}
         </div>
       </div>
     </div>
