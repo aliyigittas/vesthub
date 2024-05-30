@@ -83,8 +83,8 @@ function HomePage({ home }: { home?: boolean }) {
     var delimeter = "&";
     event.preventDefault();
     const search = document.getElementById('search') as HTMLInputElement;
-    window.location.href = '/search/' + search.value + delimeter + 'type=' + selectedValue + delimeter +'houseType=*' + delimeter + 'minPrice=*' + delimeter + 'maxPrice=*' + delimeter + 'minArea=0' + delimeter + 'maxArea=1000000000' + delimeter + 'minRoom=0' + delimeter + 'maxRoom=1000000000' + delimeter + 'minBath=0' + delimeter + 'maxBath=1000000000';
-    return search.value;
+    window.location.href = '/search/' + search.value + delimeter + 'type=' + selectedValue + delimeter +'houseType=Apartment';
+    return window.location.href;
   }
 }
 

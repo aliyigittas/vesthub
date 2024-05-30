@@ -153,8 +153,7 @@ function App() {
                     window.scrollTo(0, document.body.scrollHeight);
                   }
                 }}>About<span className="block max-w-0 group-hover:max-w-full transition-all duration-500 h-0.5 bg-gray-900"></span></button>
-                <button className="group p-2 lg:px-4 md:mx-2 text-gray-900 rounded hover:text-gray-900 transition-colors duration-300" onClick={() => window.location.href = '/'}>Features<span className="block max-w-0 group-hover:max-w-full transition-all duration-500 h-0.5 bg-gray-900"></span></button>
-                <button className="group p-2 lg:px-4 md:mx-2 text-gray-900 rounded hover:text-gray-900 transition-colors duration-300" onClick={() => window.location.href = '/'}>Contact<span className="block max-w-0 group-hover:max-w-full transition-all duration-500 h-0.5 bg-gray-900"></span></button>
+                
                 {loggedIn==="false" &&
                   <div className={`md:flex flex-col md:flex-row md:ml-auto md:mt-0 ${isCollapsed ? 'hidden' : 'flex'}`} id="navbar-collapse">
                     <button className="group p-2 lg:px-4 md:mx-2 text-gray-900 rounded hover:text-gray-900 transition-colors duration-300" onClick={() => window.location.href = '/login'}>Sign In<span className="block max-w-0 group-hover:max-w-full transition-all duration-500 h-0.5 bg-gray-600"></span></button>
