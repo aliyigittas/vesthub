@@ -79,7 +79,9 @@ function SearchPage() {
   var roomCount = 'All';
   var minPrice = -1;
   var maxPrice = -1;
-  var listingDate = "Not Selected"; //eslint-disable-line no-unused-vars
+  var listingDate = "All"; //eslint-disable-line no-unused-vars
+  var minArea = -1;
+  var maxArea = -1;
 
 
   if (window.location.href.includes('houseType')) {
@@ -102,9 +104,19 @@ function SearchPage() {
     console.log(maxPrice);
   }
 
-  if (window.location.href.includes('area')) {
-    maxPrice = parseInt(window.location.href.split('area=')[1].split('&')[0]);
-    console.log(maxPrice);
+  if (window.location.href.includes('minArea')) {
+    minArea = parseInt(window.location.href.split('minArea=')[1].split('&')[0]);
+    console.log(minArea);
+  }
+
+  if (window.location.href.includes('maxArea')) {
+    maxArea = parseInt(window.location.href.split('maxArea=')[1].split('&')[0]);
+    console.log(maxArea);
+  }
+
+  if (window.location.href.includes('listingDate')) {
+    listingDate = window.location.href.split('listingDate=')[1].split('&')[0];
+    console.log(listingDate);
   }
 
   const handleCheckboxChange = () => {
@@ -195,96 +207,185 @@ function SearchPage() {
 
   function FilterHouses() {
     //tüm filtreleri toplayıp tek formda gönder ve url'i öyle değiştir
-    return <div className="w-[350px] bg-button-primary flex flex-col space-y-4 p-4 items-start shadow-xl rounded-lg">
-      <input type="search" id="search" className="w-full p-3 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder={searchValue} onChange={(e) => { searchtext = e.target.value}} defaultValue={searchtext} required/>
-      <div className="flex flex-row w-full justify-between">
-      <label className="text-white items-center flex">House Type</label>
-        <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" defaultValue={houseType} onChange={(e) => {
-          addSearchFilter('houseType', e.target.value);
-          }}
-          >
-            {homeType.map((item) => (
-              <option key={item.key}>{item.label}</option>
-            ))}
-        </select>
-      </div>
-      <div className="flex flex-row w-full justify-between">
-      <label className="text-white items-center flex">Room Count</label>
-        <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" defaultValue={roomCount} onChange={(e) => {
-          addSearchFilter('filter2', e.target.value);
-          }}
-          >
-            {roomCountOpt.map((item) => (
-              <option key={item.key}>{item.label}</option>
-            ))}
-        </select>
-      </div>
 
-      <div className=" flex flex-row w-full justify-between">
-        <label className="text-white">Price (₺)</label>
-        <div className="flex gap-2 flex-row">
-          <input type="number" id="minPrice" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Min" min={0}/>
-          <input type="number" id="maxPrice" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Max" min={0}/>
+    return <div>
+      <form className="w-[350px] bg-button-primary flex flex-col space-y-4 p-4 items-start shadow-xl rounded-lg" onSubmit={searchFilter}>
+        <input type="search" id="search" className="w-full p-3 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder={searchValue} onChange={(e) => { searchtext = e.target.value}} defaultValue={searchtext} required/>
+        <div className="flex flex-row w-full justify-between">
+        <label className="text-white items-center flex">House Type</label>
+          <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" defaultValue={houseType} onChange={(e) => {
+            //addSearchFilter('houseType', e.target.value);
+            houseType = e.target.value;
+            }}
+            >
+              {homeType.map((item) => (
+                <option key={item.key}>{item.label}</option>
+              ))}
+          </select>
         </div>
-      </div>
+        <div className="flex flex-row w-full justify-between">
+        <label className="text-white items-center flex">Room Count</label>
+          <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" defaultValue={roomCount} onChange={(e) => {
+            //addSearchFilter('roomCount', e.target.value);
+            roomCount = e.target.value;
+            }}
+            >
+              {roomCountOpt.map((item) => (
+                <option key={item.key}>{item.label}</option>
+              ))}
+          </select>
+        </div>
 
-      <div className=" flex flex-row w-full justify-between">
-        <label className="text-white">Area (m2)</label>
-        <div className="flex gap-2 flex-row">
-          <input type="number" id="minArea" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Min" min={0}/>
-          <input type="number" id="maxArea" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Max" min={0}/>
+        <div className=" flex flex-row w-full justify-between">
+          <label className="text-white">Price (₺)</label>
+          <div className="flex gap-2 flex-row">
+            <input type="number" id="minPrice" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Min" min={0} onChange={(e) => {
+              //addSearchFilter('minPrice', e.target.value);
+              minPrice = parseInt(e.target.value);
+            } }
+            defaultValue={minPrice === -1 ? '' : minPrice}
+            />
+            <input type="number" id="maxPrice" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Max" min={0} onChange={(e) => {
+              //addSearchFilter('maxPrice', e.target.value);
+              maxPrice = parseInt(e.target.value);
+            } }
+            defaultValue={maxPrice === -1 ? '' : maxPrice}
+            />
+          </div>
         </div>
-      </div>
 
-      <div className="w-full space-y-2">
-        <label className="self-center text-white">Listing Date</label>
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-row items-center gap-2">
-            <input type="radio" id="last24hours"className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" />
-            <label htmlFor="last24hours" className="text-white">Last 24 hours</label>
-          </div>
-          <div className="flex flex-row items-center gap-2">
-            <input type="radio" id="last3days" className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" />
-            <label htmlFor="last3days" className="text-white">Last 3 Days</label>
-          </div>
-          <div className="flex flex-row items-center gap-2">
-            <input type="radio" id="last1week" className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" />
-            <label htmlFor="last1week" className="text-white">Last 1 Week</label>
-          </div>
-          <div className="flex flex-row items-center gap-2">
-            <input type="radio" id="allTime" className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" defaultChecked/>
-            <label htmlFor="allTime" className="text-white">All Time</label>
+        <div className=" flex flex-row w-full justify-between">
+          <label className="text-white">Area (m2)</label>
+          <div className="flex gap-2 flex-row">
+            <input type="number" id="minArea" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Min" min={0} onChange={(e) => {
+              //addSearchFilter('minArea', e.target.value);
+              minArea = parseInt(e.target.value);
+              console.log(minArea);
+            } }
+            defaultValue={minArea === -1 ? '' : minArea}
+            />
+            <input type="number" id="maxArea" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Max" min={0} onChange={(e) => {
+              //addSearchFilter('maxArea', e.target.value);
+              maxArea = parseInt(e.target.value);
+              console.log(maxArea);
+            } }
+            defaultValue={maxArea === -1 ? '' : maxArea}
+            />
           </div>
         </div>
-      </div>
-      
-      <button className="text-white bg-button-secondary hover:bg-button-secondaryHover focus:outline-none font-medium rounded-lg text-sm px-4 py-2">
-        <div className="flex flex-row justify-between items-center gap-4">
-          <div className="inset-y-0 start-0 flex items-center pointer-events-none">
-            <svg className="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" /></svg>
+
+        <div className="w-full space-y-2">
+          <label className="self-center text-white">Listing Date</label>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row items-center gap-2">
+              <input type="radio" id="last24hours"className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" onChange={(e) => {
+
+                listingDate = 'last24hours';
+              } }
+              defaultChecked = {listingDate === 'last24hours' ? true : false}
+              />
+              <label htmlFor="last24hours" className="text-white">Last 24 hours</label>
+            </div>
+            <div className="flex flex-row items-center gap-2">
+              <input type="radio" id="last3days" className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" onChange={(e) => {
+                  
+                  listingDate = 'last3days';
+                } }
+                defaultChecked = {listingDate === 'last3days' ? true : false}
+                />
+              <label htmlFor="last3days" className="text-white">Last 3 Days</label>
+            </div>
+            <div className="flex flex-row items-center gap-2">
+              <input type="radio" id="last1week" className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" onChange={(e) => {
+                    listingDate = 'last1week';
+                  } }
+                  defaultChecked = {listingDate === 'last1week' ? true : false}
+                  />
+              <label htmlFor="last1week" className="text-white">Last 1 Week</label>
+            </div>
+            <div className="flex flex-row items-center gap-2">
+              <input type="radio" id="allTime" className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" onChange={(e) => {
+                    listingDate = 'All';
+                  } }
+                  defaultChecked = {listingDate === 'All' ? true : false}
+              />
+              <label htmlFor="allTime" className="text-white">All Time</label>
+            </div>
           </div>
-          <span className="pointer-events-none">Apply</span>
         </div>
-      </button>
+        
+        <button className="text-white bg-button-secondary hover:bg-button-secondaryHover focus:outline-none font-medium rounded-lg text-sm px-4 py-2" type="submit">
+          <div className="flex flex-row justify-between items-center gap-4">
+            <div className="inset-y-0 start-0 flex items-center pointer-events-none">
+              <svg className="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" /></svg>
+            </div>
+            <span className="pointer-events-none">Apply</span>
+          </div>
+        </button>
+      </form>
     </div>;
   }
+  function searchFilter (event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    //delimeter is & for multiple filters, add the filter if it is not containing in the url
+    
+    if (Number.isNaN(minPrice))
+      minPrice = -1;
+    if (Number.isNaN(maxPrice))
+      maxPrice = -1;
+    if (Number.isNaN(minArea))
+      minArea = -1;
+    if (Number.isNaN(maxArea))
+      maxArea = -1;
 
-  function addSearchFilter(type: string, value: string) {
-    var currentUrl = window.location.href;
+
     var newUrl = '';
-    if (value === 'NotSelected') {
-      //remove filter from url
-      newUrl = currentUrl.replace(new RegExp('&?' + type + '=[^&]*', 'g'), '');
+    newUrl = currentUrl.replace(new RegExp('/search/[^&]*', 'g'), '/search/' + searchtext);
+    if (!newUrl.includes('houseType')) {
+      newUrl += '&houseType=' + houseType;
     }
-    else if (currentUrl.includes(type)) 
-    {
-      newUrl = currentUrl.replace(new RegExp(type + '=[^&]*', 'g'), type + '=' + value);
+    if (!newUrl.includes('roomCount')) {
+      newUrl += '&roomCount=' + roomCount;
     }
-    else
-    {
-      var delimeter = "&";
-      newUrl = currentUrl + delimeter + type + "=" + value;
+    if (!newUrl.includes('minPrice')) {
+      newUrl += '&minPrice=' + minPrice;
     }
+    if (!newUrl.includes('maxPrice')) {
+      newUrl += '&maxPrice=' + maxPrice;
+    }
+    if (!newUrl.includes('minArea')) {
+      newUrl += '&minArea=' + minArea;
+    }
+    if (!newUrl.includes('maxArea')) {
+      newUrl += '&maxArea=' + maxArea;
+    }
+    if (!newUrl.includes('listingDate')) {
+      newUrl += '&listingDate=' + listingDate;
+    }
+
+    //but if it is already containing, update the filter
+    if (newUrl.includes('houseType')) {
+      newUrl = newUrl.replace(new RegExp('houseType=[^&]*', 'g'), 'houseType=' + houseType);
+    }
+    if (newUrl.includes('roomCount')) {
+      newUrl = newUrl.replace(new RegExp('roomCount=[^&]*', 'g'), 'roomCount=' + roomCount);
+    }
+    if (newUrl.includes('minPrice')) {
+      newUrl = newUrl.replace(new RegExp('minPrice=[^&]*', 'g'), 'minPrice=' + minPrice);
+    }
+    if (newUrl.includes('maxPrice')) {
+      newUrl = newUrl.replace(new RegExp('maxPrice=[^&]*', 'g'), 'maxPrice=' + maxPrice);
+    }
+    if (newUrl.includes('minArea')) {
+      newUrl = newUrl.replace(new RegExp('minArea=[^&]*', 'g'), 'minArea=' + minArea);
+    }
+    if (newUrl.includes('maxArea')) {
+      newUrl = newUrl.replace(new RegExp('maxArea=[^&]*', 'g'), 'maxArea=' + maxArea);
+    }
+    if (newUrl.includes('listingDate')) {
+      newUrl = newUrl.replace(new RegExp('listingDate=[^&]*', 'g'), 'listingDate=' + listingDate);
+    }    
+    console.log(newUrl);
     window.location.href = newUrl;
   }
 

@@ -3,8 +3,8 @@ import House2 from '../House2.jpg';
 import { ButtonGroup } from 'reactstrap';
 import FeaturedHouses from '../Components/FeaturedHouses';
 import HomeModal from '../Components/HomeModal';
-import homes from '../Components/TempHomes';
 import About from '../Components/About';
+import axios from 'axios';
 
 //if href contains home id, open modal i.e. /home/EvID
 
@@ -15,15 +15,54 @@ function HomePage({ home }: { home?: boolean }) {
   const currentUrlLastPart = window.location.pathname?.split('/')?.pop(); //url'yi /'ye göre ayır ve sonuncuyu al
   const homeID = parseInt(currentUrlLastPart ?? ''); //sondaki id'yi al ve integer'a çevir
 
-  //eger home id NaN ise ve url boş değilse veya home id homes arrayinin dışında ise veya home id negatif ise
-  if ((isNaN(homeID) && currentUrlLastPart!=='') || (homeID>=homes.length) || (homeID<0)) {
-    window.location.href = '/notFound';
-  }
 
+  //ev bilgilerini al varsa bir variable'a at
+  const [homedetails, setHomeDetails] = useState<any>();
   useEffect(() => {
-    setShow(true);
-  }, [homeID]);
-  
+    if (homeID) {
+      axios.get('http://localhost:8080/api/house/' + homeID)
+      .then(response => {
+        if (response.data) {
+          const homedetails = 
+          {
+            id: response.data.id,
+            title: response.data.title,
+            photo: response.data.images, //[H1,H2,H3]
+            price: response.data.price.toString(),
+            type: response.data.saleRent,
+            coordinates: { lat: response.data.lat, lng: response.data.lng },
+            address: response.data.fullAddress,
+            ownerMail: response.data.ownerMail,
+            description: response.data.description,
+            numOfBathroom: response.data.numOfBathroom,
+            numOfBedroom: response.data.numOfBedroom,
+            numOfRooms: response.data.numOfRooms,
+            area: response.data.area,
+            floor: response.data.floor,
+            totalFloor: response.data.totalFloor,
+            keyFeatures: {
+                fiberInternet: response.data.fiberInternet === 1 ? true : false,
+                airConditioner: response.data.airConditioner === 1 ? true : false,
+                floorHeating: response.data.floorHeating === 1 ? true : false,
+                fireplace: response.data.fireplace === 1 ? true : false,
+                terrace: response.data.terrace === 1 ? true : false,
+                satellite: response.data.satellite === 1 ? true : false,
+                parquet: response.data.parquet === 1 ? true : false,
+                steelDoor: response.data.steelDoor === 1 ? true : false,
+                furnished: response.data.furnished === 1 ? true : false,
+                insulation: response.data.insulation === 1 ? true : false,
+            }
+          }
+          setHomeDetails(homedetails);
+          setShow(true);
+        }
+      });
+    }
+  }
+  , [homeID]);
+
+  console.log(homedetails);
+
   return (
     <div>
       <main className="min-h-full place-items-center bg-backColor px-6 py-6 lg:px-8">
@@ -45,10 +84,11 @@ function HomePage({ home }: { home?: boolean }) {
             </div>
           </div>
           <FeaturedHouses />
-          {home && <HomeModal show={show} setShow={() => {
+          
+          {home && homedetails && <HomeModal show={show} setShow={() => {
             window.location.href = '/';
             setShow(false);
-          }} home={homes[homeID]} />}
+          }} home={homedetails}/>}
           <About/>
         </div>
       </main>
@@ -83,7 +123,7 @@ function HomePage({ home }: { home?: boolean }) {
     var delimeter = "&";
     event.preventDefault();
     const search = document.getElementById('search') as HTMLInputElement;
-    window.location.href = '/search/' + search.value + delimeter + 'type=' + selectedValue + delimeter +'houseType=Apartment';
+    window.location.href = '/search/' + search.value + delimeter + 'type=' + selectedValue + delimeter +'houseType=All' + delimeter + 'roomCount=All' + delimeter + 'minPrice=-1' + delimeter + 'maxPrice=-1' + delimeter + 'minArea=-1' + delimeter + 'maxArea=-1' + delimeter + 'listingDate=All';
     return window.location.href;
   }
 }
