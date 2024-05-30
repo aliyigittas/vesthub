@@ -21,13 +21,14 @@ const getBase64 = (file: FileType): Promise<string> =>
 
 function CreateListingPage()
 {
-
+    
     const [address, setAddress] = useState<string | null>(null);
     const [getAddressLoading, setGetAddressLoading] = useState(false);
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState<UploadFile[]>([
     ]);
+    const [filters, setFilters] = useState({});
     const roomCount = [
         {
           key: '1',
@@ -130,7 +131,11 @@ function CreateListingPage()
     }
     ];
     function addSearchFilter(arg0: string, value: string) {
-        throw new Error('Function not implemented.');
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            [arg0]: value,
+        }));
+        //throw new Error('Function not implemented.');
     }
 
     return (
@@ -242,7 +247,7 @@ function CreateListingPage()
                         <div className='flex flex-row gap-2'>
                             <label className="text-black items-center flex">Room Count</label>
                             <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" onChange={(e) => {
-                                addSearchFilter('filter2', e.target.value);
+                                addSearchFilter('roomCount', e.target.value);
                                 }}
                                 >
                                 {roomCount.map((item) => (
@@ -305,13 +310,14 @@ function CreateListingPage()
         const fullAddress = data.get('fullAddress') as string;
         const price = data.get('price') as string;
         const description = data.get('description') as string;
-        const bedroom = parseInt(data.get('bedroom') as string);
-        const bathroom = parseInt(data.get('bathroom') as string);
-        const area = parseInt(data.get('area') as string);
-        const floor = parseInt(data.get('floor') as string);
-        const totalFloor = parseInt(data.get('totalFloor') as string);
-        const roomCount = data.get('roomCount') as string;
+        const bedroom = data.get('bedroom') as string;
+        const bathroom = data.get('bathroom') as string;
+        const area = data.get('area') as string;
+        const floor = data.get('floor') as string;
+        const totalFloor = data.get('totalFloor') as string;
+        //const roomCount = data.get('roomCount') as string;
         const houseType = data.get('houseType') as string;
+        var roomCountToSend = roomCount.filter(feature=> )
         var keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
         
         
