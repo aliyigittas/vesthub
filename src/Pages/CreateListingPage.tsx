@@ -130,13 +130,12 @@ function CreateListingPage()
         isAvailable: false
     }
     ];
-    function addSearchFilter(arg0: string, value: string) {
-        setFilters((prevFilters) => ({
-            ...prevFilters,
-            [arg0]: value,
-        }));
-        //throw new Error('Function not implemented.');
-    }
+    const addSearchFilter = (key: string, value: string) => {
+        setFilters({
+            ...filters,
+            [key]: value,
+        });
+    };
 
     return (
         <div className="min-w-screen min-h-screen place-items-center flex sm:flex-row flex-col p-4 bg-backColor space-y-4 gap-4">
@@ -246,23 +245,30 @@ function CreateListingPage()
                     <div className='flex'>
                         <div className='flex flex-row gap-2'>
                             <label className="text-black items-center flex">Room Count</label>
-                            <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" onChange={(e) => {
+                            <select
+                                name="roomCount"
+                                className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]"
+                                onChange={(e) => {
                                 addSearchFilter('roomCount', e.target.value);
+                                console.log(e.target.value);
                                 }}
-                                >
+                            >
                                 {roomCount.map((item) => (
-                                <option key={item.key}>{item.label}</option>
+                                <option key={item.key} value={item.value}>{item.label}</option>
                                 ))}
                             </select>
                             <label className="text-black items-center flex">House Type</label>
-                                <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" onChange={(e) => {
+                            <select
+                                name="houseType"
+                                className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]"
+                                onChange={(e) => {
                                 addSearchFilter('houseType', e.target.value);
                                 }}
-                                >
-                                    {homeType.map((item) => (
-                                    <option key={item.key}>{item.label}</option>
-                                    ))}
-                                </select>
+                            >
+                                {homeType.map((item) => (
+                                <option key={item.key} value={item.value}>{item.label}</option>
+                                ))}
+                            </select>
                         </div>
                     </div>
                     <div>
@@ -315,9 +321,10 @@ function CreateListingPage()
         const area = data.get('area') as string;
         const floor = data.get('floor') as string;
         const totalFloor = data.get('totalFloor') as string;
-        //const roomCount = data.get('roomCount') as string;
+        const roomCount = data.get('roomCount') as string;
         const houseType = data.get('houseType') as string;
-        var roomCountToSend = roomCount.filter(feature=> )
+        //var roomCountToSend = 
+        console.log(roomCount);
         var keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
         
         
