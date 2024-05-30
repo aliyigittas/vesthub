@@ -357,6 +357,7 @@ function CreateListingPage()
             distinct: Cookies.get("homeDistinct"),
             city: Cookies.get("homeCity"),
             street: Cookies.get("homeStreet"),
+            country: Cookies.get("homeCountry"),
             lat: Cookies.get("latitude"),
             lng: Cookies.get("longitude"),
             ownerMail: Cookies.get("Email"),
@@ -389,7 +390,8 @@ function CreateListingPage()
             Cookies.set("homefullAddress", response.data.results[0].formatted_address, { expires: (1 / 1440) * 60 }); // 1 hour
             Cookies.set("homeCity", response.data.results[0].address_components[4].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
             Cookies.set("homeDistinct", response.data.results[0].address_components[3].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
-            Cookies.set("homeStreet", response.data.results[0].address_components[2].long_name, { expires: (1 / 1440) * 60 }); // 1 hour            setAddress(response.data.results[0].formatted_address);
+            Cookies.set("homeStreet", response.data.results[0].address_components[1].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
+            Cookies.set("homeCountry", response.data.results[0].address_components[5].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
             setGetAddressLoading(false);
             return response.data.results[0].formatted_address;
         }

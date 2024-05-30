@@ -119,8 +119,8 @@ function SearchPage() {
         // Function to fetch data
         const fetchHomes = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/result/${window.location.port}`); //`${Cookies.get('Email')}`
-                console.log(response.data);
+                console.log(window.location.pathname);
+                const response = await axios.get(`http://localhost:8080/api${window.location.pathname}`); //`${Cookies.get('Email')}`
 
                 //parse homes one by one to display them in HomeCard component
                 const parsedHomes = response.data.map((home: any) => ({
