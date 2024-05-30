@@ -11,21 +11,24 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
   const currentUrl = window.location.href;
   const [clickedHomeId, setClickedHomeId] = useState(null);
   const filteredHomes = home;
-  /*
-  let isLikedBefore = false;
+  
   useEffect(() => {
     if (Cookies.get('loggedIn') === 'true') {
-      axios.get(`http://localhost:8080/api/checkFavorite/`, {params: {houseID: home.id, ownerMail: Cookies.get("Email")}}) //`${Cookies.get('Email')}
+      axios.get('http://localhost:8080/api/checkFavorite', {
+        params: {
+          houseID: home.id,
+          ownerMail: Cookies.get('Email')
+        }
+      })
       .then(response => {
-        console.log(response.data);
-        if (response.data === "true") {
-          isLikedBefore = true;
+        console.log("Response:"+response.data);
+        if (response.data === true) {
           setIsLiked(true);
         }
       });
     }
-  }, []);
-  */
+  }, [home.id]);
+  
 
 
   const handleClick = (id:any) =>  {
