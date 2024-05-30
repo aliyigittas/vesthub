@@ -9,6 +9,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Image, Upload } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
 import { get } from 'http';
+import { ButtonGroup } from 'reactstrap';
+import { button } from '@material-tailwind/react';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 const getBase64 = (file: FileType): Promise<string> =>
@@ -21,7 +23,7 @@ const getBase64 = (file: FileType): Promise<string> =>
 
 function CreateListingPage()
 {
-    
+    const [selectedValue, setSelectedValue] = useState("sale");
     const [address, setAddress] = useState<string | null>(null);
     const [getAddressLoading, setGetAddressLoading] = useState(false);
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -271,6 +273,12 @@ function CreateListingPage()
                             </select>
                         </div>
                     </div>
+                    <div className=' flex justify-center items-center'>
+                        <ButtonGroup className="p-[3.5px] mt-3 bg-gray-800 bg-opacity-60">
+                        <button className={`${selectedValue == "sale" ? "bg-button-secondary" : "bg-opacity-40"} ${selectedValue == "sale" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("sale")}>Sale</button> {/*eslint-disable-line eqeqeq*/}
+                        <button className={`${selectedValue == "rent" ? "bg-button-secondary" : "bg-opacity-10"} ${selectedValue == "rent" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("rent")}>Rent</button> {/*eslint-disable-line eqeqeq*/}
+                        </ButtonGroup>
+                    </div>
                     <div>
                         <label className="block text-sm font-medium ">Price</label>
                         <input id="price" name="price" type="number" autoComplete="price" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
@@ -323,6 +331,7 @@ function CreateListingPage()
         const totalFloor = data.get('totalFloor') as string;
         const roomCount = data.get('roomCount') as string;
         const houseType = data.get('houseType') as string;
+        const saleRent = selectedValue;
         //var roomCountToSend = 
         console.log(roomCount);
         var keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
@@ -333,6 +342,14 @@ function CreateListingPage()
             alert("Please upload at least three image.");
             return;
         }        
+
+        //floor shouldnt be bigger than total floor
+        if(parseInt(floor) > parseInt(totalFloor)){
+            alert("Floor should be smaller than total floor.");
+            return;
+        }
+
+       
 
         var file_to_send:string[] = [];
         for (let i = 0; i < fileList.length; i++) {
@@ -345,7 +362,7 @@ function CreateListingPage()
             title: title,
             fullAddress: fullAddress,
             price: price,
-            saleRent: "Sale",
+            saleRent: saleRent,
             description: description,
             numOfBedroom: bedroom,
             numOfBathroom: bathroom,
