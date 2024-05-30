@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import HomeCard from "../Components/HomeCard";
-import homes from "../Components/TempHomes";
 import axios from "axios";
 import H1 from "../homePhotos/home1/1.jpeg";
 import H2 from "../homePhotos/home1/2.jpeg";
@@ -8,7 +7,7 @@ import H3 from "../homePhotos/home1/3.jpeg";
 import Cookies from "js-cookie";
 
 function FavoritesPage() {
-    const favoriteHomes =[homes[0], homes[2]]; 
+    //const favoriteHomes =[homes[0], homes[2]]; 
 
     return (
         <div className="min-h-full place-items-center flex justify-top flex-col bg-backColor px-6 py-6 lg:px-8">
@@ -18,6 +17,8 @@ function FavoritesPage() {
     );
 }
 
+//(`http://localhost:8080/api/favorites/${Cookies.get('Email')}`)
+
 function ListMyHouse() {
     const [homes, setHomes] = useState<any[]>([]);
 
@@ -25,20 +26,26 @@ function ListMyHouse() {
         // Function to fetch data
         const fetchHomes = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/favorites/${Cookies.get('Email')}`); //`${Cookies.get('Email')}`
+                const response = await axios.get(`http://localhost:8080/api/favorites/${Cookies.get('Email')}`)
                 console.log(response.data);
 
                 //parse homes one by one to display them in HomeCard component
                 const parsedHomes = response.data.map((home: any) => ({
                     id: home.id,
                     title: home.title,
-                    photo: [H1,H2,H3],
+                    photo: home.images, //[H1,H2,H3]
                     price: home.price.toString(),
                     type: home.saleRent,
                     coordinates: { lat: home.lat, lng: home.lng },
                     address: home.fullAddress,
                     ownerMail: home.ownerMail,
                     description: home.description,
+                    numOfBathroom: home.numOfBathroom,
+                    numOfBedroom: home.numOfBedroom,
+                    numOfRooms: home.numOfRooms,
+                    area: home.area,
+                    floor: home.floor,
+                    totalFloor: home.totalFloor,
                     keyFeatures: {
                         fiberInternet: home.fiberInternet === 1 ? true : false,
                         airConditioner: home.airConditioner === 1 ? true : false,
@@ -52,7 +59,6 @@ function ListMyHouse() {
                         insulation: home.insulation === 1 ? true : false,
                     },
                 }));
-
                 setHomes(parsedHomes);
             } catch (error) {
                 console.error(error);

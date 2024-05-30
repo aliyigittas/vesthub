@@ -11,6 +11,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { CheckCircleFilled, CloseCircleFilled, EditFilled } from '@ant-design/icons';
 import 'photoswipe/dist/photoswipe.css'
 import { Gallery, Item } from 'react-photoswipe-gallery'
+import axios from 'axios';
 
 
 
@@ -19,7 +20,8 @@ import { Gallery, Item } from 'react-photoswipe-gallery'
 
 function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void; home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number }}) {
     const [value, setValue] = useState<Dayjs | null>(dayjs(null)); //eslint-disable-line
-    //console.log("SDKDSJDFSBJDSFBDJSFBSBDJFBJDSFJBDSFJBDSFJDSFBBJSDJDBSBDJSF");
+    const [isLiked, setIsLiked] = useState(false);
+
     return (
         <Modal
             open={show}
@@ -29,6 +31,8 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
             style={{ top: 0}}
             afterClose={() => {
                 window.history.pushState({}, '', currentUrl);
+                //rerender the featured page
+                window.location.reload();
             }}
             centered
         >
@@ -136,6 +140,23 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
         const [isLikeHovered, setIsLikeHovered] = useState(false);
         const [images, setImages] = useState<HTMLImageElement[]>([]);
 
+        useEffect(() => {
+            if (Cookies.get('loggedIn') === 'true') {
+              axios.get('http://localhost:8080/api/checkFavorite', {
+                params: {
+                  houseID: home.id,
+                  ownerMail: Cookies.get('Email')
+                }
+              })
+              .then(response => {
+                console.log("Response:"+response.data);
+                if (response.data === true) {
+                  setIsLiked(true);
+                }
+              });
+            }
+          }, [home.id]);
+
         for (let i = 0; i < home.photo.length; i++) {
             const image = new Image();
             image.src = home.photo[i];
@@ -164,16 +185,34 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                     onClick={
                         (e) => {
 
-                        if (Cookies.get('loggedIn') === 'true') {
-                            if (home.ownerMail === Cookies.get("Email")) {
+                            if (Cookies.get('loggedIn') === 'true') {
+                                if (home.ownerMail === Cookies.get("Email")) {
                                 window.location.href = '/editListing/' + home.id;
-                              } else {
-                                setIsLiked(!isLiked);
-                              }
-                        } else {
-                            window.location.href = '/login';
-                        }
-                        e.stopPropagation();
+                                } else {
+                                //setIsLiked(!isLiked);
+                                if (!isLiked) {
+                                    axios.post('http://localhost:8080/api/addFavorite', {houseID: home.id, ownerMail: Cookies.get("Email")})
+                                    .then(response => {
+                                    console.log(response.data);
+                                    if (response.data === true) {
+                                        setIsLiked(true);
+                                    }
+                                    });
+                                }else
+                                {
+                                    axios.post('http://localhost:8080/api/removeFavorite', {houseID: home.id, ownerMail: Cookies.get("Email")})
+                                    .then(response => {
+                                    console.log(response.data);
+                                    if (response.data === true) {
+                                        setIsLiked(false);
+                                    }
+                                    });
+                                }
+                                }
+                            } else {
+                                window.location.href = '/login';
+                            }
+                            e.stopPropagation();
                         }
                     }
                     onMouseEnter={() => setIsLikeHovered(true)}
@@ -235,6 +274,7 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                             
                             return (
                                 <Item 
+                                    key = {index} 
                                     original={photo}
                                     thumbnail={photo}
                                     height={images[index+3].height}

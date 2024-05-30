@@ -50,7 +50,7 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
         
       {<HomeModal key={home.id} show={show} setShow={() => setShow(false)} home={filteredHomes} />}
       <div className="relative" >
-        <img src={home.photo[0]} alt="House" className="w-full rounded-t-lg h-44"/>
+        {<img src={home.photo[0]} alt="House" className="w-full rounded-t-lg h-44"/>}
         <div className="absolute bottom-0 right-0 mb-2 mr-2 text-white text-[30px] cursor-pointer" onClick={() => {}}> 
         <div className="rounded-full bg-white w-11 h-11 flex items-center justify-center bg-transparent"
           onClick={
@@ -84,6 +84,7 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
                 window.location.href = '/login';
               }
               e.stopPropagation();
+              window.location.reload();
             }
           }
           onMouseEnter={() => setIsLikeHovered(true)}

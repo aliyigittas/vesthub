@@ -321,11 +321,12 @@ function CreateListingPage()
             return;
         }        
 
-        var file_to_send: string[] = [];
+        var file_to_send:string[] = [];
         for (let i = 0; i < fileList.length; i++) {
             fileList[i].preview = await getBase64(fileList[i].originFileObj as FileType);
             file_to_send.push(fileList[i].preview?.toString() as string);
         }
+
 
         axios.post('http://localhost:8080/api/CreateListing', {
             title: title,
@@ -333,6 +334,13 @@ function CreateListingPage()
             price: price,
             saleRent: "Sale",
             description: description,
+            numOfBedroom: bedroom,
+            numOfBathroom: bathroom,
+            numOfRooms: roomCount,
+            area: area,
+            floor: floor,
+            totalFloor: totalFloor,
+            houseType: houseType,
             distinct: Cookies.get("homeDistinct"),
             city: Cookies.get("homeCity"),
             street: Cookies.get("homeStreet"),
