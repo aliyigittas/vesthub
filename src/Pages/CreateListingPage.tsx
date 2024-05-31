@@ -23,7 +23,7 @@ const getBase64 = (file: FileType): Promise<string> =>
 
 function CreateListingPage()
 {
-    const [selectedValue, setSelectedValue] = useState("sale");
+    const [selectedValue, setSelectedValue] = useState("Sale");
     const [address, setAddress] = useState<string | null>(null);
     const [getAddressLoading, setGetAddressLoading] = useState(false);
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -275,8 +275,8 @@ function CreateListingPage()
                     </div>
                     <div className=' flex justify-center items-center'>
                         <ButtonGroup className="p-[3.5px] mt-3 bg-gray-800 bg-opacity-60">
-                        <button className={`${selectedValue == "sale" ? "bg-button-secondary" : "bg-opacity-40"} ${selectedValue == "sale" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("sale")}>Sale</button> {/*eslint-disable-line eqeqeq*/}
-                        <button className={`${selectedValue == "rent" ? "bg-button-secondary" : "bg-opacity-10"} ${selectedValue == "rent" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("rent")}>Rent</button> {/*eslint-disable-line eqeqeq*/}
+                        <button className={`${selectedValue == "Sale" ? "bg-button-secondary" : "bg-opacity-40"} ${selectedValue == "Sale" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("Sale")}>Sale</button> {/*eslint-disable-line eqeqeq*/}
+                        <button className={`${selectedValue == "Rent" ? "bg-button-secondary" : "bg-opacity-10"} ${selectedValue == "Rent" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("Rent")}>Rent</button> {/*eslint-disable-line eqeqeq*/}
                         </ButtonGroup>
                     </div>
                     <div>
