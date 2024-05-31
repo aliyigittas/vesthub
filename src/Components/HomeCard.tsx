@@ -82,9 +82,10 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
                 }
               } else {
                 window.location.href = '/login';
+                window.location.reload();
               }
               e.stopPropagation();
-              window.location.reload();
+              
             }
           }
           onMouseEnter={() => setIsLikeHovered(true)}
