@@ -331,9 +331,11 @@ function CreateListingPage()
         const totalFloor = data.get('totalFloor') as string;
         const roomCount = data.get('roomCount') as string;
         const houseType = data.get('houseType') as string;
+        const city = Cookies.get("homeCity");
+        const distinct = Cookies.get("homeDistinct");
+        const street = Cookies.get("homeStreet");
+        const country = Cookies.get("homeCountry");
         const saleRent = selectedValue;
-        //var roomCountToSend = 
-        console.log(roomCount);
         var keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
         
         
@@ -371,10 +373,10 @@ function CreateListingPage()
             floor: floor,
             totalFloor: totalFloor,
             houseType: houseType,
-            distinct: Cookies.get("homeDistinct"),
-            city: Cookies.get("homeCity"),
-            street: Cookies.get("homeStreet"),
-            country: Cookies.get("homeCountry"),
+            distinct: distinct,
+            city: city,
+            street: street,
+            country: country,
             lat: Cookies.get("latitude"),
             lng: Cookies.get("longitude"),
             ownerMail: Cookies.get("Email"),

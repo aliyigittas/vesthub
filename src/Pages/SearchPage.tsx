@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import HomeCard from "../Components/HomeCard";
 import MultiMarkerMap from "../Components/MultiMarkerMap";
 import axios from "axios";
+import { ButtonGroup } from "reactstrap";
 
 
 export const currentUrl = window.location.href;
@@ -10,6 +11,9 @@ const typeParamMatch = currentUrl.match(/&type=([^&]*)/);
 const typeValue = typeParamMatch && typeParamMatch[1] ? typeParamMatch[1] : 'sale'; //sale is default
 const searchValue = searchParamMatch && searchParamMatch[1] ? searchParamMatch[1] : '';
 var searchtext = decodeURIComponent(searchValue);
+var countryText = '';
+var cityText = '';
+var districtText = '';
 
 console.log(typeValue);
 
@@ -74,6 +78,10 @@ const roomCountOpt = [
 function SearchPage() {
   const [isChecked, setIsChecked] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [selectedValue, setSelectedValue] = useState("");
+  useEffect(() => {
+    setSelectedValue(typeValue);
+  } , [typeValue]);
 
   var houseType = 'All';
   var roomCount = 'All';
@@ -82,6 +90,7 @@ function SearchPage() {
   var listingDate = "All"; //eslint-disable-line no-unused-vars
   var minArea = -1;
   var maxArea = -1;
+  var saleRent = 'sale';
 
 
   if (window.location.href.includes('houseType')) {
@@ -119,10 +128,26 @@ function SearchPage() {
     console.log(listingDate);
   }
 
+  if (window.location.href.includes('type')) {
+    saleRent = window.location.href.split('type=')[1].split('&')[0];
+    console.log(saleRent);
+  }
+
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked)
     setShowMap(!isChecked);
   };
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/sideFilter/' + searchtext)
+    .then(response => {
+      if (response.data) {
+        countryText = response.data.country;
+        cityText = response.data.city;
+        districtText = response.data.district;
+      }
+    });
+  } , [searchtext]);
 
 
   const [homes, setHomes] = useState<any[]>([]);
@@ -173,11 +198,13 @@ function SearchPage() {
 
         fetchHomes();
     }, []); // Empty dependency array means this effect runs once when the component mounts
+    
 
 
   return (
     <div className= "bg-inherit p-6 flex min-h-full flex-row">
       <div className="sticky top-20 w-fit h-fit">
+      
         <FilterHouses />
       </div>
       <div className="flex flex-col w-full space-y-2">
@@ -207,10 +234,33 @@ function SearchPage() {
 
   function FilterHouses() {
     //tüm filtreleri toplayıp tek formda gönder ve url'i öyle değiştir
+    // parse the searchtext with space delimeter
+    var localCity = '';
+    var localCountry = '';
+    var localDistrict = '';
+    
+    if (searchtext.includes(' ')) {
+      localCountry = searchtext.split(' ')[0];
+      localCity = searchtext.split(' ')[1];
+      localDistrict = searchtext.split(' ')[2];
+    } else {
+      localCountry = searchtext;
+    }
 
     return <div>
       <form className="w-[350px] bg-button-primary flex flex-col space-y-4 p-4 items-start shadow-xl rounded-lg" onSubmit={searchFilter}>
-        <input type="search" id="search" className="w-full p-3 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder={searchValue} onChange={(e) => { searchtext = e.target.value}} defaultValue={searchtext} required/>
+        <div className="flex flex-row w-full justify-between gap-3 items-center">
+          <label className="text-white">Country</label>
+          <input type="search" id="country" className="max-w-[200px] p-3 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder={countryText} onChange={(e) => { countryText = e.target.value}} defaultValue={countryText == null ? localCountry : countryText} />
+        </div>
+        <div className="flex flex-row w-full justify-between gap-3 items-center">
+          <label className="text-white">City</label>
+          <input type="search" id="city" className="max-w-[200px] p-3 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder={cityText} onChange={(e) => { cityText = e.target.value}} defaultValue={cityText == null ? localCity : cityText} />
+        </div>
+        <div className="flex flex-row w-full justify-between gap-3 items-center">
+          <label className="text-white">District</label>
+          <input type="search" id="district" className="max-w-[200px] p-3 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder={districtText} onChange={(e) => { districtText = e.target.value}} defaultValue={districtText == null ? localDistrict : districtText} />
+        </div>
         <div className="flex flex-row w-full justify-between">
         <label className="text-white items-center flex">House Type</label>
           <select className="select select-text bg-gray-50 text-gray-900 text-sm rounded-lg p-2 flex w-full max-w-[200px]" defaultValue={houseType} onChange={(e) => {
@@ -313,21 +363,27 @@ function SearchPage() {
             </div>
           </div>
         </div>
-        
-        <button className="text-white bg-button-secondary hover:bg-button-secondaryHover focus:outline-none font-medium rounded-lg text-sm px-4 py-2" type="submit">
-          <div className="flex flex-row justify-between items-center gap-4">
-            <div className="inset-y-0 start-0 flex items-center pointer-events-none">
-              <svg className="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" /></svg>
+        <div className="flex flex-row justify-between w-full">
+          <ButtonGroup className="p-[3.5px] mt-3 bg-gray-800 bg-opacity-60">
+            <button className={`${selectedValue == "sale" ? "bg-button-secondary" : "bg-opacity-40"} ${selectedValue == "sale" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("sale")}>Sale</button> {/*eslint-disable-line eqeqeq*/}
+            <button className={`${selectedValue == "rent" ? "bg-button-secondary" : "bg-opacity-10"} ${selectedValue == "rent" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("rent")}>Rent</button> {/*eslint-disable-line eqeqeq*/}
+          </ButtonGroup>
+          <button className="text-white bg-button-secondary hover:bg-button-secondaryHover focus:outline-none font-medium rounded-lg text-sm px-4 py-2" type="submit">
+            <div className="flex flex-row justify-between items-center gap-4">
+              <div className="inset-y-0 start-0 flex items-center pointer-events-none">
+                <svg className="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" /></svg>
+              </div>
+              <span className="pointer-events-none">Apply</span>
             </div>
-            <span className="pointer-events-none">Apply</span>
-          </div>
-        </button>
+          </button>
+        </div>
       </form>
     </div>;
   }
   function searchFilter (event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     //delimeter is & for multiple filters, add the filter if it is not containing in the url
+    var searchTextUpdated: string = countryText + ' ' + cityText + ' ' + districtText;
     
     if (Number.isNaN(minPrice))
       minPrice = -1;
@@ -340,7 +396,7 @@ function SearchPage() {
 
 
     var newUrl = '';
-    newUrl = currentUrl.replace(new RegExp('/search/[^&]*', 'g'), '/search/' + searchtext);
+    newUrl = currentUrl.replace(new RegExp('/search/[^&]*', 'g'), '/search/' + searchTextUpdated);
     if (!newUrl.includes('houseType')) {
       newUrl += '&houseType=' + houseType;
     }
@@ -361,6 +417,9 @@ function SearchPage() {
     }
     if (!newUrl.includes('listingDate')) {
       newUrl += '&listingDate=' + listingDate;
+    }
+    if (!newUrl.includes('type')) {
+      newUrl += '&type=' + selectedValue;
     }
 
     //but if it is already containing, update the filter
@@ -384,7 +443,10 @@ function SearchPage() {
     }
     if (newUrl.includes('listingDate')) {
       newUrl = newUrl.replace(new RegExp('listingDate=[^&]*', 'g'), 'listingDate=' + listingDate);
-    }    
+    }
+    if (newUrl.includes('type')) {
+      newUrl = newUrl.replace(new RegExp('type=[^&]*', 'g'), 'type=' + selectedValue);
+    }
     console.log(newUrl);
     window.location.href = newUrl;
   }
