@@ -23,6 +23,18 @@ const getBase64 = (file: FileType): Promise<string> =>
 function EditListingPage() {
     const [homeDetails, setHomeDetails] = useState<any>(null);
     const { id } = useParams<{id: string}>();
+    const [keyFeatures, setKeyFeatures] = useState([
+        { name: "Fiber Internet", isAvailable: false },
+        { name: "Air Conditioner", isAvailable: false },
+        { name: "Floor Heating", isAvailable: false },
+        { name: "Fireplace", isAvailable: false },
+        { name: "Terrace", isAvailable: false },
+        { name: "Satellite", isAvailable: false },
+        { name: "Parquet", isAvailable: false },
+        { name: "Steel Door", isAvailable: false },
+        { name: "Furnished", isAvailable: false },
+        { name: "Insulation", isAvailable: false }
+    ]);
 
     useEffect(() => {
         if (id) {
@@ -50,19 +62,32 @@ function EditListingPage() {
                             country: response.data.country,
                             totalFloor: response.data.totalFloor,
                             keyFeatures: {
-                                fiberInternet: response.data.fiberInternet === 1,
-                                airConditioner: response.data.airConditioner === 1,
-                                floorHeating: response.data.floorHeating === 1,
-                                fireplace: response.data.fireplace === 1,
-                                terrace: response.data.terrace === 1,
-                                satellite: response.data.satellite === 1,
-                                parquet: response.data.parquet === 1,
-                                steelDoor: response.data.steelDoor === 1,
-                                furnished: response.data.furnished === 1,
-                                insulation: response.data.insulation === 1,
+                                fiberInternet: response.data.fiberInternet === 1 ? true : false,
+                                airConditioner: response.data.airConditioner === 1 ? true : false,
+                                floorHeating: response.data.floorHeating === 1 ? true : false,
+                                fireplace: response.data.fireplace === 1 ? true : false,
+                                terrace: response.data.terrace === 1 ? true : false,
+                                satellite: response.data.satellite === 1 ? true : false,
+                                parquet: response.data.parquet === 1 ? true : false,
+                                steelDoor: response.data.steelDoor === 1 ? true : false,
+                                furnished: response.data.furnished === 1 ? true : false,
+                                insulation: response.data.insulation === 1 ? true : false
                             }
                         };
                         setHomeDetails(homedetails);
+                        console.log(homedetails.keyFeatures);
+                        setKeyFeatures([
+                            { name: "Fiber Internet", isAvailable: homedetails.keyFeatures.fiberInternet },
+                            { name: "Air Conditioner", isAvailable: homedetails.keyFeatures.airConditioner },
+                            { name: "Floor Heating", isAvailable: homedetails.keyFeatures.floorHeating },
+                            { name: "Fireplace", isAvailable: homedetails.keyFeatures.fireplace },
+                            { name: "Terrace", isAvailable: homedetails.keyFeatures.terrace },
+                            { name: "Satellite", isAvailable: homedetails.keyFeatures.satellite },
+                            { name: "Parquet", isAvailable: homedetails.keyFeatures.parquet },
+                            { name: "Steel Door", isAvailable: homedetails.keyFeatures.steelDoor },
+                            { name: "Furnished", isAvailable: homedetails.keyFeatures.furnished },
+                            { name: "Insulation", isAvailable: homedetails.keyFeatures.insulation }
+                        ]);
                     }
                 });
         }
@@ -78,23 +103,44 @@ function EditListingPage() {
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [filters, setFilters] = useState({});
+    
+
+
+
+    
+    //console.log("Teras: ", keyFeatures[4]);
+
+    //console.log("Key Features from DB: ", keyFeaturesFromDB);
 
     //get the photos from homeDetails and append them to Upload component
     useEffect(() => {
         if (homeDetails) {
             Cookies.set("latitude", homeDetails.coordinates.lat.toString(), { expires: (1 / 1440) * 60 }); // 1 hour
             Cookies.set("longitude", homeDetails.coordinates.lng.toString(), { expires: (1 / 1440) * 60 }); // 1 hour
-            const images = homeDetails.photo.map((photo: string, index: number) => {
+            const loadImage = async (url:any, index:any) => {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const file = new File([blob], `image-${index + 1}.png`, { type: blob.type });
+
                 return {
                     uid: index,
-                    name: `image-${index + 1}.png`,
+                    name: file.name,
                     status: 'done',
-                    // get originfileobj from photo
-                    originFileObj: new File([photo], `image-${index + 1}.png`, { type: 'image/png' }),
-                    url: photo,
+                    originFileObj: file,
+                    url: URL.createObjectURL(file),
                 };
+            };
+
+            if (homeDetails.saleRent === "Sale") {
+                setSelectedValue("Sale");
+            }
+            else {
+                setSelectedValue("Rent");
+            }
+            Promise.all(homeDetails.photo.map(loadImage)).then(images => {
+                setFileList(images);
             });
-            setFileList(images);
+            //setFileList(images);
         }
     }, [homeDetails]);
 
@@ -128,18 +174,7 @@ function EditListingPage() {
         </button>
     );
 
-    const keyFeatures = [
-        { name: "Fiber Internet", isAvailable: false },
-        { name: "Air Conditioner", isAvailable: false },
-        { name: "Floor Heating", isAvailable: false },
-        { name: "Fireplace", isAvailable: false },
-        { name: "Terrace", isAvailable: false },
-        { name: "Satellite", isAvailable: false },
-        { name: "Parquet", isAvailable: false },
-        { name: "Steel Door", isAvailable: false },
-        { name: "Furnished", isAvailable: false },
-        { name: "Insulation", isAvailable: false }
-    ];
+    
 
     const addSearchFilter = (key: string, value: string) => {
         setFilters({
@@ -174,6 +209,13 @@ function EditListingPage() {
         const saleRent = selectedValue;
         var keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
 
+        console.log("City from form:", data.get('city'));
+        console.log("Distinct from form:", data.get('distinct'));
+        console.log("Street from form:", data.get('street'));
+        console.log("City from cookie:", cityFromCookie);
+        console.log("Distinct from cookie:", distinctFromCookie);
+        console.log("Street from cookie:", streetFromCookie);
+
         if (fileList.length < 3) {
             alert("Please upload at least three images.");
             return;
@@ -203,10 +245,10 @@ function EditListingPage() {
             floor: floor,
             totalFloor: totalFloor,
             houseType: houseType,
-            distinct: distinctFromCookie === null ? distinct : distinctFromCookie,
-            city: cityFromCookie === null ? city : cityFromCookie,
-            street: streetFromCookie === null ? street : streetFromCookie,
-            country: countryFromCookie === null ? country : countryFromCookie,
+            distinct: distinct ,
+            city: city,
+            street: street,
+            country: country,
             lat: Cookies.get("latitude"),
             lng: Cookies.get("longitude"),
             ownerMail: Cookies.get("Email"),
@@ -215,10 +257,14 @@ function EditListingPage() {
         })
         .then(function (response) {
             console.log(response);
+            alert("Listing updated successfully.");
+            window.location.href = '/myListings';
         })
         .catch(function (error) {
             console.log(error);
+            alert("Failed to update listing.");
         });
+        
     };
 
     async function GeoCodeFromGMaps(): Promise<string> {
@@ -246,18 +292,11 @@ function EditListingPage() {
 
 
 
-
     if (!homeDetails) {
         return <div>Loading...</div>;
     }
 
     
-    
-
-    
-
-
-
 
     return (
         <div className="min-w-screen min-h-screen place-items-center flex sm:flex-row flex-col p-4 bg-backColor space-y-4 gap-4">
@@ -398,8 +437,8 @@ function EditListingPage() {
                     </div>
                     <div className=' flex justify-center items-center'>
                         <ButtonGroup className="p-[3.5px] mt-3 bg-gray-800 bg-opacity-60">
-                        <button className={`${selectedValue == "Sale" ? "bg-button-secondary" : "bg-opacity-40"} ${selectedValue == "Sale" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("Sale")}>Sale</button> {/*eslint-disable-line eqeqeq*/}
-                        <button className={`${selectedValue == "Rent" ? "bg-button-secondary" : "bg-opacity-10"} ${selectedValue == "Rent" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("Rent")}>Rent</button> {/*eslint-disable-line eqeqeq*/}
+                            <button className={`${selectedValue == "Sale" ? "bg-button-secondary" : "bg-opacity-40"} ${selectedValue == "Sale" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("Sale")}>Sale</button> {/*eslint-disable-line eqeqeq*/}
+                            <button className={`${selectedValue == "Rent" ? "bg-button-secondary" : "bg-opacity-10"} ${selectedValue == "Rent" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("Rent")}>Rent</button> {/*eslint-disable-line eqeqeq*/}
                         </ButtonGroup>
                     </div>
                     <div>
@@ -414,10 +453,11 @@ function EditListingPage() {
                         <label className="block text-sm font-medium ">Key Features</label>
                         <div className="mt-2 grid grid-cols-2 gap-2">
                             {
-                                keyFeatures.map((feature, index) => {
+                                keyFeatures.map((feature,index) => {
+                                    //console.log (feature);
                                     return (
                                         <div key={index} className="flex items-center">
-                                            <input id={feature.name} name={feature.name} type="checkbox" className="w-4 h-4 text-button-primary rounded focus:ring-0 accent-button-primary" onChange={(e) => keyFeatures[index].isAvailable = e.target.checked} defaultChecked={feature.isAvailable}/>
+                                            <input id={feature.name} name={feature.name} type="checkbox" className="w-4 h-4 text-button-primary rounded focus:ring-0 accent-button-primary" onChange={(e) => keyFeatures[index].isAvailable = e.target.checked} defaultChecked={keyFeatures[index].isAvailable}/>
                                             <label htmlFor={feature.name} className="ml-2 text-sm">{feature.name}</label>
                                         </div>
                                     );
@@ -427,7 +467,7 @@ function EditListingPage() {
 
                     </div>
                     <input type="submit" className="flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover" value="Update House" onClick={()=>{
-
+                        
                     }}/>
                 </form>
                 <div className="mt-3 flex flex-row items-center justify-between">

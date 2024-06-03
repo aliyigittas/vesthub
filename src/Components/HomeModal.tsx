@@ -22,6 +22,24 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
     const [value, setValue] = useState<Dayjs | null>(dayjs(null)); //eslint-disable-line
     const [isLiked, setIsLiked] = useState(false);
 
+    const daytime = [
+        {
+          key: '1',
+          label: 'Morning (8.00 - 11.00)',
+          value: 'Morning',
+        },
+        {
+          key: '2',
+          label: 'Afternoon (11.00 - 14.00)',
+          value: 'Afternoon',
+        },
+        {
+          key: '3',
+          label: 'Evening (14.00 - 17.00)',
+          value: 'Evening',
+        }
+      ];
+
     return (
         <Modal
             open={show}
@@ -99,37 +117,70 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                 </div>
                 <h1 className="text-xl font-bold my-4">Location</h1>
                 <SingleMarkerMap marker={home} />
-                <h1 className="text-xl font-bold mt-4">Contact</h1>
-                <div className='flex flex-wrap items-center justify-start gap-4'> 
-                    <div className="flex flex-col items-start">
-                        <div className="flex flex-wrap items-center gap-4">
-                            <Avatar size={85} src="https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw" />
-                            <div className="flex flex-col text-left gap-1 text-gray-900">
-                                <label className="text-[25px]">Ali Taş</label>
-                                <a href='tel:+905300493683' className="text-button-primary hover:text-button-primaryHover text-[12px]">+90 530 049 36 83</a>
-                                <a href='mailto:aliyigittas@ali.com' className="text-button-primary hover:text-button-primaryHover">aliyigittas@ali.com</a>
+                {home.ownerMail !== Cookies.get('Email') &&
+                    <div>
+                    <h1 className="text-xl font-bold mt-4">Contact</h1>
+                    <div className='flex flex-wrap items-center justify-start gap-4'> 
+                        <div className="flex flex-col items-start">
+                            <div className="flex flex-wrap items-center gap-4">
+                                <Avatar size={85} src="https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw" />
+                                <div className="flex flex-col text-left gap-1 text-gray-900">
+                                    <label className="text-[25px]">Ali Taş</label>
+                                    <a href='tel:+905300493683' className="text-button-primary hover:text-button-primaryHover text-[12px]">+90 530 049 36 83</a>
+                                    <a href='mailto:aliyigittas@ali.com' className="text-button-primary hover:text-button-primaryHover">aliyigittas@ali.com</a>
+                                </div>
                             </div>
                         </div>
+                        <div className="flex flex-col items-start space-y-2">
+                            <DateTimePicker 
+                                //mobiletoolbar hidden
+                                
+                                label="Select Date and Time"
+                                disablePast
+                                views={['year', 'month', 'day', 'hours', 'minutes']}
+                                minutesStep={15}
+                                orientation='landscape'
+                                ampm={false}
+                                onChange={setValue}
+                                closeOnSelect={false}
+                                slotProps={{ textField: { size: 'small', color:'success' }}}
+                                //    shouldDisableTime={(date) => {
+                                //        //disble tomorrow
+                                //        if (date && date.isAfter(dayjs().add(1, 'day').startOf('day'))) {
+                                //            return true;
+                                //        }
+                                //        return false;
+                                //    }
+                                //
+                                //}
+                            />
+                            <TextArea className='p-2 border-1 border-[#c4c4c4] focus:border-button-primary hover:border-button-primary focus:ring-0' placeholder="Type your message here" autoSize={{ minRows: 1, maxRows: 3 }} variant="outlined" />
+                            <select className="border-1 w-full border-[#c4c4c4] focus:border-button-primary hover:border-button-primary focus:ring-0 p-2 rounded-lg">
+                                {daytime.map((time) => {
+                                    return (
+                                        <option key={time.key} value={time.value}>{time.label}</option>
+                                    );
+                                })}
+                            </select>
+                        </div>
+                        <button className="bg-button-primary text-white rounded-lg p-2" onClick={() => {
+                            //send the meeting request
+                            //console.log(value);
+                            console.log(value?.format('YYYY-MM-DD HH:mm'));
+                            console.log('Message:', document.querySelector('textarea')?.textContent);
+                            console.log('date:', value?.format('YYYY-MM-DD HH:mm').toString());
+                            axios.post('http://localhost:8080/api/addReservation', {
+                                houseID: home.id,
+                                ownerMail: home.ownerMail,
+                                clientMail: Cookies.get('Email'),
+                                date: (value?.format('YYYY-MM-DD HH:mm')!).toString(),
+                                message: document.querySelector('textarea')?.textContent,
+                                daytime: document.querySelector('select')?.value
+                            })
+                            }}>Schedule a Meeting
+                        </button>
                     </div>
-                    <div className="flex flex-col items-start space-y-2">
-                        <DateTimePicker 
-                            //mobiletoolbar hidden
-                            
-                            label="Select Date and Time"
-                            disablePast
-                            views={['year', 'month', 'day', 'hours', 'minutes']}
-                            minutesStep={15}
-                            orientation='landscape'
-                            ampm={false}
-                            onChange={setValue}
-                            closeOnSelect={false}
-                            slotProps={{ textField: { size: 'small', color:'success' }}}
-                        />
-                        <TextArea className='p-2 border-1 border-[#c4c4c4] focus:border-button-primary hover:border-button-primary focus:ring-0' placeholder="Type your message here" autoSize={{ minRows: 1, maxRows: 3 }} variant="outlined" />
-                    </div>
-                    <button className="bg-button-primary text-white rounded-lg p-2">Schedule a Meeting</button>
-                </div>
-                
+                </div>}
             </div>
         </Modal>
     );
