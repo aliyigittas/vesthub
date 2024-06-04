@@ -136,14 +136,21 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                                 //mobiletoolbar hidden
                                 
                                 label="Select Date and Time"
-                                disablePast
-                                views={['year', 'month', 'day', 'hours', 'minutes']}
-                                minutesStep={15}
+                                
+                                //disable past dates
+                                shouldDisableDate={(date) => {
+                                    //disble past dates
+                                    if (date && date.isBefore(dayjs().startOf('day'))) {
+                                        return true;
+                                    }
+                                    return false;
+                                }}
+                                
+                                views={['year', 'month', 'day']}
                                 orientation='landscape'
-                                ampm={false}
                                 onChange={setValue}
-                                closeOnSelect={false}
-                                slotProps={{ textField: { size: 'small', color:'success' }}}
+                                closeOnSelect={true}
+                                slotProps={{ textField: { size: 'small', color: 'success'}}}
                                 //    shouldDisableTime={(date) => {
                                 //        //disble tomorrow
                                 //        if (date && date.isAfter(dayjs().add(1, 'day').startOf('day'))) {
@@ -166,17 +173,27 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                         <button className="bg-button-primary text-white rounded-lg p-2" onClick={() => {
                             //send the meeting request
                             //console.log(value);
-                            console.log(value?.format('YYYY-MM-DD HH:mm'));
+                            console.log(value?.format('YYYY-MM-DD'));
                             console.log('Message:', document.querySelector('textarea')?.textContent);
-                            console.log('date:', value?.format('YYYY-MM-DD HH:mm').toString());
+                            console.log('date:', value?.format('YYYY-MM-DD').toString());
+                            if (value?.format('YYYY-MM-DD').toString() === 'Invalid Date') {
+                                alert('Please select a date and time');
+                                return;
+                            }
                             axios.post('http://localhost:8080/api/addReservation', {
                                 houseID: home.id,
                                 ownerMail: home.ownerMail,
                                 clientMail: Cookies.get('Email'),
-                                date: (value?.format('YYYY-MM-DD HH:mm')!).toString(),
+                                date: (value?.format('YYYY-MM-DD')!).toString(),
                                 message: document.querySelector('textarea')?.textContent,
                                 daytime: document.querySelector('select')?.value
-                            })
+                            }).then(response => {
+                                console.log(response.data);
+                                if (response.data === true) {
+                                    alert('Meeting request sent successfully');
+                                }
+                            }
+                            );
                             }}>Schedule a Meeting
                         </button>
                     </div>
