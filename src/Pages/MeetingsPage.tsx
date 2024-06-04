@@ -5,12 +5,13 @@ import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
 import axios from "axios";
 import Cookies from "js-cookie";
 import { message } from "antd";
+import { MailOutlined, CloseOutlined } from '@ant-design/icons';
 
 //export const currentUrlMeeting = window.location.href;
 
 function MeetingsPage() {
   const [show, setShow] = useState(false);
-  const [homeDetails, setHomeDetails] = useState<any>();
+  const [homeDetails, setHomeDetails] = useState<any>(null);
   const [keyFeatures, setKeyFeatures] = useState<any[]>([]);
 
   /*
@@ -225,6 +226,17 @@ function MeetingsPage() {
   , []);
 */
 
+function updateMeetingStatus(meetingID:number , meetingStatus:String){
+  axios.post('http://localhost:8080/api/updateMeetingStatus',{
+    meetingID: meetingID,
+    meetingStatus: meetingStatus
+  })
+  .then(response => {
+      console.log(response);
+      window.location.reload();
+  })
+}
+
   return (
     <div className=" p-4 flex-col items-center space-y-2 bg-inherit min-h-full"> {/* Add flex and flex-col classes */}
           <Tab.Group>
@@ -273,24 +285,31 @@ function MeetingsPage() {
 
   function WaitingMeetingsSentToMe()
   {
-    var WaitingMeetingsSentToMeCount = 0;
+    var WaitingMeetingsSentToMe: any[] = [];
     for (var i = 0; i < meetings.length; i++) {
       if (meetings[i].status === 'Waiting' && meetings[i].ownerMail === Cookies.get("Email")) {
-        WaitingMeetingsSentToMeCount++;
+        WaitingMeetingsSentToMe = [...WaitingMeetingsSentToMe, meetings[i]];
       }
     }
-    console.log("WAITING: ",meetings[0].ownerName);
+    console.log("WAITING: ", meetings[0].ownerName);
     return (
       <div className="flex flex-wrap justify-center min-h-full w-full bg-inherit items-top gap-4">
-        {/*<HomeModal show={show} setShow={() => setShow(false)} home={homeDetails} />*/}
+        
         <div className="flex flex-col items-center space-y-2"> {/* Add flex and flex-col classes */}
+          {show && <HomeModal show={show} setShow={() => 
+              {
+                window.history.pushState({}, "", "/meetings");
+                setShow(false);
+              }
+            } home={homeDetails} />
+          }
             <div className="flex flex-col bg-gray-300 w-[512px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
-              {WaitingMeetingsSentToMeCount === 0
+              {WaitingMeetingsSentToMe.length === 0
               ? (
                 <div className="flex flex-col items-center justify-items-center mt-2">
                   <h3 className="text-gray-600">No meetings</h3>
                 </div>
-              ) : ( meetings.map((meeting, index) => {
+              ) : ( WaitingMeetingsSentToMe.map((meeting, index) => {
                 return (
                   <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
                     
@@ -304,14 +323,37 @@ function MeetingsPage() {
                     <button className="bg-button-secondary text-white rounded-xl p-1 hover:bg-button-secondaryHover" onClick={() => {
                       console.log("Home ID: ",meeting.houseID);
                       getHomeDetails(meeting.houseID); 
-                      //var currrentURL = window.location.href;
-                      //window.history.pushState({}, "", "/home/"+meeting.houseID);
-                      
+                      window.history.pushState({}, "", "/home/"+meeting.houseID);
                     }}>Home Details</button>
-                    
-                    <CheckCircleFilled className="text-green-500 hover:text-green-600 cursor-pointer" style={{ fontSize: '30px' }} />
-                    <CloseCircleFilled className="text-red-500 hover:text-red-600 cursor-pointer" style={{ fontSize: '30px' }} />
+                    <button onClick={
+                      () => {
+                        message.open({
+                          //type: 'info',
+                          duration: 0,
+                          content: (
+                            <div>
+                              {/*Close the message when x is pressed */}
+                              <div className="flex justify-end">
+                                <button onClick={() => message.destroy()}><CloseOutlined/></button>
+                              </div>
+                              <h4>{meeting.message ==='' ? 'No message': 'Message'}</h4>
+                              <p>{meeting.message}</p>
+                            </div>
+                          )
+                        });
+                  
+                      }
+                    }>
+                    <MailOutlined/>
+                    </button>
+                    <button onClick={() => updateMeetingStatus(meeting.id, 'Accepted')}>
+                      <CheckCircleFilled className="text-green-500 hover:text-green-600 cursor-pointer" style={{ fontSize: '30px' }} />
+                    </button>
+                    <button onClick={() => updateMeetingStatus(meeting.id, 'Rejected')}>
+                      <CloseCircleFilled className="text-red-500 hover:text-red-600 cursor-pointer" style={{ fontSize: '30px' }} />
+                    </button>
                   </div>
+                  
                 );
               }
                 ))
@@ -320,64 +362,63 @@ function MeetingsPage() {
         </div>
       </div>
     );
+  }
 
-    function getHomeDetails(homeid: number) {
-      
-      axios.get(`http://localhost:8080/api/house/${homeid}`)
-                .then(response => {
-                    if (response.data) {
-                        const homedetails = {
-                            id: response.data.id,
-                            title: response.data.title,
-                            photo: response.data.images, //[H1,H2,H3]
-                            price: response.data.price.toString(),
-                            type: response.data.saleRent,
-                            coordinates: { lat: response.data.lat, lng: response.data.lng },
-                            address: response.data.fullAddress,
-                            ownerMail: response.data.ownerMail,
-                            description: response.data.description,
-                            numOfBathroom: response.data.numOfBathroom,
-                            numOfBedroom: response.data.numOfBedroom,
-                            numOfRooms: response.data.numOfRooms,
-                            area: response.data.area,
-                            floor: response.data.floor,
-                            city: response.data.city,
-                            distinct: response.data.distinct,
-                            street: response.data.street,
-                            country: response.data.country,
-                            totalFloor: response.data.totalFloor,
-                            keyFeatures: {
-                                fiberInternet: response.data.fiberInternet === 1 ? true : false,
-                                airConditioner: response.data.airConditioner === 1 ? true : false,
-                                floorHeating: response.data.floorHeating === 1 ? true : false,
-                                fireplace: response.data.fireplace === 1 ? true : false,
-                                terrace: response.data.terrace === 1 ? true : false,
-                                satellite: response.data.satellite === 1 ? true : false,
-                                parquet: response.data.parquet === 1 ? true : false,
-                                steelDoor: response.data.steelDoor === 1 ? true : false,
-                                furnished: response.data.furnished === 1 ? true : false,
-                                insulation: response.data.insulation === 1 ? true : false
-                            }
-                        };
-                        setHomeDetails(homedetails);
-                        console.log("EV DETAYLARI: ",homedetails);
-                        setKeyFeatures([
-                            { name: "Fiber Internet", isAvailable: homedetails.keyFeatures.fiberInternet },
-                            { name: "Air Conditioner", isAvailable: homedetails.keyFeatures.airConditioner },
-                            { name: "Floor Heating", isAvailable: homedetails.keyFeatures.floorHeating },
-                            { name: "Fireplace", isAvailable: homedetails.keyFeatures.fireplace },
-                            { name: "Terrace", isAvailable: homedetails.keyFeatures.terrace },
-                            { name: "Satellite", isAvailable: homedetails.keyFeatures.satellite },
-                            { name: "Parquet", isAvailable: homedetails.keyFeatures.parquet },
-                            { name: "Steel Door", isAvailable: homedetails.keyFeatures.steelDoor },
-                            { name: "Furnished", isAvailable: homedetails.keyFeatures.furnished },
-                            { name: "Insulation", isAvailable: homedetails.keyFeatures.insulation }
-                        ]);
-                        setShow(true);
-                    }
-                });
-      
-    }
+  function getHomeDetails(homeid: number) {
+    axios.get(`http://localhost:8080/api/house/${homeid}`)
+    .then(response => {
+        if (response.data) {
+            const homedetails = {
+                id: response.data.id,
+                title: response.data.title,
+                photo: response.data.images, //[H1,H2,H3]
+                price: response.data.price.toString(),
+                type: response.data.saleRent,
+                coordinates: { lat: response.data.lat, lng: response.data.lng },
+                address: response.data.fullAddress,
+                ownerMail: response.data.ownerMail,
+                description: response.data.description,
+                numOfBathroom: response.data.numOfBathroom,
+                numOfBedroom: response.data.numOfBedroom,
+                numOfRooms: response.data.numOfRooms,
+                area: response.data.area,
+                floor: response.data.floor,
+                city: response.data.city,
+                distinct: response.data.distinct,
+                street: response.data.street,
+                country: response.data.country,
+                totalFloor: response.data.totalFloor,
+                keyFeatures: {
+                    fiberInternet: response.data.fiberInternet === 1 ? true : false,
+                    airConditioner: response.data.airConditioner === 1 ? true : false,
+                    floorHeating: response.data.floorHeating === 1 ? true : false,
+                    fireplace: response.data.fireplace === 1 ? true : false,
+                    terrace: response.data.terrace === 1 ? true : false,
+                    satellite: response.data.satellite === 1 ? true : false,
+                    parquet: response.data.parquet === 1 ? true : false,
+                    steelDoor: response.data.steelDoor === 1 ? true : false,
+                    furnished: response.data.furnished === 1 ? true : false,
+                    insulation: response.data.insulation === 1 ? true : false
+                }
+            };
+            setHomeDetails(homedetails);
+            console.log("EV DETAYLARI: ",homedetails);
+            setKeyFeatures([
+                { name: "Fiber Internet", isAvailable: homedetails.keyFeatures.fiberInternet },
+                { name: "Air Conditioner", isAvailable: homedetails.keyFeatures.airConditioner },
+                { name: "Floor Heating", isAvailable: homedetails.keyFeatures.floorHeating },
+                { name: "Fireplace", isAvailable: homedetails.keyFeatures.fireplace },
+                { name: "Terrace", isAvailable: homedetails.keyFeatures.terrace },
+                { name: "Satellite", isAvailable: homedetails.keyFeatures.satellite },
+                { name: "Parquet", isAvailable: homedetails.keyFeatures.parquet },
+                { name: "Steel Door", isAvailable: homedetails.keyFeatures.steelDoor },
+                { name: "Furnished", isAvailable: homedetails.keyFeatures.furnished },
+                { name: "Insulation", isAvailable: homedetails.keyFeatures.insulation }
+            ]);
+            setShow(true);
+        }
+    });
+    
   }
 
   function WaitingMeetingsSentByMe()
@@ -391,6 +432,13 @@ function MeetingsPage() {
     return (
       <div className="flex flex-col items-center space-y-2"> {/* Add flex and flex-col classes */}
         <div className="flex flex-col bg-gray-300 w-[512px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
+        {show && <HomeModal show={show} setShow={() => 
+            {
+              window.history.pushState({}, "", "/meetings");
+              setShow(false);
+            }
+          } home={homeDetails} />
+        }
           {WaitingMeetingsSentByMeCount === 0
           ? (
             <div className="flex flex-col items-center justify-items-center mt-2"> {/* Add flex and flex-col classes */}
@@ -403,14 +451,40 @@ function MeetingsPage() {
               meeting.status === 'Waiting' && meeting.clientMail === Cookies.get("Email") &&
               <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
                 <img src='https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw' alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
-                <label className="flex justify-center items-center">Ali Yiğit Taş</label>
+                <label className="flex justify-center items-center">{meeting.ownerName}</label>
                 <div className="flex flex-col justify-center items-center text-center">
                   <label>{meeting.date}</label>
+                  <label>{meeting.daytime}</label>
                 </div>
-                <CloseCircleFilled className="text-red-500 hover:text-red-600 cursor-pointer" style={{ fontSize: '30px' }} />
                 <button className="bg-button-secondary text-white rounded-xl p-1 hover:bg-button-secondaryHover" onClick={() => {
-                  setShow(true);
+                  console.log("Home ID: ",meeting.houseID);
+                  getHomeDetails(meeting.houseID); 
+                  window.history.pushState({}, "", "/home/"+meeting.houseID);
                 }}>Home Details</button>
+                <button onClick={
+                  () => {
+                    message.open({
+                      //type: 'info',
+                      duration: 0,
+                      content: (
+                        <div>
+                          {/*Close the message when x is pressed */}
+                          <div className="flex justify-end">
+                            <button onClick={() => message.destroy()}><CloseOutlined/></button>
+                          </div>
+                          <h4>{meeting.message ==='' ? 'No message': 'Message'}</h4>
+                          <p>{meeting.message}</p>
+                        </div>
+                      )
+                    });
+              
+                  }
+                }>
+                <MailOutlined/>
+                </button>
+                <button onClick={() => updateMeetingStatus(meeting.id, 'Cancelled')}>
+                  <CloseCircleFilled className="text-red-500 hover:text-red-600 cursor-pointer" style={{ fontSize: '30px' }} />
+                </button>
               </div>
             );
           }
@@ -439,17 +513,40 @@ function MeetingsPage() {
             </div>
           ) : ( meetings.map((meeting, index) => {
             return (
-              meeting.status === 'Accepted' && meeting.date > new Date().toISOString() &&
+              meeting.status === 'Accepted' && //meeting.date > new Date().toISOString() &&
               <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
                 <img src='https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw' alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
-                <label className="flex justify-center items-center">Ali Yiğit Taş</label>
+                <label className="flex justify-center items-center">{meeting.ownerName}</label>
                 <div className="flex flex-col justify-center items-center text-center">
                   <label>{meeting.date}</label>
                 </div>
-                <CloseCircleFilled className="text-red-500 hover:text-red-600 cursor-pointer" style={{ fontSize: '30px' }} />
                 <button className="bg-button-secondary text-white rounded-xl p-1 hover:bg-button-secondaryHover" onClick={() => {
                   setShow(true);
                 }}>Home Details</button>
+                <button onClick={
+                  () => {
+                    message.open({
+                      //type: 'info',
+                      duration: 0,
+                      content: (
+                        <div>
+                          {/*Close the message when x is pressed */}
+                          <div className="flex justify-end">
+                            <button onClick={() => message.destroy()}><CloseOutlined/></button>
+                          </div>
+                          <h4>{meeting.message ==='' ? 'No message': 'Message'}</h4>
+                          <p>{meeting.message}</p>
+                        </div>
+                      )
+                    });
+              
+                  }
+                }>
+                <MailOutlined/>
+                </button>
+                <button onClick={() => updateMeetingStatus(meeting.id, 'Cancelled')}>
+                  <CloseCircleFilled className="text-red-500 hover:text-red-600 cursor-pointer" style={{ fontSize: '30px' }} />
+                </button>
               </div>
             );
           }
