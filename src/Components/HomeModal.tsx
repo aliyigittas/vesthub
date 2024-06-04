@@ -14,10 +14,6 @@ import { Gallery, Item } from 'react-photoswipe-gallery'
 import axios from 'axios';
 
 
-
-
-
-
 function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void; home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number }}) {
     const [value, setValue] = useState<Dayjs | null>(dayjs(null)); //eslint-disable-line
     const [isLiked, setIsLiked] = useState(false);

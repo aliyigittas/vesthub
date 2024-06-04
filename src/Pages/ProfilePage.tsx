@@ -103,7 +103,7 @@ function ProfilePage() {
     return (
       <form className="flex flex-col" onSubmit={handleChangePassword}>
         <div className="relative flex flex-row">
-          <input type="password" id="currentPassword" placeholder="Current Password" onChange={(e) => {}} autoComplete="current-password" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+          <input type="password" id="currentPassword" name="currentPassword" placeholder="Current Password" onChange={(e) => {}} autoComplete="current-password" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
           <div className="absolute right-2 top-2 items-center">
             <button type="button" className="absolute right-1 top-1 items-center" onClick={() => {
               //change the type of the input field to show the password
@@ -120,7 +120,7 @@ function ProfilePage() {
           </div>
         </div>
         <div className="relative flex flex-row">
-          <input type="password" id="newPassword" placeholder="New Password" autoComplete="new-password" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+          <input type="password" id="newPassword" name="newPassword" placeholder="New Password" autoComplete="new-password" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
           <div className="absolute right-2 top-2 items-center">
             <button type="button" className="absolute right-1 top-1 items-center" onClick={() => {
             //change the type of the input field to show the password
@@ -135,8 +135,22 @@ function ProfilePage() {
             </button>
           </div>
         </div>
-        
-        <input type="password" placeholder="Confirm Password" autoComplete="new-password" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+        <div className="relative flex flex-row">
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" autoComplete="new-password" className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+          <div className="absolute right-2 top-2 items-center">
+            <button type="button" className="absolute right-1 top-1 items-center" onClick={() => {
+            //change the type of the input field to show the password
+            setConfirmPasswordShow(!confirmPasswordShow);
+            var x = document.getElementById("confirmPassword");
+            if (x!.getAttribute("type") === "password") {
+              x!.setAttribute("type", "text");
+            } else {
+              x!.setAttribute("type", "password");
+            }}} >
+            {confirmPasswordShow ? <EyeInvisibleOutlined /> : <EyeOutlined /> }
+            </button>
+          </div>
+        </div>
         <div className=' flex justify-center pt-4'>
           <button className="flex w-full justify-center rounded-md bg-button-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-button-primaryHover" type="submit">
             Save
@@ -145,16 +159,7 @@ function ProfilePage() {
       </form>
     );
   }
-
-  function EditConfirmPassword()
-  {
-    return (
-      <></>
-    );
-
-  }
   
-
   function handleSaveProfileInfo(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -192,7 +197,49 @@ function ProfilePage() {
     });
   }
 
-  function handleChangePassword() {
+  function handleChangePassword(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const currentPassword = data.get('currentPassword') as string;
+    console.log("password is :",currentPassword);
+    const newPassword = data.get('newPassword') as string;
+    const confirmPassword = data.get('confirmPassword') as string;
+    console.log(currentPassword, newPassword, confirmPassword);
+    if (currentPassword == '' || newPassword == '' || confirmPassword == '') {
+      alert("Please fill all the fields!");
+      return;
+    }
+    if (newPassword != confirmPassword) {
+      alert("New password and confirm password do not match!");
+      return;
+    }
+
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/;
+    if (!passwordRegex.test(newPassword)) {
+        alert("Password must be at least 8 characters long and cannot be more than 16 characters, also it must contain at least one number, one uppercase letter and one lowercase letter");
+        return;
+    }
+
+
+
+    axios.post('http://localhost:8080/api/changePassword', {
+      email: Cookies.get("Email"),
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+    }).then((response) => {
+      console.log(response);
+      if (response.data==true) {
+        alert("Password changed successfully!");
+        window.location.href = '/profile';
+      }
+      if (response.data==false) {
+        alert("Current password is wrong!");
+      }
+    }).catch((error) => {
+      console.log(error);
+      alert("An error occurred while changing the password!");
+    });
+
   }
 
   function handleSaveAddressSettings() {
