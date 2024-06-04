@@ -214,7 +214,7 @@ function SearchPage() {
         <div className="pt-2 pl-5 flex flex-row justify-between">
           <div>
             <p className="text-[30px] font-bold text-black">Search Results for: {searchtext}</p>
-            <p className="text-sm text-gray-600">10 results found</p>
+            <p className="text-sm text-gray-600">{homes.length} results found</p>
           </div>
           <MapSwitcher />
         </div>

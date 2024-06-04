@@ -1,15 +1,43 @@
 import Cookies from 'js-cookie';
 import vesthublogo from '../vesthublogo.png';
+import defaultProfilePhoto from '../DefaultProfilePhoto.png';
 import axios from 'axios';
+import { useState } from 'react';
+import { profile } from 'console';
 
 function RegisterPage(){
+    const [profileImage, setProfileImage] = useState<string | null>(null);
+
     if (Cookies.get("loggedIn") === 'true') {
         window.location.href = '/';
     }
+    
     return (
         <div className="min-w-screen min-h-screen place-items-center flex sm:flex-row flex-col p-4 bg-backColor space-y-4">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <img className="mx-auto w-auto h-40 cursor-pointer" src={vesthublogo} alt="VestHub" onClick={() => window.location.href = '/'} />
+                <img
+                    className="mx-auto w-auto h-40 cursor-pointer"
+                    src={profileImage ? profileImage : defaultProfilePhoto}
+                    alt="VestHub"
+                    //open image picker when clicked
+                    onClick={() => document.getElementById('fileInput')?.click()}
+                />
+                <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: 'none' }}
+                    accept="image/*"
+                    onChange={(e) => {
+                    const file = e.target.files?.item(0);
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                        setProfileImage(reader.result as string);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                    }}
+                />
                 <h2 className="mt-10 text-center text-2xl font-bold">Register to your account</h2>
             </div>
 
@@ -74,6 +102,99 @@ function RegisterPage(){
             </div>
         </div>
     );
+
+    function handleRegister(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const name = data.get('name') as string;
+        const surname = data.get('surname') as string;
+        const email = data.get('email') as string;
+        const phone = data.get('phone') as string;
+        const country = data.get('Country') as string;
+        const city = data.get('City') as string;
+        const fullAddress = data.get('fullAddress') as string;
+        const password = data.get('password') as string;
+        const confirmPassword = data.get('confirmPassword') as string;
+        const checkbox = data.get('checkbox') as string;
+        console.log(checkbox);
+        if (checkbox !== "true") {
+            alert("You must agree to the terms and conditions");
+            return;
+        }
+    
+        if (password !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
+    
+        //username must be alphabetical and cannot be more than 45 characters
+        //TODO: Add regex for alphabetical characters
+        
+        if (name.length > 45) {
+            alert("Name must be alphabetical and cannot be more than 45 characters");
+            return;
+        }
+    
+        if (surname.length > 45) {
+            alert("Surname must be alphabetical and cannot be more than 45 characters");
+            return;
+        }
+    
+        //password must be at least 8 characters long and cannot be more than 16 characters, also it must contain at least one number, one uppercase letter and one lowercase letter
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/;
+        if (!passwordRegex.test(password)) {
+            alert("Password must be at least 8 characters long and cannot be more than 16 characters, also it must contain at least one number, one uppercase letter and one lowercase letter");
+            return;
+        }
+    
+        //full address cannot be more than 45 characters
+        if (fullAddress.length > 45) {
+            alert("Full address cannot be more than 250 characters");
+            return;
+        }
+    
+        if(city.length > 45){ 
+            alert("City cannot be more than 45 characters");
+            return;
+        }
+    
+        if(country.length > 45){
+            alert("Country cannot be more than 45 characters");
+            return;
+        }
+    
+        // Phone number validation for Turkish numbers starting with 5 and followed by 9 digits
+        const phoneRegex = /^5[0-9]{9}$/;
+        if (!phoneRegex.test(phone)) {
+            alert("Please enter a valid Turkish phone number starting with 5");
+            return;
+        }
+    
+        axios.post('http://localhost:8080/api/register', {
+            name: name,
+            surname: surname,
+            email: email,
+            password: password,
+            phone: phone,
+            country: country,
+            city: city,
+            fullAddress: fullAddress,
+            profilePicture: profileImage
+        })
+        .then(function (response) {
+            //make a popup to inform the user that the registration is successful
+            if (response.data === false) {
+                alert("User already exists");
+                return;
+            }
+            alert("Registration successful");
+            window.location.href = '/login';
+        })
+        .catch(function (error) {
+            console.log(error);
+            window.location.href = '/';
+        });
+    }
 }
 
 function termsPopup()
@@ -81,97 +202,7 @@ function termsPopup()
     alert("Terms and conditions");
 }
 
-function handleRegister(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const name = data.get('name') as string;
-    const surname = data.get('surname') as string;
-    const email = data.get('email') as string;
-    const phone = data.get('phone') as string;
-    const country = data.get('Country') as string;
-    const city = data.get('City') as string;
-    const fullAddress = data.get('fullAddress') as string;
-    const password = data.get('password') as string;
-    const confirmPassword = data.get('confirmPassword') as string;
-    const checkbox = data.get('checkbox') as string;
-    console.log(checkbox);
-    if (checkbox !== "true") {
-        alert("You must agree to the terms and conditions");
-        return;
-    }
 
-    if (password !== confirmPassword) {
-        alert("Passwords do not match");
-        return;
-    }
-
-    //username must be alphabetical and cannot be more than 45 characters
-    //TODO: Add regex for alphabetical characters
-    
-    if (name.length > 45) {
-        alert("Name must be alphabetical and cannot be more than 45 characters");
-        return;
-    }
-
-    if (surname.length > 45) {
-        alert("Surname must be alphabetical and cannot be more than 45 characters");
-        return;
-    }
-
-    //password must be at least 8 characters long and cannot be more than 16 characters, also it must contain at least one number, one uppercase letter and one lowercase letter
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/;
-    if (!passwordRegex.test(password)) {
-        alert("Password must be at least 8 characters long and cannot be more than 16 characters, also it must contain at least one number, one uppercase letter and one lowercase letter");
-        return;
-    }
-
-    //full address cannot be more than 45 characters
-    if (fullAddress.length > 45) {
-        alert("Full address cannot be more than 250 characters");
-        return;
-    }
-
-    if(city.length > 45){ 
-        alert("City cannot be more than 45 characters");
-        return;
-    }
-
-    if(country.length > 45){
-        alert("Country cannot be more than 45 characters");
-        return;
-    }
-
-    // Phone number validation for Turkish numbers starting with 5 and followed by 9 digits
-    const phoneRegex = /^5[0-9]{9}$/;
-    if (!phoneRegex.test(phone)) {
-        alert("Please enter a valid Turkish phone number starting with 5");
-        return;
-    }
-
-    axios.post('http://localhost:8080/api/register', {
-        name: name,
-        surname: surname,
-        email: email,
-        password: password,
-        phone: phone,
-        country: country,
-        city: city,
-        fullAddress: fullAddress
-    })
-    .then(function (response) {
-        //make a popup to inform the user that the registration is successful
-        if (response.data === false) {
-            alert("User already exists");
-            return;
-        }
-        alert("Registration successful");
-        window.location.href = '/login';
-    })
-    .catch(function (error) {
-        console.log(error);
-        window.location.href = '/';
-    });
-}
 
 
 export default RegisterPage;

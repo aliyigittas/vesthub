@@ -227,8 +227,8 @@ function MeetingsPage() {
 */
 
 function updateMeetingStatus(meetingID:number , meetingStatus:String){
-  axios.post('http://localhost:8080/api/updateMeetingStatus',{
-    meetingID: meetingID,
+  axios.post('http://localhost:8080/api/updateReservationStatus',{
+    reservationID: meetingID,
     meetingStatus: meetingStatus
   })
   .then(response => {
@@ -291,7 +291,7 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
         WaitingMeetingsSentToMe = [...WaitingMeetingsSentToMe, meetings[i]];
       }
     }
-    console.log("WAITING: ", meetings[0].ownerName);
+    //console.log("WAITING: ", meetings[0].ownerName);
     return (
       <div className="flex flex-wrap justify-center min-h-full w-full bg-inherit items-top gap-4">
         
@@ -423,10 +423,10 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
 
   function WaitingMeetingsSentByMe()
   {
-    var WaitingMeetingsSentByMeCount = 0;
+    var WaitingMeetingsSentByMe: any[] = [];
     for (var i = 0; i < meetings.length; i++) {
       if (meetings[i].status === 'Waiting' && meetings[i].clientMail === Cookies.get("Email")) {
-        WaitingMeetingsSentByMeCount++;
+        WaitingMeetingsSentByMe = [...WaitingMeetingsSentByMe, meetings[i]];
       }
     }
     return (
@@ -439,12 +439,12 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
             }
           } home={homeDetails} />
         }
-          {WaitingMeetingsSentByMeCount === 0
+          {WaitingMeetingsSentByMe.length === 0
           ? (
             <div className="flex flex-col items-center justify-items-center mt-2"> {/* Add flex and flex-col classes */}
               <h3 className="text-gray-600">No meetings</h3>
             </div>
-          ) : ( meetings.map((meeting, index) => {
+          ) : ( WaitingMeetingsSentByMe.map((meeting, index) => {
             console.log(meeting.clientMail);
             console.log(Cookies.get("Email"));
             return (
@@ -496,22 +496,28 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
 
   function UpcomingMeetings()
   {
-    var UpcomingMeetingsCount = 0;
+    var UpcomingMeetings: any[] = [];
     for (var i = 0; i < meetings.length; i++) {
       if (meetings[i].status === 'Accepted') {
-        UpcomingMeetingsCount++;
+        UpcomingMeetings = [...UpcomingMeetings, meetings[i]];
       }
     }
-    console.log("UPCOMING: ",UpcomingMeetingsCount);
     return (
       <div className="flex flex-col items-center space-y-2"> {/* Add flex and flex-col classes */}
         <div className="flex flex-col bg-gray-300 w-[512px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
-          {UpcomingMeetingsCount === 0
+        {show && <HomeModal show={show} setShow={() => 
+            {
+              window.history.pushState({}, "", "/meetings");
+              setShow(false);
+            }
+          } home={homeDetails} />
+        }
+          {UpcomingMeetings.length === 0
           ? (
             <div className="flex flex-col items-center justify-items-center mt-2"> {/* Add flex and flex-col classes */}
               <h3 className="text-gray-600">No meetings</h3>
             </div>
-          ) : ( meetings.map((meeting, index) => {
+          ) : ( UpcomingMeetings.map((meeting, index) => {
             return (
               meeting.status === 'Accepted' && //meeting.date > new Date().toISOString() &&
               <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
@@ -521,29 +527,31 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
                   <label>{meeting.date}</label>
                 </div>
                 <button className="bg-button-secondary text-white rounded-xl p-1 hover:bg-button-secondaryHover" onClick={() => {
-                  setShow(true);
-                }}>Home Details</button>
-                <button onClick={
-                  () => {
-                    message.open({
-                      //type: 'info',
-                      duration: 0,
-                      content: (
-                        <div>
-                          {/*Close the message when x is pressed */}
-                          <div className="flex justify-end">
-                            <button onClick={() => message.destroy()}><CloseOutlined/></button>
-                          </div>
-                          <h4>{meeting.message ==='' ? 'No message': 'Message'}</h4>
-                          <p>{meeting.message}</p>
-                        </div>
-                      )
-                    });
-              
-                  }
-                }>
-                <MailOutlined/>
-                </button>
+                      console.log("Home ID: ",meeting.houseID);
+                      getHomeDetails(meeting.houseID); 
+                      window.history.pushState({}, "", "/home/"+meeting.houseID);
+                    }}>Home Details</button>
+                    <button onClick={
+                      () => {
+                        message.open({
+                          //type: 'info',
+                          duration: 0,
+                          content: (
+                            <div>
+                              {/*Close the message when x is pressed */}
+                              <div className="flex justify-end">
+                                <button onClick={() => message.destroy()}><CloseOutlined/></button>
+                              </div>
+                              <h4>{meeting.message ==='' ? 'No message': 'Message'}</h4>
+                              <p>{meeting.message}</p>
+                            </div>
+                          )
+                        });
+                  
+                      }
+                    }>
+                    <MailOutlined/>
+                    </button>
                 <button onClick={() => updateMeetingStatus(meeting.id, 'Cancelled')}>
                   <CloseCircleFilled className="text-red-500 hover:text-red-600 cursor-pointer" style={{ fontSize: '30px' }} />
                 </button>
@@ -558,33 +566,65 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
 
   function PreviousMeetings()
   {
-    var PreviousMeetingsCount = 0;
+    
+    var PreviousMeetings: any[] = [];
     for (var i = 0; i < meetings.length; i++) {
-      if (meetings[i].status === 'Accepted' && meetings[i].date < new Date().toISOString()) {
-        PreviousMeetingsCount++;
+      if (meetings[i].status === 'Completed' || meetings[i].status === 'Passed' || meetings[i].status === 'Cancelled' || meetings[i].status === 'Rejected') {
+        PreviousMeetings = [...PreviousMeetings, meetings[i]];
       }
     }
 
     return (
       <div className="flex flex-col items-center space-y-2"> {/* Add flex and flex-col classes */}
         <div className="flex flex-col bg-gray-300 w-[512px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
-          {PreviousMeetingsCount === 0
+        {show && <HomeModal show={show} setShow={() => 
+            {
+              window.history.pushState({}, "", "/meetings");
+              setShow(false);
+            }
+          } home={homeDetails} />
+        }
+          {PreviousMeetings.length === 0
           ? (
             <div className="flex flex-col items-center justify-items-center mt-2"> {/* Add flex and flex-col classes */}
               <h3 className="text-gray-600">No meetings</h3>
             </div>
-          ) : ( meetings.map((meeting, index) => {
+          ) : ( PreviousMeetings.map((meeting, index) => {
             return (
               <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
                 <img src='https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw' alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
-                <label className="flex justify-center items-center">Ali Yiğit Taş</label>
+                <label className="flex justify-center items-center">{meeting.ownerName}</label>
                 <div className="flex flex-col justify-center items-center text-center">
                   <label>{meeting.date}</label>
+                  <label>{meeting.daytime}</label>
                 </div>
-                <label className={`${meeting.status === 'completed' ? 'text-green-500' : 'text-red-500'}`}>{meeting.status === 'completed' ? 'Completed' : 'Cancelled'}</label>
+                <label className={`${meeting.status === 'Completed' ? 'text-green-500' : 'text-red-500'}`}>{meeting.status}</label>
                 <button className="bg-button-secondary text-white rounded-xl p-1 hover:bg-button-secondaryHover" onClick={() => {
-                  setShow(true);
-                }}>Home Details</button>
+                      console.log("Home ID: ",meeting.houseID);
+                      getHomeDetails(meeting.houseID); 
+                      window.history.pushState({}, "", "/home/"+meeting.houseID);
+                    }}>Home Details</button>
+                    <button onClick={
+                      () => {
+                        message.open({
+                          //type: 'info',
+                          duration: 0,
+                          content: (
+                            <div>
+                              {/*Close the message when x is pressed */}
+                              <div className="flex justify-end">
+                                <button onClick={() => message.destroy()}><CloseOutlined/></button>
+                              </div>
+                              <h4>{meeting.message ==='' ? 'No message': 'Message'}</h4>
+                              <p>{meeting.message}</p>
+                            </div>
+                          )
+                        });
+                  
+                      }
+                    }>
+                    <MailOutlined/>
+                    </button>
               </div>
             );
           }

@@ -22,6 +22,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import MeetingsPage from './Pages/MeetingsPage';
 import EditListingPage from './Pages/EditListingPage';
 import AdminPanel from './Pages/AdminPanel';
+import { getProfilePicture } from './Pages/SigninPage';
 
 
 const items: MenuProps['items'] = [
@@ -163,7 +164,9 @@ function App() {
                 {loggedIn==="true" &&
                     <div className={`md:flex flex-col md:flex-row md:ml-auto md:mt-0 items-center ${isCollapsed ? 'hidden' : 'flex'}`}>
                       <Dropdown menu={{ items }} className="flex items-center" placement='bottomRight' arrow>
-                        <Avatar className="mx-2 cursor-pointer" size={40}>{name?.charAt(0).toUpperCase()}</Avatar>
+                        <Avatar className="mx-2 cursor-pointer" size={40}>{
+                          getProfilePicture ? getProfilePicture() : 
+                        (name?.charAt(0).toUpperCase())}</Avatar>
                       </Dropdown>
                     </div>
                 }

@@ -34,6 +34,7 @@ function SigninPage() {
     </div>
   );
 }
+var profilePicture = "";
 // eslint-disable-next-line
 function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -60,6 +61,9 @@ function handleLogin(event: React.FormEvent<HTMLFormElement>) {
         Cookies.set("City", response.data.city, { expires: 1 }); //expires in 1 day
         Cookies.set("Country", response.data.country, { expires: 1 }); //expires in 1 day
         Cookies.set("Password", response.data.password, { expires: 1 }); //expires in 1 day
+        console.log(response.data.profilePicture);
+        profilePicture = response.data.profilePicture;
+        Cookies.set("ProfilePicture",response.data.profilePicture , { expires: 1 }); //ÇALIŞMIYOR
         window.location.href = '/profile';
     })
     .catch(function (error) {
@@ -70,5 +74,7 @@ function handleLogin(event: React.FormEvent<HTMLFormElement>) {
 
   
 
-
+export const getProfilePicture = () => {
+    return profilePicture;
+}
 export default SigninPage;
