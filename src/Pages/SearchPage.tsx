@@ -151,6 +151,7 @@ function SearchPage() {
 
 
   const [homes, setHomes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // Function to fetch data
@@ -191,15 +192,17 @@ function SearchPage() {
               }));
 
                 setHomes(parsedHomes);
+                setLoading(false);
             } catch (error) {
                 console.error(error);
+                setLoading(false);
             }
         };
 
         fetchHomes();
     }, []); // Empty dependency array means this effect runs once when the component mounts
     
-
+    
 
   return (
     <div className= "bg-inherit p-6 flex min-h-full flex-row">
@@ -221,7 +224,16 @@ function SearchPage() {
             <MultiMarkerMap homes={homes} />
           </div> :
           <div className="flex flex-wrap justify-center">
-            {homes.map((house, index) => (<HomeCard key={index} home={house} />))}
+            
+            { loading ? 
+              <div className="flex justify-center items-center h-48">
+                <h1>Loading...</h1>
+              </div> :
+            homes.length === 0 ? 
+              <div className="flex justify-center items-center h-48">
+                <h1>No results found</h1>
+              </div> : homes.map((house, index) => (<HomeCard key={index} home={house} />))
+            }
           </div>
         }
         </div>

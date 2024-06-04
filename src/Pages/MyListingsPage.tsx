@@ -30,7 +30,7 @@ function MyListingsPage() {
 
 function ListMyHouse() {
     const [homes, setHomes] = useState<any[]>([]);
-
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         // Function to fetch data
         const fetchHomes = async () => {
@@ -69,6 +69,7 @@ function ListMyHouse() {
                     },
                 }));
                 setHomes(parsedHomes);
+                setLoading(false);
             } catch (error) {
                 console.error(error);
             }
@@ -76,6 +77,12 @@ function ListMyHouse() {
 
         fetchHomes();
     }, []); // Empty dependency array means this effect runs once when the component mounts
+
+    if (loading) {
+        return <div className="flex justify-center items-center h-48">
+          <h1>Loading...</h1>
+        </div>;
+    }
 
     return (
         <div className="flex flex-wrap justify-center items-center h-full bg-inherit">

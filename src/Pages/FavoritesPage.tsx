@@ -21,6 +21,7 @@ function FavoritesPage() {
 
 function ListMyHouse() {
     const [homes, setHomes] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // Function to fetch data
@@ -60,6 +61,7 @@ function ListMyHouse() {
                     },
                 }));
                 setHomes(parsedHomes);
+                setLoading(false);
             } catch (error) {
                 console.error(error);
             }
@@ -70,7 +72,8 @@ function ListMyHouse() {
 
     return (
         <div className="flex flex-wrap justify-center items-center h-full bg-inherit">
-            {homes.map(home => (<HomeCard key={home.id} home={home} />))}
+            { loading ? <h1>Loading...</h1> :
+            homes.map(home => (<HomeCard key={home.id} home={home} />))}
         </div>
     );
 }

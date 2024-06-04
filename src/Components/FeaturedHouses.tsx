@@ -17,6 +17,7 @@ function FeaturedHouses() {
   }
 
   const [homes, setHomes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // Function to fetch data
@@ -59,6 +60,7 @@ function FeaturedHouses() {
                 }));
 
                 setHomes(parsedHomes);
+                setLoading(false);
             } catch (error) {
                 console.error(error);
             }
@@ -66,6 +68,12 @@ function FeaturedHouses() {
 
         fetchHomes();
     }, []); // Empty dependency array means this effect runs once when the component mounts
+
+    if (loading) {
+        return <div className="flex justify-center items-center h-48">
+          <h1>Loading...</h1>
+        </div>;
+    }
 
     return (
       <div>
