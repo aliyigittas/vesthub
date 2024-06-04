@@ -3,7 +3,7 @@ import AddHomeMarker from '../Components/AddHomeMarker';
 import { InboxOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
 import { Image, Upload } from 'antd';
@@ -26,11 +26,29 @@ function CreateListingPage()
     const [selectedValue, setSelectedValue] = useState("Sale");
     const [address, setAddress] = useState<string | null>(null);
     const [getAddressLoading, setGetAddressLoading] = useState(false);
+    const [getReverseAddressLoading, setGetReverseAddressLoading] = useState(false);
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
-    const [fileList, setFileList] = useState<UploadFile[]>([
-    ]);
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [filters, setFilters] = useState({});
+    const fullAddressRef = useRef<HTMLInputElement>(null);
+    const [fullAddress, setFullAddress] = useState('');
+
+    //Cookies.remove("latitude");
+    //Cookies.remove("longitude");
+    //Cookies.remove("isMapOpen");
+
+    useEffect(() => {
+        Cookies.remove("latitude");
+        Cookies.remove("longitude");
+        Cookies.remove("homeCity");
+        Cookies.remove("homeDistinct");
+        Cookies.remove("homeStreet");
+        Cookies.remove("homeCountry");
+        Cookies.remove("homefullAddress");
+        Cookies.remove("isMapOpen");
+    } ,[]);
+
     const roomCount = [
         {
           key: '1',
@@ -139,6 +157,12 @@ function CreateListingPage()
         });
     };
 
+    useEffect(() => {
+        if (fullAddressRef.current) {
+            fullAddressRef.current.value = fullAddress;
+        }
+    }, [fullAddress]);
+
     return (
         <div className="min-w-screen min-h-screen place-items-center flex sm:flex-row flex-col p-4 bg-backColor space-y-4 gap-4">
             <div className="flex justify-center items-center flex-col sm:mx-auto sm:w-full sm:max-w-sm gap-4">
@@ -183,22 +207,22 @@ function CreateListingPage()
                     <div className= "flex flex-row gap-2">
                         <div>
                             <label className="block text-sm font-medium ">City</label>
-                            <input id="city" name="city" type="text" autoComplete="city" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" value={Cookies.get("homeCity")}/>
+                            <input id="city" name="city" type="text" autoComplete="city" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" readOnly/>
                         </div>
                         <div>
                             <label className="block text-sm font-medium ">District</label>
-                            <input id="distinct" name="distinct" type="text" autoComplete="distinct" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" value={Cookies.get("homeDistinct")}/>
+                            <input id="distinct" name="distinct" type="text" autoComplete="distinct" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" readOnly/>
                         </div>
                         <div>
                             <label className="block text-sm font-medium ">Street</label>
-                            <input id="street" name="street" type="text" autoComplete="street" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" value={Cookies.get("homeStreet")}/>
+                            <input id="street" name="street" type="text" autoComplete="street" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" readOnly/>
                         </div>    
                     </div>
                     <div>
                         <label className="block text-sm font-medium ">Address</label>
-                        <input id="fullAddress" name="fullAddress" type="text" autoComplete="address" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" />
+                        <input id="fullAddress" name="fullAddress" type="text" autoComplete="address" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={fullAddress} ref={fullAddressRef}/>
                         <button type="button" className="mt-2 flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover disabled:bg-opacity-50"  onClick={async ()=>{
-                            const address= await GeoCodeFromGMaps();
+                            const address= await ReverseGeoCodeFromGMaps(parseFloat(Cookies.get("latitude") as string),parseFloat(Cookies.get("longitude") as string));
                             if (address !== "Address could not be found.")
                             {
                                 
@@ -209,15 +233,36 @@ function CreateListingPage()
                                 alert("Address could not be found. Please make sure location services are enabled.");
                             }
                         }}
-                        disabled={getAddressLoading}
+                        disabled={getReverseAddressLoading}
                         
                         >
-                            {!getAddressLoading ? "Get Address from Current Location" : 
+                            {!getReverseAddressLoading ? "Get Address from Selected Location" : 
                             <div className="flex justify-center items-center gap-2">
                                 <LoadingOutlined />
                                 <span>Loading...</span>
                             </div>
                             }
+                        </button>
+                        <button type="button" className="mt-2 flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover disabled:bg-opacity-50"  onClick={async ()=>{
+                            //get the input value
+                            var fullAddress = (document.getElementById("fullAddress") as HTMLInputElement).value;
+                            await GeoCodeFromGMaps(fullAddress);
+                            const address= await ReverseGeoCodeFromGMaps(parseFloat(Cookies.get("latitude") as string),parseFloat(Cookies.get("longitude") as string));
+                            if (address !== "Address could not be found.")
+                            {
+                                document.getElementById("fullAddress")?.setAttribute("value", address);
+                            }
+                            else
+                            {
+                                alert("Address could not be found. Please make sure location services are enabled.");
+                            }
+                        } } disabled={getAddressLoading}> 
+                            {!getAddressLoading ? "Locate Address on Map" : 
+                            <div className="flex justify-center items-center gap-2">
+                                <LoadingOutlined />
+                                <span>Loading...</span>
+                            </div>
+                        }
                         </button>
                     </div>
                     <div className='flex flex-row gap-2'>
@@ -387,6 +432,14 @@ function CreateListingPage()
         .then(function (response) {
             console.log(response);
             //window.location.href = '/';
+            Cookies.remove("latitude");
+            Cookies.remove("longitude");
+            Cookies.remove("homeCity");
+            Cookies.remove("homeDistinct");
+            Cookies.remove("homeStreet");
+            Cookies.remove("homeCountry");
+            Cookies.remove("homefullAddress");
+            Cookies.remove("isMapOpen");
         })
         .catch(function (error) {
             console.log(error);
@@ -400,17 +453,48 @@ function CreateListingPage()
     }
 
     //bu daha net ve hızlı ama limitli
-    async function GeoCodeFromGMaps() :Promise<string> {
-        setGetAddressLoading(true);
+    async function ReverseGeoCodeFromGMaps(lat:number,lng:number) :Promise<string> {
+        //change city and distinct and street fields in the form
+        setGetReverseAddressLoading(true);
         try
         {
-            const response =await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${Cookies.get("latitude")},${Cookies.get("longitude")}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
+            const response =await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
             console.log(response.data.results);
             Cookies.set("homefullAddress", response.data.results[0].formatted_address, { expires: (1 / 1440) * 60 }); // 1 hour
             Cookies.set("homeCity", response.data.results[0].address_components[4].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
             Cookies.set("homeDistinct", response.data.results[0].address_components[3].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
             Cookies.set("homeStreet", response.data.results[0].address_components[1].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
             Cookies.set("homeCountry", response.data.results[0].address_components[5].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
+            //change city and distinct and street fields in the form
+            var fullAddress = response.data.results[0].formatted_address;
+            var city = response.data.results[0].address_components[4].long_name;
+            var distinct = response.data.results[0].address_components[3].long_name;
+            var street = response.data.results[0].address_components[1].long_name;
+            document.getElementById("fullAddress")?.setAttribute("value", fullAddress);
+            document.getElementById("city")?.setAttribute("value", city);
+            document.getElementById("distinct")?.setAttribute("value", distinct);
+            document.getElementById("street")?.setAttribute("value", street);
+            setFullAddress(fullAddress);
+            setGetReverseAddressLoading(false);
+            return response.data.results[0].formatted_address;
+        }
+        catch(error)
+        {
+            setGetReverseAddressLoading(false);
+            console.log(error);
+            setAddress("Address could not be found.");
+            return "Address could not be found.";
+        }
+    }
+
+    async function GeoCodeFromGMaps(fullAddress:string) :Promise<string> {
+        setGetAddressLoading(true);
+        try
+        {
+            const response =await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${fullAddress}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
+            console.log("GEOCODING: ",response.data.results);
+            Cookies.set("latitude", response.data.results[0].geometry.location.lat, { expires: (1 / 1440) * 60 }); // 1 hour
+            Cookies.set("longitude", response.data.results[0].geometry.location.lng, { expires: (1 / 1440) * 60 }); // 1 hour
             setGetAddressLoading(false);
             return response.data.results[0].formatted_address;
         }

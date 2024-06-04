@@ -13,6 +13,7 @@ function AddHomeMarker() {
     const [showLoader, setShowLoader] = useState(false)
     let latitude = Cookies.get("latitude");
     let longitude = Cookies.get("longitude");
+    let isMapOpen = Cookies.get("isMapOpen");
  
     const handleClick = () => {
       setShowLoader(true);
@@ -28,22 +29,22 @@ function AddHomeMarker() {
     }, [latitude, longitude]);
 
     
-    if (position.latitude == null || position.longitude == null) {
-        return (
-            <button className="flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover disabled:bg-opacity-50" onClick={(e) => {
-              getCurrentLocation();
-              handleClick();
-            }}
-            disabled={showLoader}
-            >
-                {!showLoader ? "Open Map" : 
-                  <div className="flex justify-center items-center gap-2">
-                    <LoadingOutlined />
-                    <span>Loading...</span>
-                  </div>
-                }
-            </button>
-        );
+    if (position.latitude === null || position.longitude === null || isMapOpen != "true") {
+      return (
+          <button className="flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover disabled:bg-opacity-50" onClick={(e) => {
+            getCurrentLocation();
+            handleClick();
+          }}
+          disabled={showLoader}
+          >
+              {!showLoader ? "Open Map" : 
+                <div className="flex justify-center items-center gap-2">
+                  <LoadingOutlined />
+                  <span>Loading...</span>
+                </div>
+              }
+          </button>
+      );
     }
     
     return isLoaded ? (
@@ -98,6 +99,7 @@ function AddHomeMarker() {
         });
         Cookies.set("latitude", position.coords.latitude, { expires: (1 / 1440) * 60 }); // 1 hour
         Cookies.set("longitude", position.coords.longitude, { expires: (1 / 1440) * 60 }); // 1 hour
+        Cookies.set("isMapOpen", "true", { expires: (1 / 1440) * 60 }); // 1 hour
       }, function (error) {
         if (error.code === error.PERMISSION_DENIED) {
           //check iphone settings
