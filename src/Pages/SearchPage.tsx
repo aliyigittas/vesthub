@@ -342,7 +342,7 @@ function SearchPage() {
             <div className="flex flex-row items-center gap-2">
               <input type="radio" id="last24hours"className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" onChange={(e) => {
 
-                listingDate = 'last24hours';
+                listingDate = 'last1day'; //new change
               } }
               defaultChecked = {listingDate === 'last24hours' ? true : false}
               />
@@ -359,7 +359,7 @@ function SearchPage() {
             </div>
             <div className="flex flex-row items-center gap-2">
               <input type="radio" id="last1week" className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" onChange={(e) => {
-                    listingDate = 'last1week';
+                    listingDate = 'last7days';
                   } }
                   defaultChecked = {listingDate === 'last1week' ? true : false}
                   />
