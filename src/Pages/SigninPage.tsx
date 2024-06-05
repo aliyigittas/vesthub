@@ -4,12 +4,14 @@ import axios from 'axios';
 import { useState } from 'react';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
+
 function SigninPage() {
     const [passwordShow, setPassword] = useState(false);
 
     if (Cookies.get("loggedIn") === 'true') {
         window.location.href = '/';
     }
+    
   return (
     <div className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 bg-backColor">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -53,8 +55,7 @@ function SigninPage() {
         </div>
     </div>
   );
-}
-var profilePicture = "";
+  var profilePicture = "";
 // eslint-disable-next-line
 function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -83,7 +84,13 @@ function handleLogin(event: React.FormEvent<HTMLFormElement>) {
         Cookies.set("Password", response.data.password, { expires: 1 }); //expires in 1 day
         console.log(response.data.profilePicture);
         profilePicture = response.data.profilePicture;
-        Cookies.set("ProfilePicture",response.data.profilePicture , { expires: 1 }); //ÇALIŞMIYOR
+
+        // save the profile picture to local data
+        localStorage.setItem("profilePicture", profilePicture);
+
+
+
+
         window.location.href = '/profile';
     })
     .catch(function (error) {
@@ -91,10 +98,6 @@ function handleLogin(event: React.FormEvent<HTMLFormElement>) {
         window.location.href = '/';
     });
   }
-
-  
-
-export const getProfilePicture = () => {
-    return profilePicture;
 }
+
 export default SigninPage;
