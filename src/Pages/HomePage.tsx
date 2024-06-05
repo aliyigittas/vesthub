@@ -123,7 +123,7 @@ function HomePage({ home }: { home?: boolean }) {
     var delimeter = "&";
     event.preventDefault();
     const search = document.getElementById('search') as HTMLInputElement;
-    window.location.href = '/search/' + search.value + delimeter + 'type=' + selectedValue + delimeter +'houseType=All' + delimeter + 'roomCount=All' + delimeter + 'minPrice=-1' + delimeter + 'maxPrice=-1' + delimeter + 'minArea=-1' + delimeter + 'maxArea=-1' + delimeter + 'listingDate=All';
+    window.location.href = '/search/' + search.value + delimeter + 'type=' + selectedValue + delimeter +'houseType=All' + delimeter + 'roomCount=All' + delimeter + 'minPrice=-1' + delimeter + 'maxPrice=-1' + delimeter + 'minArea=-1' + delimeter + 'maxArea=-1' + delimeter + 'listingDate=All' + delimeter + 'flag=0';
     return window.location.href;
   }
 }

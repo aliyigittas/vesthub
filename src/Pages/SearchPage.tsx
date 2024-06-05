@@ -139,6 +139,9 @@ function SearchPage() {
   };
 
   useEffect(() => {
+    if (searchtext=== '  ') {
+      return;
+    }
     axios.get('http://localhost:8080/api/sideFilter/' + searchtext)
     .then(response => {
       if (response.data) {
@@ -258,7 +261,7 @@ function SearchPage() {
     } else {
       localCountry = searchtext;
     }
-
+  
     return <div>
       <form className="w-[350px] bg-button-primary flex flex-col space-y-4 p-4 items-start shadow-xl rounded-lg" onSubmit={searchFilter}>
         <div className="flex flex-row w-full justify-between gap-3 items-center">
@@ -396,6 +399,10 @@ function SearchPage() {
     event.preventDefault();
     //delimeter is & for multiple filters, add the filter if it is not containing in the url
     var searchTextUpdated: string = countryText + ' ' + cityText + ' ' + districtText;
+    if(countryText=='' && cityText =='' && districtText ==''){
+      alert("One of the fields of country, city or district must be filled!");
+      return;
+    }
     
     if (Number.isNaN(minPrice))
       minPrice = -1;
@@ -458,6 +465,9 @@ function SearchPage() {
     }
     if (newUrl.includes('type')) {
       newUrl = newUrl.replace(new RegExp('type=[^&]*', 'g'), 'type=' + selectedValue);
+    }
+    if(newUrl.includes('flag')){
+      newUrl = newUrl.replace(new RegExp('flag=[^&]*', 'g'), 'flag=' + 1);
     }
     console.log(newUrl);
     window.location.href = newUrl;
