@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import { useEffect, useRef, useState } from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
-import { Image, Upload } from 'antd';
+import { Image, message, Upload } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
 import { get } from 'http';
 import { ButtonGroup } from 'reactstrap';
@@ -103,7 +103,18 @@ function CreateListingPage()
         setPreviewOpen(true);
       };
     const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
+        {
+        //check file format
+        for (let i = 0; i < newFileList.length; i++) {
+            if (!newFileList[i].type!.includes('image')) {
+                message.error(`${newFileList[i].name} is not an image file`);
+                //remove file from list with setting fileList except the file that is not an image
+                newFileList.splice(i, 1);
+            }
+        }
         setFileList(newFileList);
+    }
+    
     const uploadButton = (
         <button style={{ border: 0, background: 'none' }} type="button">
           <PlusOutlined />
@@ -169,8 +180,9 @@ function CreateListingPage()
             <div className="flex justify-center items-center flex-col sm:mx-auto sm:w-full sm:max-w-sm gap-4">
                 <div className='flex flex-col gap-3'>
                     <>
-                        <Upload
-                            //action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                        <Upload 
+                            //check file format
+                            accept=".jpg,.jpeg,.png"
                             listType="picture-card"
                             fileList={fileList}
                             onPreview={handlePreview}
@@ -178,8 +190,7 @@ function CreateListingPage()
                             beforeUpload={(file) => {
                                 setFileList([...fileList, file]);
                                 return false;
-                            
-                            }
+                                }
                             }
                         >
                             {fileList.length >= 8 ? null : uploadButton}
