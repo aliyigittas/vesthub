@@ -226,16 +226,6 @@ function MeetingsPage() {
   , []);
 */
 
-function updateMeetingStatus(meetingID:number , meetingStatus:String){
-  axios.post('http://localhost:8080/api/updateReservationStatus',{
-    reservationID: meetingID,
-    meetingStatus: meetingStatus
-  })
-  .then(response => {
-      console.log(response);
-      window.location.reload();
-  })
-}
 
   return (
     <div className=" p-4 flex-col items-center space-y-2 bg-inherit min-h-full"> {/* Add flex and flex-col classes */}
@@ -285,6 +275,18 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
 
   function WaitingMeetingsSentToMe()
   {
+    const [update, setUpdate] = useState('');
+    function updateMeetingStatus(meetingID:number , meetingStatus:String){
+      axios.post('http://localhost:8080/api/updateReservationStatus',{
+        reservationID: meetingID,
+        meetingStatus: meetingStatus
+      })
+      .then(response => {
+          console.log(response);
+          setUpdate('update');
+      })
+    }
+
     var WaitingMeetingsSentToMe: any[] = [];
     for (var i = 0; i < meetings.length; i++) {
       if (meetings[i].status === 'Waiting' && meetings[i].ownerMail === Cookies.get("Email")) {
@@ -423,6 +425,18 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
 
   function WaitingMeetingsSentByMe()
   {
+    const [update, setUpdate] = useState('');
+    function updateMeetingStatus(meetingID:number , meetingStatus:String){
+      axios.post('http://localhost:8080/api/updateReservationStatus',{
+        reservationID: meetingID,
+        meetingStatus: meetingStatus
+      })
+      .then(response => {
+          console.log(response);
+          setUpdate('update');
+      })
+    }
+
     var WaitingMeetingsSentByMe: any[] = [];
     for (var i = 0; i < meetings.length; i++) {
       if (meetings[i].status === 'Waiting' && meetings[i].clientMail === Cookies.get("Email")) {
@@ -496,12 +510,58 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
 
   function UpcomingMeetings()
   {
-    var UpcomingMeetings: any[] = [];
-    for (var i = 0; i < meetings.length; i++) {
-      if (meetings[i].status === 'Accepted') {
-        UpcomingMeetings = [...UpcomingMeetings, meetings[i]];
+    const [update, setUpdate] = useState(false);
+    const [upcomingMeetings, setUpcomingMeetings] = useState<any[]>([]);
+
+    useEffect(() => {
+      axios.get(`http://localhost:8080/api/getReservations/${Cookies.get("Email")}`)
+      .then((response) => {
+        console.log(response.data);
+        setMeetings(
+          response.data.map((meeting:any) => {
+            return {
+              id: meeting.id,
+              houseID: meeting.houseID,
+              date: meeting.date,
+              ownerName: meeting.ownerName,
+              ownerProfilePicture: meeting.ownerProfilePicture,
+              ownerMail: meeting.ownerMail,
+              customerid: meeting.customerid,
+              clientMail: meeting.clientMail,
+              status: meeting.status,
+              daytime: meeting.daytime,
+              message: meeting.message,
+            }
+          })
+        );
+        console.log("MeetingsAAAA: ",meetings);
+        setUpdate(false);
       }
+      )
+      .catch((error) => {
+        console.log(error);
+      });
+      const filteredMeetings = meetings.filter(meeting => meeting.status === 'Accepted');
+      setUpcomingMeetings(filteredMeetings);
+      console.log("Runladı");
+    }, []);
+
+
+
+    console.log("UPCOMING STATEE: ",upcomingMeetings);
+
+    function updateMeetingStatus(meetingID:number , meetingStatus:String){
+      axios.post('http://localhost:8080/api/updateReservationStatus',{
+        reservationID: meetingID,
+        meetingStatus: meetingStatus
+      })
+      .then(response => {
+          console.log(response);
+          setUpdate(!update);
+          //setUpcomingMeetings([]);
+      })
     }
+    
     return (
       <div className="flex flex-col items-center space-y-2"> {/* Add flex and flex-col classes */}
         <div className="flex flex-col bg-gray-300 w-[512px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
@@ -512,12 +572,12 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
             }
           } home={homeDetails} />
         }
-          {UpcomingMeetings.length === 0
+          {upcomingMeetings.length === 0
           ? (
             <div className="flex flex-col items-center justify-items-center mt-2"> {/* Add flex and flex-col classes */}
               <h3 className="text-gray-600">No meetings</h3>
             </div>
-          ) : ( UpcomingMeetings.map((meeting, index) => {
+          ) : ( upcomingMeetings.map((meeting, index) => {
             return (
               meeting.status === 'Accepted' && //meeting.date > new Date().toISOString() &&
               <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
@@ -565,8 +625,7 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
   }
 
   function PreviousMeetings()
-  {
-    
+  { 
     var PreviousMeetings: any[] = [];
     for (var i = 0; i < meetings.length; i++) {
       if (meetings[i].status === 'Completed' || meetings[i].status === 'Passed' || meetings[i].status === 'Cancelled' || meetings[i].status === 'Rejected') {
