@@ -112,7 +112,7 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
         </div>
 
         { (window.location.href.includes('/myListings') || window.location.href.includes('/favorites')) && 
-          <div className={`absolute top-1 right-1 p-1 px-2 ${home.status=="Available" ? "bg-green-500": "bg-red-600"} rounded-lg shadow-md flex items-center justify-center`}> {/*eslint-disable-line eqeqeq*/}
+          <div className={`absolute top-1 right-1 p-1 px-2 ${home.status=="Available" ? "bg-green-500": (home.status=="Pending" ? "bg-yellow-500": (home.status=="Rejected" ? "bg-black": "bg-red-600"))} rounded-lg shadow-md flex items-center justify-center`}> {/*eslint-disable-line eqeqeq*/}
           <span className="text-white font-bold text-[15px]">
             {home.status}
           </span>

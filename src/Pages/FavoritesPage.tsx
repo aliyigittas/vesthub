@@ -85,7 +85,7 @@ function ListMyHouse() {
                     </div>
                 </div>
                 ) : (
-                <div className="flex items-start justify-center w-full h-full">
+                <div className="flex flex-wrap items-start justify-center w-full h-full p-2">
                     {homes.map(home => <HomeCard key={home.id} home={home} />)}
                 </div>
             )}

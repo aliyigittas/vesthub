@@ -147,10 +147,9 @@ function App() {
           <nav className="px-8 py-2.5">
             <div className="md:flex md:items-center justify-end">
               <div className="flex justify-between items-center">
-                <img src={vesthublogo} alt="Logo" width='100' height='100' className="d-inline-block align-center md:mr-6 xs:mr-4 cursor-pointer" onClick={() => window.location.href = '/'} />
-                <label className="text-3xl font-bold">VestHub</label>
+                <img id='applogo' src={vesthublogo} alt="Logo" width='100' height='100' className="d-inline-block align-center md:mr-6 xs:mr-4 cursor-pointer" onClick={() => window.location.href = '/'} />
+                <label htmlFor='applogo' className="text-3xl font-bold cursor-pointer"onClick={() => window.location.href = '/'}>VestHub</label>
                 <div className='flex items-center'>
-                  
                   <button className="bg-button-secondary p-2 rounded md:hidden" id="navbar-toggle">
                     <svg className="h-8 w-8 text-backColor" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="1" y1="18" x2="23" y2="18" /><line x1="1" y1="12" x2="23" y2="12" /><line x1="1" y1="6" x2="23" y2="6" /></svg>
                   </button>

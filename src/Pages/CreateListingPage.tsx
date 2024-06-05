@@ -27,6 +27,7 @@ function CreateListingPage()
     const [address, setAddress] = useState<string | null>(null);
     const [getAddressLoading, setGetAddressLoading] = useState(false);
     const [getReverseAddressLoading, setGetReverseAddressLoading] = useState(false);
+    const [addHouseLoading, setAddHouseLoading] = useState(false);
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -326,7 +327,17 @@ function CreateListingPage()
                     </div>
                     <div>
                         <label className="block text-sm font-medium ">Price</label>
-                        <input id="price" name="price" type="number" autoComplete="price" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                        <input id="price" name="price" type="number" autoComplete="price" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"
+                        onChange={
+                            (e) => {
+                                if(parseInt(e.target.value) <= 0)
+                                {
+                                    alert("Price cannot be negative or zero.");
+                                    e.target.value = "";
+                                }
+                            }
+                        }
+                        />
                     </div>
                     <div>
                         <label className="block text-sm font-medium ">Description</label>
@@ -348,9 +359,14 @@ function CreateListingPage()
                         </div>
 
                     </div>
-                    <input type="submit" className="flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover" value="Add House" onClick={()=>{
-
-                    }}/>
+                    <button type="submit" className="flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover" value="Add House" disabled={addHouseLoading}>
+                    {!addHouseLoading ? "Add House" : 
+                            <div className="flex justify-center items-center gap-2">
+                                <LoadingOutlined />
+                                <span>Adding...</span>
+                            </div>
+                        } 
+                    </button>
                 </form>
                 <div className="mt-3 flex flex-row items-center justify-between">
                     <label>Return to the main page?</label>
@@ -362,6 +378,7 @@ function CreateListingPage()
 
     async function handleCreateListing (event: React.FormEvent<HTMLFormElement>)
     {
+        setAddHouseLoading(true);
         event.preventDefault();
         Cookies.remove("homefullAddress");
         const data = new FormData(event.currentTarget);
@@ -382,22 +399,23 @@ function CreateListingPage()
         const country = Cookies.get("homeCountry");
         const saleRent = selectedValue;
         var keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
-        
-        
 
         if(fileList.length < 3){
             alert("Please upload at least three image.");
+            window.location.reload();
             return;
-        }        
+        }
 
         //floor shouldnt be bigger than total floor
         if(parseInt(floor) > parseInt(totalFloor)){
             alert("Floor should be smaller than total floor.");
+            window.location.reload();
             return;
         }
 
         if(parseInt(bedroom) > parseInt(roomCount.charAt(0))){
             alert("Number of bedrooms cannot be bigger than room count.");
+            window.location.reload();
             return;
         }
        
@@ -435,6 +453,7 @@ function CreateListingPage()
         })
         .then(function (response) {
             console.log(response);
+            setAddHouseLoading(false);
             alert("House added successfully!");
             Cookies.remove("latitude");
             Cookies.remove("longitude");
@@ -450,11 +469,6 @@ function CreateListingPage()
             console.log(error);
             //window.location.href = '/';
         });
-
-        axios.get('http://localhost:8080/api/getPhotos/21')
-        .then(function (response) {
-            console.log(response);
-        })
     }
 
     //bu daha net ve hızlı ama limitli
@@ -510,24 +524,6 @@ function CreateListingPage()
             setAddress("Address could not be found.");
             return "Address could not be found.";
         }
-    }
-
-    //bu bedava
-    //eslint-disable-next-line
-    function GeoCodeFromGeoApify()
-    {
-        setGetAddressLoading(true);
-        axios.get(`https://api.geoapify.com/v1/geocode/reverse?lat=${Cookies.get("latitude")}&lon=${Cookies.get("longitude")}&apiKey=8af1068cc41e4c56b9103ad4db20ecff`)
-        .then((response) => {
-        console.log(response.data.features);
-        setAddress(response.data.features[0].properties.formatted);
-        setGetAddressLoading(false);
-        })
-        .catch((error) => {
-        setGetAddressLoading(false);
-        console.log(error);
-        setAddress("Address could not be found.");
-        });
     }
 }
 

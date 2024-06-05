@@ -15,6 +15,7 @@ import { FaBath, FaBuilding} from "react-icons/fa";
 import 'photoswipe/dist/photoswipe.css'
 import { Gallery, Item } from 'react-photoswipe-gallery'
 import axios from 'axios';
+import DefaultProfilePicture from './../DefaultProfilePhoto.png';
 
 
 function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void; home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number, status:string, floor:number, totalFloor:number , houseType:string,}}) {
@@ -37,6 +38,30 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
           value: 'Evening',
         }
       ];
+    const [ownerInfo, setOwnerInfo] = useState<{name: string, surname: string, phoneNumber: string, email: string, profilePicture: string}>();
+
+      useEffect(() => {
+        if (Cookies.get('Email')!=home.ownerMail) {
+            //get owner name, surname, phone number and email, profile picture
+            axios.get(`http://localhost:8080/api/getUser/${home.ownerMail}`)
+            .then(response => {
+                console.log(response.data);
+                setOwnerInfo({
+                    name: response.data.name,
+                    surname: response.data.surname,
+                    phoneNumber: response.data.phone,
+                    email: response.data.email,
+                    profilePicture: response.data.profilePicture
+                });
+            }
+            ).catch(error => {
+                console.log(error);
+            }
+            );
+            console.log(ownerInfo);
+        }
+    }
+    , [home.ownerMail]);
 
     return (
         <Modal
@@ -57,56 +82,61 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                     {<Images />}
                 </div>
                 <div className="flex justify-between mt-3">
-                    <h1 className=" text-5xl font-bold ">{home.title}</h1>
-                    <button className="text-white animate-pulse p-3 text-[18px] font-bold bg-button-primary rounded-lg" onClick={
-                        () => {
-                            axios.post('http://localhost:8080/api/changeAvailability', {houseID: home.id, status: home.status === 'Available' ? home.type == 'Sale' ? 'Sold': 'Rented' : 'Available'})
-                            .then(response => {
-                                console.log(response.data);
-                                if (response.data === true) {
-                                    alert('House marked as sold');
-                                    window.location.reload();
+                    <h1 className="text-3xl font-bold ">{home.title}</h1>
+                    <div className="flex-row flex space-x-2">
+                        <h1 className="text-3xl font-bold">{
+                            home.type === "Sale" ? home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " ₺" : home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₺/month"
+                        }</h1>
+                        {
+                        Cookies.get('Email') === home.ownerMail && home.status !== 'Rejected' && home.status !== 'Pending' &&
+                        <button className="text-white animate-pulse p-2 text-[18px] font-bold bg-button-primary rounded-lg" onClick={
+                            () => {
+                                axios.post('http://localhost:8080/api/changeAvailability', {houseID: home.id, status: home.status === 'Available' ? home.type == 'Sale' ? 'Sold': 'Rented' : 'Available'})
+                                .then(response => {
+                                    console.log(response.data);
+                                    if (response.data === true) {
+                                        alert('House marked as sold');
+                                        window.location.reload();
+                                    }
+                                });
+                            
                                 }
-                            });
-                        
-                            }
-                    }>{ home.status == 'Sold' ? 'Revert': `Mark as ${home.type === "Sale" ? "Sold" : "Rented"}`}</button>
-                    <h1 className="text-5xl font-bold">{
-                        home.type === "Sale" ? home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " ₺" : home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₺/month"
-                    }</h1>
+                        }>{ home.status == 'Sold' ? 'Revert': home.status == 'Rented' ? 'Revert': `Mark as ${home.type === "Sale" ? "Sold" : "Rented"}`}</button>
+                    }
+                    </div>
                 </div>
-                <div className=' pt-2 pb-1'>
-                    <h1 className=" text-xl text-gray-600">{home.address}</h1>
+                <div className='pt-2 pb-1'>
+                    <h6 className=" text-gray-600">{home.address}</h6>
                 </div>
                 <div className="flex flex-wrap md:flex-row gap-4 pt-4 pb-4 items-start">
                     <div className="flex flex-row items-center bg-slate-100 shadow-md gap-2 p-3 w-full md:w-auto overflow-hidden rounded-lg">
                         <IoBed className='text-[22px]'/>
-                        <label className="text-[22px] font-bold">Bedroom :</label>
-                        <label className="text-[22px]  font-bold">{home.numOfBedroom}</label>
+                        <label className="text-[16px] font-bold">Bedroom :</label>
+                        <label className="text-[16px]  font-bold">{home.numOfBedroom}</label>
                     </div>
                     <div className="flex flex-row items-center bg-slate-100 shadow-md gap-2 p-3 w-full md:w-auto overflow-hidden rounded-lg">
                         <FaBath className='text-[22px]'/>
-                        <label className="text-[22px] font-bold">Bathroom :</label>
-                        <label className="text-[22px] font-bold">{home.numOfBathroom}</label>
+                        <label className="text-[16px] font-bold">Bathroom :</label>
+                        <label className="text-[16px] font-bold">{home.numOfBathroom}</label>
                     </div>
                     <div className="flex flex-row items-center bg-slate-100 shadow-md gap-2 p-3 w-full md:w-auto overflow-hidden rounded-lg">
                         <FaBuilding className='text-[22px]'/>
-                        <label className="text-[22px] font-bold">Floor</label>
-                        <label className="text-[22px] font-bold">{home.floor}/{home.totalFloor}</label>
+                        <label className="text-[16px] font-bold">Floor</label>
+                        <label className="text-[16px] font-bold">{home.floor}/{home.totalFloor}</label>
                     </div>
                     <div className="flex flex-row items-center bg-slate-100 shadow-md gap-2 p-3 w-full md:w-auto overflow-hidden rounded-lg">
                         <BiSolidArea className='text-[22px]'/>
-                        <label className="text-[22px] font-bold">Area</label>
-                        <label className="text-[22px] font-bold">{home.area} m²</label>
+                        <label className="text-[16px] font-bold">Area</label>
+                        <label className="text-[16px] font-bold">{home.area} m²</label>
                     </div>
                 </div>
                 <div className="flex flex-col items-start mt-2">
-                    <h1 className="text-4.5xl font-bold">Description</h1>
+                    <h1 className="text-xl font-bold">Description</h1>
                     <p className="text-xl">{home.description}</p>
                 </div>
                 <div className="flex flex-col items-start mt-4">
-                    <h1 className="text-4xl font-bold">Key Features</h1>
-                    <div className="flex flex-wrap w-full rounded-lg gap-2 text-[18px] font-bold pt-2">
+                    <h1 className="text-xl font-bold">Key Features</h1>
+                    <div className="flex flex-wrap w-full rounded-lg gap-2 pt-2">
                         {home?.keyFeatures && Object.keys(home.keyFeatures).map((key, index)=> {
                             return (
                                 <div key={index} className={`flex flex-row items-center p-2 gap-2 rounded-lg ${
@@ -159,82 +189,87 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                     <div className='flex flex-wrap items-center justify-start gap-4'> 
                         <div className="flex flex-col items-start">
                             <div className="flex flex-wrap items-center gap-4">
-                                <Avatar size={85} src="https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw" />
+                                <Avatar size={85} src={ownerInfo?.profilePicture == undefined ? DefaultProfilePicture : ownerInfo.profilePicture} />
                                 <div className="flex flex-col text-left gap-1 text-gray-900">
-                                    <label className="text-[25px]">Ali Taş</label>
-                                    <a href='tel:+905300493683' className="text-button-primary hover:text-button-primaryHover text-[12px]">+90 530 049 36 83</a>
-                                    <a href='mailto:aliyigittas@ali.com' className="text-button-primary hover:text-button-primaryHover">aliyigittas@ali.com</a>
+                                    <label className="text-[25px]">{ownerInfo?.name} {ownerInfo?.surname}</label>
+                                    <a href={`mailto:${ownerInfo?.email}`} className="text-button-primary hover:text-button-primaryHover text-[12px]">{ownerInfo?.email}</a>
+                                    <a href={`tel:+90${ownerInfo?.phoneNumber}`} className="text-button-primary hover:text-button-primaryHover text-[12px]">+90{ownerInfo?.phoneNumber}</a>
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-col items-start space-y-2">
-                            <DateTimePicker 
-                                //mobiletoolbar hidden
-                                
-                                label="Select Date and Time"
-                                
-                                //disable past dates
-                                shouldDisableDate={(date) => {
-                                    //disble past dates
-                                    if (date && date.isBefore(dayjs().startOf('day'))) {
-                                        return true;
+                        {Cookies.get('loggedIn') === 'true' &&
+                            <div className="flex flex-row items-center justify-center space-x-2">
+                            <div className="flex flex-col items-start space-y-2">
+                                <DateTimePicker 
+                                    //mobiletoolbar hidden
+                                    
+                                    label="Select Date and Time"
+                                    
+                                    //disable past dates
+                                    shouldDisableDate={(date) => {
+                                        //disble past dates
+                                        if (date && date.isBefore(dayjs().startOf('day'))) {
+                                            return true;
+                                        }
+                                        return false;
+                                    }}
+                                    
+                                    views={['year', 'month', 'day']}
+                                    orientation='landscape'
+                                    onChange={setValue}
+                                    closeOnSelect={true}
+                                    slotProps={{ textField: { size: 'small', color: 'success'}}}
+                                    //    shouldDisableTime={(date) => {
+                                    //        //disble tomorrow
+                                    //        if (date && date.isAfter(dayjs().add(1, 'day').startOf('day'))) {
+                                    //            return true;
+                                    //        }
+                                    //        return false;
+                                    //    }
+                                    //
+                                    //}
+                                />
+                                <select className="border-1 w-full border-[#c4c4c4] focus:border-button-primary hover:border-button-primary focus:ring-0 p-2 rounded-lg">
+                                    {daytime.map((time) => {
+                                        return (
+                                            <option key={time.key} value={time.value}>{time.label}</option>
+                                        );
+                                    })}
+                                </select>
+                            </div>
+                            <div className="flex flex-col items-start space-y-2">
+                                <TextArea className='p-2 border-1 min-w-[200px] border-[#c4c4c4] focus:border-button-primary hover:border-button-primary focus:ring-0' placeholder="Type your message here" autoSize={{ minRows: 1, maxRows: 3 }} variant="outlined" />
+                                <button className="bg-button-primary text-white rounded-lg p-2 min-w-[200px]" onClick={() => {
+                                    //send the meeting request
+                                    //console.log(value);
+                                    console.log(value?.format('YYYY-MM-DD'));
+                                    console.log('Message:', document.querySelector('textarea')?.textContent);
+                                    console.log('date:', value?.format('YYYY-MM-DD').toString());
+                                    if (value?.format('YYYY-MM-DD').toString() === 'Invalid Date') {
+                                        alert('Please select a date and time');
+                                        return;
                                     }
-                                    return false;
-                                }}
-                                
-                                views={['year', 'month', 'day']}
-                                orientation='landscape'
-                                onChange={setValue}
-                                closeOnSelect={true}
-                                slotProps={{ textField: { size: 'small', color: 'success'}}}
-                                //    shouldDisableTime={(date) => {
-                                //        //disble tomorrow
-                                //        if (date && date.isAfter(dayjs().add(1, 'day').startOf('day'))) {
-                                //            return true;
-                                //        }
-                                //        return false;
-                                //    }
-                                //
-                                //}
-                            />
-                            <TextArea className='p-2 border-1 border-[#c4c4c4] focus:border-button-primary hover:border-button-primary focus:ring-0' placeholder="Type your message here" autoSize={{ minRows: 1, maxRows: 3 }} variant="outlined" />
-                            <select className="border-1 w-full border-[#c4c4c4] focus:border-button-primary hover:border-button-primary focus:ring-0 p-2 rounded-lg">
-                                {daytime.map((time) => {
-                                    return (
-                                        <option key={time.key} value={time.value}>{time.label}</option>
+                                    axios.post('http://localhost:8080/api/addReservation', {
+                                        houseID: home.id,
+                                        ownerMail: home.ownerMail,
+                                        clientMail: Cookies.get('Email'),
+                                        date: (value?.format('YYYY-MM-DD')!).toString(),
+                                        message: document.querySelector('textarea')?.textContent,
+                                        daytime: document.querySelector('select')?.value
+                                    }).then(response => {
+                                        console.log(response.data);
+                                        if (response.data === true) {
+                                            alert('Meeting request sent successfully');
+                                        }
+                                        else{
+                                            alert('Meeting request could not be sent');
+                                        }
+                                    }
                                     );
-                                })}
-                            </select>
-                        </div>
-                        <button className="bg-button-primary text-white rounded-lg p-2" onClick={() => {
-                            //send the meeting request
-                            //console.log(value);
-                            console.log(value?.format('YYYY-MM-DD'));
-                            console.log('Message:', document.querySelector('textarea')?.textContent);
-                            console.log('date:', value?.format('YYYY-MM-DD').toString());
-                            if (value?.format('YYYY-MM-DD').toString() === 'Invalid Date') {
-                                alert('Please select a date and time');
-                                return;
-                            }
-                            axios.post('http://localhost:8080/api/addReservation', {
-                                houseID: home.id,
-                                ownerMail: home.ownerMail,
-                                clientMail: Cookies.get('Email'),
-                                date: (value?.format('YYYY-MM-DD')!).toString(),
-                                message: document.querySelector('textarea')?.textContent,
-                                daytime: document.querySelector('select')?.value
-                            }).then(response => {
-                                console.log(response.data);
-                                if (response.data === true) {
-                                    alert('Meeting request sent successfully');
-                                }
-                                else{
-                                    alert('Meeting request could not be sent');
-                                }
-                            }
-                            );
-                            }}>Schedule a Meeting
-                        </button>
+                                    }}>Schedule a Meeting
+                                </button>
+                            </div>
+                        </div>}
                     </div>
                 </div>}
             </div>
