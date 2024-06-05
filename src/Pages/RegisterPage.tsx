@@ -105,21 +105,21 @@ function RegisterPage(){
                     <div>
                             <label className="block font-medium text-sm">Confirm Password</label>
                             <div className="relative flex flex-row">
-                            <input id="confirmPassword" name="confirmPassword" type="password" autoComplete="current-password" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
-                                <div className="absolute right-2 top-2 items-center">
-                                    <button type="button" className="absolute right-1 top-1 items-center" onClick={() => {
-                                    //change the type of the input field to show the password
-                                    setConfirmPasswordShow(!confirmPasswordShow);
-                                    var x = document.getElementById("confirmPassword");
-                                    if (x!.getAttribute("type") === "password") {
-                                        x!.setAttribute("type", "text");
-                                    } else {
-                                        x!.setAttribute("type", "password");
-                                        
-                                    }}} >
-                                    {confirmPasswordShow ? <EyeInvisibleOutlined /> : <EyeOutlined /> }
-                                    </button>
-                                </div>
+                                <input id="confirmPassword" name="confirmPassword" type="password" autoComplete="current-password" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
+                                    <div className="absolute right-2 top-2 items-center">
+                                        <button type="button" className="absolute right-1 top-1 items-center" onClick={() => {
+                                        //change the type of the input field to show the password
+                                        setConfirmPasswordShow(!confirmPasswordShow);
+                                        var x = document.getElementById("confirmPassword");
+                                        if (x!.getAttribute("type") === "password") {
+                                            x!.setAttribute("type", "text");
+                                        } else {
+                                            x!.setAttribute("type", "password");
+                                            
+                                        }}} >
+                                        {confirmPasswordShow ? <EyeInvisibleOutlined /> : <EyeOutlined /> }
+                                        </button>
+                                    </div>
                             </div>
                         </div>
                     </div>
