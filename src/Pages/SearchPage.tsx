@@ -346,13 +346,13 @@ function SearchPage() {
           <label className="self-center text-white">Listing Date</label>
           <div className="flex flex-col gap-2">
             <div className="flex flex-row items-center gap-2">
-              <input type="radio" id="last24hours"className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" onChange={(e) => {
+              <input type="radio" id="last1day"className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" onChange={(e) => {
 
                 listingDate = 'last1day'; //new change
               } }
-              defaultChecked = {listingDate === 'last24hours' ? true : false}
+              defaultChecked = {listingDate === 'last1day' ? true : false}
               />
-              <label htmlFor="last24hours" className="text-white">Last 24 hours</label>
+              <label htmlFor="last1day" className="text-white">Last 24 hours</label>
             </div>
             <div className="flex flex-row items-center gap-2">
               <input type="radio" id="last3days" className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" onChange={(e) => {
@@ -364,12 +364,12 @@ function SearchPage() {
               <label htmlFor="last3days" className="text-white">Last 3 Days</label>
             </div>
             <div className="flex flex-row items-center gap-2">
-              <input type="radio" id="last1week" className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" onChange={(e) => {
+              <input type="radio" id="last7days" className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" onChange={(e) => {
                     listingDate = 'last7days';
                   } }
-                  defaultChecked = {listingDate === 'last1week' ? true : false}
+                  defaultChecked = {listingDate === 'last7days' ? true : false}
                   />
-              <label htmlFor="last1week" className="text-white">Last 1 Week</label>
+              <label htmlFor="last7days" className="text-white">Last 1 Week</label>
             </div>
             <div className="flex flex-row items-center gap-2">
               <input type="radio" id="allTime" className="w-5 h-5 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary accent-button-secondary" name="selector" onChange={(e) => {
