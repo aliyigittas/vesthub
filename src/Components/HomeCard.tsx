@@ -79,6 +79,9 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
                       console.log(response.data);
                       if (response.data === true) {
                         setIsLiked(false);
+                        if (window.location.href.includes('/favorites')) {
+                          window.location.reload(); // Reload the window only if on the favorites page
+                        }
                       }
                     });
                   }
