@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import HomeCard from './HomeCard';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 
 
@@ -23,7 +24,7 @@ function FeaturedHouses() {
         // Function to fetch data
         const fetchHomes = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/featuredHomes'); //`${Cookies.get('Email')}`
+                const response = await axios.post('http://localhost:8080/api/featuredHomes', {email : Cookies.get('Email'), city : Cookies.get('City')});
                 console.log(response.data);
 
                 
@@ -57,6 +58,7 @@ function FeaturedHouses() {
                         furnished: home.furnished === 1 ? true : false,
                         insulation: home.insulation === 1 ? true : false,
                     },
+                    status: home.status,
                 }));
 
                 setHomes(parsedHomes);
@@ -85,9 +87,9 @@ function FeaturedHouses() {
           </div>
         </div>
         <div className="snap-x flex flex-row overflow-x-auto" ref={containerRef}>
-          {homes.map(({ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description, numOfBathroom, numOfBedroom, numOfRooms, area}) => (
+          {homes.map(({ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description, numOfBathroom, numOfBedroom, numOfRooms, area, status}) => (
             <div className="snap-start" key={id}>
-              <HomeCard key={id} home={{ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description, numOfBathroom, numOfBedroom, numOfRooms, area}} />
+              <HomeCard key={id} home={{ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description, numOfBathroom, numOfBedroom, numOfRooms, area, status}} />
             </div>
           ))}
         </div>

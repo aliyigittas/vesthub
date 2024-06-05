@@ -4,13 +4,16 @@ import { HeartTwoTone, HeartFilled, EditFilled } from '@ant-design/icons';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
-function HomeCard({ home }: { home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number}}) {
+function HomeCard({ home }: { home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number, status:string}}) {
   const [isLiked, setIsLiked] = useState(false);
   const [isLikeHovered, setIsLikeHovered] = useState(false);
   var [show, setShow] = useState(false);
   const currentUrl = window.location.href;
   const [clickedHomeId, setClickedHomeId] = useState(null);
   const filteredHomes = home;
+
+  
+
   
   useEffect(() => {
     if (Cookies.get('loggedIn') === 'true') {
@@ -104,6 +107,14 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
             {home.type}
           </span>
         </div>
+
+        { window.location.href.includes('/myListings') || window.location.href.includes('/favorites') && 
+          <div className={`absolute top-1 right-1 p-1 px-2 ${home.status=="Available" ? "bg-green-500": "bg-red-600"} rounded-lg shadow-md flex items-center justify-center`}> {/*eslint-disable-line eqeqeq*/}
+          <span className="text-white font-bold text-[15px]">
+            {home.status}
+          </span>
+        </div>
+        }
       </div>
       <div className="px-4 py-2">
         <div className="font-bold text-xl text-ellipsis line-clamp-3">{home.title}</div>

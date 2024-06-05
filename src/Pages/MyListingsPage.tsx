@@ -67,6 +67,7 @@ function ListMyHouse() {
                         furnished: home.furnished === 1 ? true : false,
                         insulation: home.insulation === 1 ? true : false,
                     },
+                    status: home.status,
                 }));
                 setHomes(parsedHomes);
                 setLoading(false);

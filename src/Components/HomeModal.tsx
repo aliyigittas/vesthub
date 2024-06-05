@@ -14,7 +14,7 @@ import { Gallery, Item } from 'react-photoswipe-gallery'
 import axios from 'axios';
 
 
-function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void; home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number }}) {
+function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void; home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number, status:string, }}) {
     const [value, setValue] = useState<Dayjs | null>(dayjs(null)); //eslint-disable-line
     const [isLiked, setIsLiked] = useState(false);
 
@@ -56,6 +56,20 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                 </div>
                 <div className="flex justify-between mt-3">
                     <h1 className="text-2xl font-bold">{home.title}</h1>
+                    <button className="text-button-primary hover:text-button-primaryHover" onClick={
+                        () => {
+                            
+                            axios.post('http://localhost:8080/api/changeAvailability', {houseID: home.id, status: home.status === 'Available' ? home.type == 'Sale' ? 'Sold': 'Rented' : 'Available'})
+                            .then(response => {
+                                console.log(response.data);
+                                if (response.data === true) {
+                                    alert('House marked as sold');
+                                    window.location.reload();
+                                }
+                            });
+                        
+                            }
+                    }>{ home.status == 'Sold' ? 'Revert': `Mark as ${home.type === "Sale" ? "Sold" : "Rented"}`}</button>
                     <h1 className="text-2xl font-bold">{
                         home.type === "Sale" ? home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " ₺" : home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₺/month"
                     }</h1>
