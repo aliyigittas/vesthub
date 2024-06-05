@@ -4,7 +4,7 @@ import { HeartTwoTone, HeartFilled, EditFilled } from '@ant-design/icons';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
-function HomeCard({ home }: { home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number, status:string}}) {
+function HomeCard({ home }: { home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string,floor:number, totalFloor:number,area:number, status:string}}) {
   const [isLiked, setIsLiked] = useState(false);
   const [isLikeHovered, setIsLikeHovered] = useState(false);
   var [show, setShow] = useState(false);
