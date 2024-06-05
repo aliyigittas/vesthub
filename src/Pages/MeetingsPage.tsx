@@ -6,6 +6,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { message } from "antd";
 import { MailOutlined, CloseOutlined } from '@ant-design/icons';
+import DefaultProfilePhoto from './../DefaultProfilePhoto.png';
 
 //export const currentUrlMeeting = window.location.href;
 
@@ -122,7 +123,7 @@ function MeetingsPage() {
         date: '2022-01-01T10:00:00',
         ownerid: 1,
         ownerName: 'Ali Yiğit Taş',
-        ownerProfilePicture: 'https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw',
+        profilePicture: '',
         ownerMail: '',
         customerid: 1,
         clientMail: '',
@@ -397,8 +398,7 @@ function MeetingsPage() {
               ) : ( WaitingMeetingsSentToMe.map((meeting, index) => {
                 return (
                   <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
-                    
-                    <img src='https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw' alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
+                    <img src={meeting.profilePicture === null ? DefaultProfilePhoto : meeting.profilePicture} alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
                     <label className="flex justify-center items-center">{meeting.ownerName}</label>
                     <div className="flex flex-col justify-center items-center text-center">
                       <label>{meeting.date}</label>
@@ -514,7 +514,7 @@ function MeetingsPage() {
             return (
               meeting.status === 'Waiting' && meeting.clientMail === Cookies.get("Email") &&
               <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
-                <img src='https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw' alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
+                <img src={meeting.profilePicture === null ? DefaultProfilePhoto : meeting.profilePicture} alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
                 <label className="flex justify-center items-center">{meeting.ownerName}</label>
                 <div className="flex flex-col justify-center items-center text-center">
                   <label>{meeting.date}</label>
@@ -619,7 +619,7 @@ function MeetingsPage() {
           ) : ( upcomingMeetings.map((meeting, index) => {
             return (
               <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
-                <img src='https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw' alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
+                <img src={meeting.profilePicture === null ? DefaultProfilePhoto : meeting.profilePicture} alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
                 <label className="flex justify-center items-center">{meeting.ownerName}</label>
                 <div className="flex flex-col justify-center items-center text-center">
                   <label>{meeting.date}</label>
@@ -714,7 +714,7 @@ function MeetingsPage() {
           ) : ( PreviousMeetings.map((meeting, index) => {
             return (
               <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
-                <img src='https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw' alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
+                <img src={meeting.profilePicture === null ? DefaultProfilePhoto : meeting.profilePicture} alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
                 <label className="flex justify-center items-center">{meeting.ownerName}</label>
                 <div className="flex flex-col justify-center items-center text-center">
                   <label>{meeting.date}</label>
