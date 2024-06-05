@@ -24,7 +24,7 @@ function FeaturedHouses() {
         // Function to fetch data
         const fetchHomes = async () => {
             try {
-                const response = await axios.post('http://localhost:8080/api/featuredHomes', {email : Cookies.get('Email'), city : Cookies.get('City')});
+                const response = await axios.post('http://localhost:8080/api/featuredHomes', {email : Cookies.get('Email'), city : Cookies.get('City'), country: Cookies.get('Country')});
                 console.log(response.data);
 
                 

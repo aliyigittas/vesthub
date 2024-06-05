@@ -3,6 +3,7 @@ import HomeCard from "../Components/HomeCard";
 import MultiMarkerMap from "../Components/MultiMarkerMap";
 import axios from "axios";
 import { ButtonGroup } from "reactstrap";
+import Cookies from "js-cookie";
 
 
 export const currentUrl = window.location.href;
@@ -161,7 +162,9 @@ function SearchPage() {
         const fetchHomes = async () => {
             try {
                 console.log(window.location.pathname);
-                const response = await axios.get(`http://localhost:8080/api${window.location.pathname}`); //`${Cookies.get('Email')}`
+                //also send the ownerMail from cookies as a parameter
+
+                const response = await axios.get(`http://localhost:8080/api${window.location.pathname}/${Cookies.get("Email")}`);
 
                 //parse homes one by one to display them in HomeCard component
                 const parsedHomes = response.data.map((home: any) => ({

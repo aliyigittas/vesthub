@@ -10,11 +10,7 @@ function ProfilePage() {
   
 
 
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-
+  
   useEffect(() => {
     AOS.init(); // Initialize AOS
   }, []); // Ensure this effect runs only once after initial render
@@ -56,16 +52,7 @@ function ProfilePage() {
                 <EditChangePassword/>
               </Tab.Panel>
               <Tab.Panel>
-                <form className="flex flex-col" onSubmit={handleSaveAddressSettings}>
-                  <input type="text" placeholder="Address" defaultValue={Cookies.get ("fullAddress")} onChange={(e) => setName(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
-                  <input type="text" placeholder="City"  defaultValue={Cookies.get ("City")} onChange={(e) => setName(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
-                  <input type="text" placeholder="Country" defaultValue={Cookies.get ("Country")} onChange={(e) => setName(e.target.value)} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
-                  <div className=' flex justify-center pt-4'>
-                    <button className="flex w-full justify-center rounded-md bg-button-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-button-primaryHover" type="submit">
-                      Save
-                    </button>
-                  </div>
-                </form>
+                <EditUserAddress/>
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
@@ -76,6 +63,11 @@ function ProfilePage() {
 
   function EditProfileInfo()
   {
+    const [name, setName] = useState('');
+    const [surname, setSurname] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+
     return (
       <form className="flex flex-col space-y-2" onSubmit={handleSaveProfileInfo}>
         <div className="flex flex-row space-x-2">
@@ -159,6 +151,26 @@ function ProfilePage() {
       </form>
     );
   }
+
+  function EditUserAddress()
+  {
+    const [address, setAddress] = useState('');
+    const [city, setCity] = useState('');
+    const [country, setCountry] = useState('');
+
+    return (
+      <form className="flex flex-col" onSubmit={handleSaveAddressSettings}>
+        <input type="text" placeholder="Address" defaultValue={Cookies.get ("fullAddress")} onChange={(e) => {setAddress(e.target.value)}} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+        <input type="text" placeholder="City"  defaultValue={Cookies.get ("City")} onChange={(e) => {setCity(e.target.value)}} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+        <input type="text" placeholder="Country" defaultValue={Cookies.get ("Country")} onChange={(e) => {setCountry(e.target.value)}} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+        <div className=' flex justify-center pt-4'>
+          <button className="flex w-full justify-center rounded-md bg-button-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-button-primaryHover" type="submit">
+            Save
+          </button>
+        </div>
+      </form>
+    );
+  }
   
   function handleSaveProfileInfo(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -220,8 +232,6 @@ function ProfilePage() {
         return;
     }
 
-
-
     axios.post('http://localhost:8080/api/changePassword', {
       email: Cookies.get("Email"),
       currentPassword: currentPassword,
@@ -242,8 +252,34 @@ function ProfilePage() {
 
   }
 
-  function handleSaveAddressSettings() {
-    console.log("Save Address");
+  function handleSaveAddressSettings(event: React.FormEvent<HTMLFormElement>) {
+    const data = new FormData(event.currentTarget);
+    const address = data.get('address') as string;
+    const city = data.get('city') as string;
+    const country = data.get('country') as string;
+    console.log(address, city, country);
+    if (address == '' || city == '' || country == '') {
+      alert("Please fill all the fields!");
+      return;
+    }
+    axios.post('http://localhost:8080/api/updateAddressSettings', {
+      email: Cookies.get("Email"),
+      address: address,
+      city: city,
+      country: country,
+    }).then((response) => {
+      console.log(response);
+      if (response.data==true) {
+        Cookies.set("fullAddress", address);
+        Cookies.set("City", city);
+        Cookies.set("Country", country);
+        alert("Address settings updated successfully!");
+        window.location.href = '/profile';
+      }
+    }).catch((error) => {
+      console.log(error);
+      alert("An error occurred while updating the address settings!");
+    });
   }
 }
 
