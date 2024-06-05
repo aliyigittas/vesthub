@@ -406,6 +406,7 @@ function SearchPage() {
       alert("One of the fields of country, city or district must be filled!");
       return;
     }
+
     
     if (Number.isNaN(minPrice))
       minPrice = -1;
@@ -415,6 +416,16 @@ function SearchPage() {
       minArea = -1;
     if (Number.isNaN(maxArea))
       maxArea = -1;
+
+    if (minPrice > maxPrice) {
+      alert("Min price cannot be greater than max price!");
+      return;
+    }
+
+    if (minArea > maxArea) {
+      alert("Min area cannot be greater than max area!");
+      return;
+    }
 
 
     var newUrl = '';
