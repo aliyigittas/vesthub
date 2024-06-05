@@ -199,10 +199,6 @@ function App() {
       </div>
     </LocalizationProvider>
   );
-
-  
-
-
 }
 
 function logout(){
@@ -215,8 +211,7 @@ function logout(){
   Cookies.remove("City");
   Cookies.remove("Country");
   Cookies.remove("Password");
-  //reload page
-  window.location.reload();
+  window.location.href = '/';
 }
 
 export default App;
