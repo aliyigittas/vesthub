@@ -8,16 +8,15 @@ import Avatar from 'antd/es/avatar/avatar';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from "dayjs";
 import TextArea from 'antd/es/input/TextArea';
-import { CheckCircleFilled, CloseCircleFilled, EditFilled } from '@ant-design/icons';
+import { CheckCircleFilled, CloseCircleFilled, EditFilled , HomeFilled } from '@ant-design/icons';
 import 'photoswipe/dist/photoswipe.css'
 import { Gallery, Item } from 'react-photoswipe-gallery'
 import axios from 'axios';
 
 
-function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void; home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number, status:string, floor:number, totalFloor:number}}) {
+function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void; home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number, status:string, floor:number, totalFloor:number , houseType:string,}}) {
     const [value, setValue] = useState<Dayjs | null>(dayjs(null)); //eslint-disable-line
     const [isLiked, setIsLiked] = useState(false);
-
     const daytime = [
         {
           key: '1',
@@ -55,10 +54,9 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                     {<Images />}
                 </div>
                 <div className="flex justify-between mt-3">
-                    <h1 className="text-2xl font-bold">{home.title}</h1>
+                    <h1 className=" text-5xl font-bold">{home.title}</h1>
                     <button className="text-button-primary hover:text-button-primaryHover" onClick={
                         () => {
-                            
                             axios.post('http://localhost:8080/api/changeAvailability', {houseID: home.id, status: home.status === 'Available' ? home.type == 'Sale' ? 'Sold': 'Rented' : 'Available'})
                             .then(response => {
                                 console.log(response.data);
@@ -74,8 +72,25 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                         home.type === "Sale" ? home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " ₺" : home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₺/month"
                     }</h1>
                 </div>
+                <div className=' pt-2 pb-1'>
+                    <h1 className=" text-xl text-gray-600">{home.address}</h1>
+                </div>
+                <div className="flex flex-row items-center gap-4">
+                    <div className="flex flex-row items-center bg-slate-100 shadow-md">
+                        <HomeFilled className=' justify-center'/>
+                        <label className="text-lg font-bold">{home.houseType}</label>
+                    </div>
+                    <div className="flex flex-col items-start">
+                        <label className="text-lg font-bold">Rooms</label>
+                        <label className="text-lg">{home.numOfRooms}</label>
+                    </div>
+                    <div className="flex flex-col items-start">
+                        <label className="text-lg font-bold">Floor</label>
+                        <label className="text-lg">{home.floor}/{home.totalFloor}</label>
+                    </div>
+                </div>
                 <div className="flex flex-col items-start mt-2">
-                    <h1 className="text-xl font-bold">Description</h1>
+                    <h1 className="text-3xl font-bold">Description</h1>
                     <p className="text-l">{home.description}</p>
                 </div>
                 <div className="flex flex-col items-start mt-4">

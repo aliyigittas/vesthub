@@ -87,9 +87,9 @@ function FeaturedHouses() {
           </div>
         </div>
         <div className="snap-x flex flex-row overflow-x-auto" ref={containerRef}>
-          {homes.map(({ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description, numOfBathroom, numOfBedroom, numOfRooms, area, status}) => (
+          {homes.map(({ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description, numOfBathroom, numOfBedroom, numOfRooms, area, status , floor , totalFloor , houseType}) => (
             <div className="snap-start" key={id}>
-              <HomeCard key={id} home={{ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description, numOfBathroom, numOfBedroom, numOfRooms, area, status}} />
+              <HomeCard key={id} home={{ id, title, photo, price, type, coordinates, address, ownerMail, keyFeatures, description, numOfBathroom, numOfBedroom, numOfRooms, area, status , floor , totalFloor , houseType}} />
             </div>
           ))}
         </div>
