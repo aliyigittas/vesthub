@@ -226,16 +226,6 @@ function MeetingsPage() {
   , []);
 */
 
-function updateMeetingStatus(meetingID:number , meetingStatus:String){
-  axios.post('http://localhost:8080/api/updateReservationStatus',{
-    reservationID: meetingID,
-    meetingStatus: meetingStatus
-  })
-  .then(response => {
-      console.log(response);
-      window.location.reload();
-  })
-}
 
   return (
     <div className=" p-4 flex-col items-center space-y-2 bg-inherit min-h-full"> {/* Add flex and flex-col classes */}
@@ -283,14 +273,109 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
   );
 
 
+  
+
+  function getHomeDetails(homeid: number) {
+    axios.get(`http://localhost:8080/api/house/${homeid}`)
+    .then(response => {
+        if (response.data) {
+            const homedetails = {
+                id: response.data.id,
+                title: response.data.title,
+                photo: response.data.images, //[H1,H2,H3]
+                price: response.data.price.toString(),
+                type: response.data.saleRent,
+                coordinates: { lat: response.data.lat, lng: response.data.lng },
+                address: response.data.fullAddress,
+                ownerMail: response.data.ownerMail,
+                description: response.data.description,
+                numOfBathroom: response.data.numOfBathroom,
+                numOfBedroom: response.data.numOfBedroom,
+                numOfRooms: response.data.numOfRooms,
+                area: response.data.area,
+                floor: response.data.floor,
+                city: response.data.city,
+                distinct: response.data.distinct,
+                street: response.data.street,
+                country: response.data.country,
+                totalFloor: response.data.totalFloor,
+                keyFeatures: {
+                    fiberInternet: response.data.fiberInternet === 1 ? true : false,
+                    airConditioner: response.data.airConditioner === 1 ? true : false,
+                    floorHeating: response.data.floorHeating === 1 ? true : false,
+                    fireplace: response.data.fireplace === 1 ? true : false,
+                    terrace: response.data.terrace === 1 ? true : false,
+                    satellite: response.data.satellite === 1 ? true : false,
+                    parquet: response.data.parquet === 1 ? true : false,
+                    steelDoor: response.data.steelDoor === 1 ? true : false,
+                    furnished: response.data.furnished === 1 ? true : false,
+                    insulation: response.data.insulation === 1 ? true : false
+                }
+            };
+            setHomeDetails(homedetails);
+            console.log("EV DETAYLARI: ",homedetails);
+            setKeyFeatures([
+                { name: "Fiber Internet", isAvailable: homedetails.keyFeatures.fiberInternet },
+                { name: "Air Conditioner", isAvailable: homedetails.keyFeatures.airConditioner },
+                { name: "Floor Heating", isAvailable: homedetails.keyFeatures.floorHeating },
+                { name: "Fireplace", isAvailable: homedetails.keyFeatures.fireplace },
+                { name: "Terrace", isAvailable: homedetails.keyFeatures.terrace },
+                { name: "Satellite", isAvailable: homedetails.keyFeatures.satellite },
+                { name: "Parquet", isAvailable: homedetails.keyFeatures.parquet },
+                { name: "Steel Door", isAvailable: homedetails.keyFeatures.steelDoor },
+                { name: "Furnished", isAvailable: homedetails.keyFeatures.furnished },
+                { name: "Insulation", isAvailable: homedetails.keyFeatures.insulation }
+            ]);
+            setShow(true);
+        }
+    });
+    
+  }
+
   function WaitingMeetingsSentToMe()
   {
-    var WaitingMeetingsSentToMe: any[] = [];
-    for (var i = 0; i < meetings.length; i++) {
-      if (meetings[i].status === 'Waiting' && meetings[i].ownerMail === Cookies.get("Email")) {
-        WaitingMeetingsSentToMe = [...WaitingMeetingsSentToMe, meetings[i]];
-      }
+    const [update, setUpdate] = useState(false);
+    const [WaitingMeetingsSentToMe, setWaitingMeetingsSentToMe] = useState<any[]>([]);
+
+    useEffect(() => {
+      const fetchWaitingMeetingsSentToMe = async () => {
+        try {
+          console.log("Fetching waiting meetings sent to me...");
+          const response = await axios.get(`http://localhost:8080/api/getReservations/${Cookies.get("Email")}`); // Adjust API endpoint as necessary
+          console.log("Meetings fetched successfully:", response.data);
+          setWaitingMeetingsSentToMe(response.data);
+          //filter waiting meetings sent to me
+          var waitingMeetingsSentToMe: any[] = [];
+          for (var i = 0; i < response.data.length; i++) {
+            if (response.data[i].status === 'Waiting' && response.data[i].ownerMail === Cookies.get("Email")) {
+              waitingMeetingsSentToMe = [...waitingMeetingsSentToMe, response.data[i]];
+            }
+          }
+          setWaitingMeetingsSentToMe(waitingMeetingsSentToMe);
+          console.log("Waiting Meetings Sent To Me DEGİSTİ: ",waitingMeetingsSentToMe);
+          
+          
+        } catch (error) {
+          console.error("Failed to fetch meetings:", error);
+          message.error("Failed to fetch meetings");
+        }
+      };
+  
+      fetchWaitingMeetingsSentToMe();
+    }, [update]);
+
+    function updateMeetingStatus(meetingID:number , meetingStatus:String){
+      axios.post('http://localhost:8080/api/updateReservationStatus',{
+        reservationID: meetingID,
+        meetingStatus: meetingStatus
+      })
+      .then(response => {
+          console.log(response);
+          setUpdate(!update);
+      })
     }
+
+
     //console.log("WAITING: ", meetings[0].ownerName);
     return (
       <div className="flex flex-wrap justify-center min-h-full w-full bg-inherit items-top gap-4">
@@ -364,71 +449,50 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
     );
   }
 
-  function getHomeDetails(homeid: number) {
-    axios.get(`http://localhost:8080/api/house/${homeid}`)
-    .then(response => {
-        if (response.data) {
-            const homedetails = {
-                id: response.data.id,
-                title: response.data.title,
-                photo: response.data.images, //[H1,H2,H3]
-                price: response.data.price.toString(),
-                type: response.data.saleRent,
-                coordinates: { lat: response.data.lat, lng: response.data.lng },
-                address: response.data.fullAddress,
-                ownerMail: response.data.ownerMail,
-                description: response.data.description,
-                numOfBathroom: response.data.numOfBathroom,
-                numOfBedroom: response.data.numOfBedroom,
-                numOfRooms: response.data.numOfRooms,
-                area: response.data.area,
-                floor: response.data.floor,
-                city: response.data.city,
-                distinct: response.data.distinct,
-                street: response.data.street,
-                country: response.data.country,
-                totalFloor: response.data.totalFloor,
-                keyFeatures: {
-                    fiberInternet: response.data.fiberInternet === 1 ? true : false,
-                    airConditioner: response.data.airConditioner === 1 ? true : false,
-                    floorHeating: response.data.floorHeating === 1 ? true : false,
-                    fireplace: response.data.fireplace === 1 ? true : false,
-                    terrace: response.data.terrace === 1 ? true : false,
-                    satellite: response.data.satellite === 1 ? true : false,
-                    parquet: response.data.parquet === 1 ? true : false,
-                    steelDoor: response.data.steelDoor === 1 ? true : false,
-                    furnished: response.data.furnished === 1 ? true : false,
-                    insulation: response.data.insulation === 1 ? true : false
-                }
-            };
-            setHomeDetails(homedetails);
-            console.log("EV DETAYLARI: ",homedetails);
-            setKeyFeatures([
-                { name: "Fiber Internet", isAvailable: homedetails.keyFeatures.fiberInternet },
-                { name: "Air Conditioner", isAvailable: homedetails.keyFeatures.airConditioner },
-                { name: "Floor Heating", isAvailable: homedetails.keyFeatures.floorHeating },
-                { name: "Fireplace", isAvailable: homedetails.keyFeatures.fireplace },
-                { name: "Terrace", isAvailable: homedetails.keyFeatures.terrace },
-                { name: "Satellite", isAvailable: homedetails.keyFeatures.satellite },
-                { name: "Parquet", isAvailable: homedetails.keyFeatures.parquet },
-                { name: "Steel Door", isAvailable: homedetails.keyFeatures.steelDoor },
-                { name: "Furnished", isAvailable: homedetails.keyFeatures.furnished },
-                { name: "Insulation", isAvailable: homedetails.keyFeatures.insulation }
-            ]);
-            setShow(true);
-        }
-    });
-    
-  }
-
   function WaitingMeetingsSentByMe()
   {
-    var WaitingMeetingsSentByMe: any[] = [];
-    for (var i = 0; i < meetings.length; i++) {
-      if (meetings[i].status === 'Waiting' && meetings[i].clientMail === Cookies.get("Email")) {
-        WaitingMeetingsSentByMe = [...WaitingMeetingsSentByMe, meetings[i]];
-      }
+    const [update, setUpdate] = useState(false);
+    const [WaitingMeetingsSentByMe, setWaitingMeetingsSentByMe] = useState<any[]>([]);
+
+    useEffect(() => {
+      const fetchWaitingMeetingsSentByMe = async () => {
+        try {
+          console.log("Fetching waiting meetings sent by me...");
+          const response = await axios.get(`http://localhost:8080/api/getReservations/${Cookies.get("Email")}`); // Adjust API endpoint as necessary
+          console.log("Meetings fetched successfully:", response.data);
+          setWaitingMeetingsSentByMe(response.data);
+          //filter waiting meetings sent by me
+          var waitingMeetingsSentByMe: any[] = [];
+          for (var i = 0; i < response.data.length; i++) {
+            if (response.data[i].status === 'Waiting' && response.data[i].clientMail === Cookies.get("Email")) {
+              waitingMeetingsSentByMe = [...waitingMeetingsSentByMe, response.data[i]];
+            }
+          }
+          setWaitingMeetingsSentByMe(waitingMeetingsSentByMe);
+          console.log("Waiting Meetings Sent By Me DEGİSTİ: ",waitingMeetingsSentByMe);
+          
+          
+        } catch (error) {
+          console.error("Failed to fetch meetings:", error);
+          message.error("Failed to fetch meetings");
+        }
+      };
+  
+      fetchWaitingMeetingsSentByMe();
+    }, [update]);
+
+    function updateMeetingStatus(meetingID:number , meetingStatus:String){
+      axios.post('http://localhost:8080/api/updateReservationStatus',{
+        reservationID: meetingID,
+        meetingStatus: meetingStatus
+      })
+      .then(response => {
+          console.log(response);
+          setUpdate(!update);
+      })
     }
+
+    
     return (
       <div className="flex flex-col items-center space-y-2"> {/* Add flex and flex-col classes */}
         <div className="flex flex-col bg-gray-300 w-[512px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
@@ -496,12 +560,47 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
 
   function UpcomingMeetings()
   {
-    var UpcomingMeetings: any[] = [];
-    for (var i = 0; i < meetings.length; i++) {
-      if (meetings[i].status === 'Accepted') {
-        UpcomingMeetings = [...UpcomingMeetings, meetings[i]];
-      }
+    const [update, setUpdate] = useState(false);
+    const [upcomingMeetings, setUpcomingMeetings] = useState<any[]>([]);
+
+    useEffect(() => {
+      const fetchUpcomingMeetings = async () => {
+        try {
+          console.log("Fetching upcoming meetings...");
+          const response = await axios.get(`http://localhost:8080/api/getReservations/${Cookies.get("Email")}`); // Adjust API endpoint as necessary
+          console.log("Meetings fetched successfully:", response.data);
+          setUpcomingMeetings(response.data);
+          //filter upcoming meetings
+          var upcomingMeetings: any[] = [];
+          for (var i = 0; i < response.data.length; i++) {
+            if (response.data[i].status === 'Accepted') {
+              upcomingMeetings = [...upcomingMeetings, response.data[i]];
+            }
+          }
+          setUpcomingMeetings(upcomingMeetings);
+          console.log("Upcoming Meetings DEGİSTİ: ",upcomingMeetings);
+          
+          
+        } catch (error) {
+          console.error("Failed to fetch meetings:", error);
+          message.error("Failed to fetch meetings");
+        }
+      };
+  
+      fetchUpcomingMeetings();
+    }, [update]);
+
+    function updateMeetingStatus(meetingID:number , meetingStatus:String){
+      axios.post('http://localhost:8080/api/updateReservationStatus',{
+        reservationID: meetingID,
+        meetingStatus: meetingStatus
+      })
+      .then(response => {
+          console.log(response);
+          setUpdate(!update);
+      })
     }
+    
     return (
       <div className="flex flex-col items-center space-y-2"> {/* Add flex and flex-col classes */}
         <div className="flex flex-col bg-gray-300 w-[512px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
@@ -512,14 +611,13 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
             }
           } home={homeDetails} />
         }
-          {UpcomingMeetings.length === 0
+          {upcomingMeetings.length === 0
           ? (
             <div className="flex flex-col items-center justify-items-center mt-2"> {/* Add flex and flex-col classes */}
               <h3 className="text-gray-600">No meetings</h3>
             </div>
-          ) : ( UpcomingMeetings.map((meeting, index) => {
+          ) : ( upcomingMeetings.map((meeting, index) => {
             return (
-              meeting.status === 'Accepted' && //meeting.date > new Date().toISOString() &&
               <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
                 <img src='https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw' alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
                 <label className="flex justify-center items-center">{meeting.ownerName}</label>
@@ -565,14 +663,38 @@ function updateMeetingStatus(meetingID:number , meetingStatus:String){
   }
 
   function PreviousMeetings()
-  {
+  { 
+    const [update, setUpdate] = useState(false);
+    const [PreviousMeetings, setPreviousMeetings] = useState<any[]>([]);
+
+    useEffect(() => {
+      const fetchPreviousMeetings = async () => {
+        try {
+          console.log("Fetching previous meetings...");
+          const response = await axios.get(`http://localhost:8080/api/getReservations/${Cookies.get("Email")}`); // Adjust API endpoint as necessary
+          console.log("Meetings fetched successfully:", response.data);
+          setPreviousMeetings(response.data);
+          //filter previous meetings
+          var previousMeetings: any[] = [];
+          for (var i = 0; i < response.data.length; i++) {
+            if (response.data[i].status === 'Completed' || response.data[i].status === 'Passed' || response.data[i].status === 'Cancelled' || response.data[i].status === 'Rejected') {
+              previousMeetings = [...previousMeetings, response.data[i]];
+            }
+          }
+          setPreviousMeetings(previousMeetings);
+          console.log("Previous Meetings DEGİSTİ: ",previousMeetings);
+          
+          
+        } catch (error) {
+          console.error("Failed to fetch meetings:", error);
+          message.error("Failed to fetch meetings");
+        }
+      };
+  
+      fetchPreviousMeetings();
+    }, [update]);
+
     
-    var PreviousMeetings: any[] = [];
-    for (var i = 0; i < meetings.length; i++) {
-      if (meetings[i].status === 'Completed' || meetings[i].status === 'Passed' || meetings[i].status === 'Cancelled' || meetings[i].status === 'Rejected') {
-        PreviousMeetings = [...PreviousMeetings, meetings[i]];
-      }
-    }
 
     return (
       <div className="flex flex-col items-center space-y-2"> {/* Add flex and flex-col classes */}

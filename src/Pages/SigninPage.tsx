@@ -1,8 +1,12 @@
 import Cookies from 'js-cookie';
 import vesthublogo from '../vesthublogo.png';
 import axios from 'axios';
+import { useState } from 'react';
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
 function SigninPage() {
+    const [passwordShow, setPassword] = useState(false);
+
     if (Cookies.get("loggedIn") === 'true') {
         window.location.href = '/';
     }
@@ -23,7 +27,23 @@ function SigninPage() {
                     <label className="block font-medium leading-6">Password</label>
                     <span className="font-semibold text-button-primary hover:text-button-primaryHover cursor-pointer" onClick={() => alert("Do not forget your password!")}>Forgot password?</span>
                 </div>
-                <input id="password" name="password" type="password" autoComplete="current-password" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary"/>
+                {/*<input id="password" name="password" type="password" autoComplete="current-password" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary"/>*/}
+                    <div className="relative flex flex-row mt-0">
+                        <input id="password" name="password" type="password" autoComplete="current-password" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary"/>                            <div className="absolute right-2 top-2 items-center">
+                        <button type="button" className="absolute right-1 top-1 items-center" onClick={() => {
+                        //change the type of the input field to show the password
+                        setPassword(!passwordShow);
+                        var x = document.getElementById("password");
+                        if (x!.getAttribute("type") === "password") {
+                            x!.setAttribute("type", "text");
+                        } else {
+                            x!.setAttribute("type", "password");
+                            
+                        }}} >
+                        {passwordShow ? <EyeInvisibleOutlined /> : <EyeOutlined /> }
+                        </button>
+                    </div>
+                </div>
                 <input type="submit" className="flex w-full justify-center rounded-md bg-button-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-button-primaryHover" value="Sign in"/>
             </form>
             <div className="mt-7 flex flex-row items-center justify-between">

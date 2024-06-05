@@ -396,6 +396,10 @@ function CreateListingPage()
             return;
         }
 
+        if(parseInt(bedroom) > parseInt(roomCount.charAt(0))){
+            alert("Number of bedrooms cannot be bigger than room count.");
+            return;
+        }
        
 
         var file_to_send:string[] = [];
@@ -431,7 +435,7 @@ function CreateListingPage()
         })
         .then(function (response) {
             console.log(response);
-            //window.location.href = '/';
+            alert("House added successfully!");
             Cookies.remove("latitude");
             Cookies.remove("longitude");
             Cookies.remove("homeCity");
@@ -440,6 +444,7 @@ function CreateListingPage()
             Cookies.remove("homeCountry");
             Cookies.remove("homefullAddress");
             Cookies.remove("isMapOpen");
+            window.location.href = '/myListings';
         })
         .catch(function (error) {
             console.log(error);
