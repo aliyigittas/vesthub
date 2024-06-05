@@ -135,7 +135,7 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
           </div>
         </div>
         <div className="">
-          <span className="text-gray-500 text-[14px]">
+          <span className="text-gray-500 text-[14px] text-ellipsis line-clamp-2">
             {home.address}
           </span>
         </div>
