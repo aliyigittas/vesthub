@@ -77,10 +77,6 @@ function RegisterPage(){
                             <input id="City" name="City" type="text" autoComplete="City" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
                         </div>
                     </div>
-                    <div>
-                        <label className="block font-medium text-sm">Address</label>
-                        <input id="fullAddress" name="fullAddress" type="text" autoComplete="fullAddress" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"/>
-                    </div>
                     <div className="flex flex-row space-x-2 justify-between">
                         <div>
                             <label className="block font-medium text-sm">Password</label>
@@ -148,7 +144,6 @@ function RegisterPage(){
         const phone = data.get('phone') as string;
         const country = data.get('Country') as string;
         const city = data.get('City') as string;
-        const fullAddress = data.get('fullAddress') as string;
         const password = data.get('password') as string;
         const confirmPassword = data.get('confirmPassword') as string;
         const checkbox = data.get('checkbox') as string;
@@ -181,13 +176,7 @@ function RegisterPage(){
         if (!passwordRegex.test(password)) {
             alert("Password must be at least 8 characters long and cannot be more than 16 characters, also it must contain at least one number, one uppercase letter and one lowercase letter");
             return;
-        }
-    
-        //full address cannot be more than 45 characters
-        if (fullAddress.length > 45) {
-            alert("Full address cannot be more than 250 characters");
-            return;
-        }
+        }        
     
         if(city.length > 45){ 
             alert("City cannot be more than 45 characters");
@@ -214,7 +203,7 @@ function RegisterPage(){
             phone: phone,
             country: country,
             city: city,
-            fullAddress: fullAddress,
+            fullAddress: "Easter egg",
             profilePicture: profileImage
         })
         .then(function (response) {
