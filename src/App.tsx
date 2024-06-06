@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import SearchPage from './Pages/SearchPage';
 import Cookies from 'js-cookie';
 import Avatar from 'antd/es/avatar/avatar';
-import { Dropdown, MenuProps } from 'antd';
+import { Dropdown, MenuProps, message } from 'antd';
 import { UserOutlined, LogoutOutlined, HomeOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import CreateListingPage from './Pages/CreateListingPage';
 import FavoritesPage from './Pages/FavoritesPage';
@@ -93,11 +93,16 @@ function App() {
       profilePicture = defultProfile;
     }
 
-    console.log("profilePicture:CCCCCC ",profilePicture);
-    console.log("defult: DDDDD", defultProfile);
+    //console.log("profilePicture:CCCCCC ",profilePicture);
+    //console.log("defult: DDDDD", defultProfile);
     // Using useState to manage collapse state
     const [isCollapsed, setIsCollapsed] = useState(true);
-    Cookies.get("loggedIn") ? console.log("Cookie found") : Cookies.set("loggedIn", "false", { expires: 1 });
+    Cookies.get("loggedIn") ? console.log("Cookie found") : firstTimeVisited();
+
+    function firstTimeVisited() {
+      Cookies.set("loggedIn", "false", { expires: 1 })
+      message.info("This website uses cookies to enhance the user experience. By using this website, you agree to our use of cookies.", 5);
+    }
     //Cookies.get("latitude") ? Cookies.remove("latitude") : console.log("No latitude cookie found");
     //Cookies.get("longitude") ? Cookies.remove("longitude") : console.log("No longitude cookie found");
 

@@ -148,7 +148,9 @@ function CreateListingPage()
           <div style={{ marginTop: 8 }}>Upload</div>
         </button>
       );
-    const keyFeatures =[{
+
+    const [keyFeatures, setKeyFeatures] = useState([
+    {
         name: "Fiber Internet",
         isAvailable: false
     },
@@ -188,7 +190,7 @@ function CreateListingPage()
         name: "Insulation",
         isAvailable: false
     }
-    ];
+    ]);
     const addSearchFilter = (key: string, value: string) => {
         setFilters({
             ...filters,
@@ -393,7 +395,12 @@ function CreateListingPage()
                                 keyFeatures.map((feature, index) => {
                                     return (
                                         <div key={index} className="flex items-center">
-                                            <input id={feature.name} name={feature.name} type="checkbox" className="w-4 h-4 text-button-primary rounded focus:ring-0 accent-button-primary" onChange={(e) => keyFeatures[index].isAvailable = e.target.checked}/>
+                                            <input id={feature.name} name={feature.name} type="checkbox" className="w-4 h-4 text-button-primary rounded focus:ring-0 accent-button-primary" onChange={(e) => {
+                                                feature.isAvailable = e.target.checked;
+                                                setKeyFeatures([...keyFeatures]);
+                                            } }
+                                            
+                                            />
                                             <label htmlFor={feature.name} className="ml-2 text-sm">{feature.name}</label>
                                         </div>
                                     );
@@ -441,77 +448,82 @@ function CreateListingPage()
         const street = Cookies.get("homeStreet");
         const country = Cookies.get("homeCountry");
         const saleRent = selectedValue;
-        var keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
 
-        if(fileList.length < 3){
-            alert("Please upload at least three image.");
-            window.location.reload();
-            return;
+        if((fileList.length < 3) || (parseInt(floor) > parseInt(totalFloor)) || (parseInt(bedroom) > parseInt(roomCount.charAt(0))) ){
+            if (fileList.length < 3) {
+                message.error("Please upload at least 3 images.");
+                setAddHouseLoading(false);
+            }
+
+            //floor shouldnt be bigger than total floor
+            if(parseInt(floor) > parseInt(totalFloor)){
+                message.error("Floor should be smaller than total floor.");
+                setAddHouseLoading(false);
+            }
+
+            if(parseInt(bedroom) > parseInt(roomCount.charAt(0))){
+                message.error("Number of bedrooms cannot be bigger than room count.");
+                setAddHouseLoading(false);
+            }
+        }
+        else
+        {
+            var file_to_send:string[] = [];
+            for (let i = 0; i < fileList.length; i++) {
+                fileList[i].preview = await getBase64(fileList[i].originFileObj as FileType);
+                file_to_send.push(fileList[i].preview?.toString() as string);
+            }
+
+            var keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
+
+            axios.post('http://localhost:8080/api/CreateListing', {
+                title: title,
+                fullAddress: fullAddress,
+                price: price,
+                saleRent: saleRent,
+                description: description,
+                numOfBedroom: bedroom,
+                numOfBathroom: bathroom,
+                numOfRooms: roomCount,
+                area: area,
+                floor: floor,
+                totalFloor: totalFloor,
+                houseType: houseType,
+                distinct: distinct,
+                city: city,
+                street: street,
+                country: country,
+                lat: Cookies.get("latitude"),
+                lng: Cookies.get("longitude"),
+                ownerMail: Cookies.get("Email"),
+                keyFeatures: keyFeaturesToSend,
+                images: file_to_send
+                
+            })
+            .then(function (response) {
+                console.log(response);
+                setAddHouseLoading(false);
+                //alert("House added successfully!");
+                Cookies.remove("latitude");
+                Cookies.remove("longitude");
+                Cookies.remove("homeCity");
+                Cookies.remove("homeDistinct");
+                Cookies.remove("homeStreet");
+                Cookies.remove("homeCountry");
+                Cookies.remove("homefullAddress");
+                Cookies.remove("isMapOpen");
+                window.location.href = '/myListings';
+            })
+            .catch(function (error) {
+                console.log(error);
+                //window.location.href = '/';
+            });
         }
 
-        //floor shouldnt be bigger than total floor
-        if(parseInt(floor) > parseInt(totalFloor)){
-            alert("Floor should be smaller than total floor.");
-            window.location.reload();
-            return;
-        }
-
-        if(parseInt(bedroom) > parseInt(roomCount.charAt(0))){
-            alert("Number of bedrooms cannot be bigger than room count.");
-            window.location.reload();
-            return;
-        }
-       
-
-        var file_to_send:string[] = [];
-        for (let i = 0; i < fileList.length; i++) {
-            fileList[i].preview = await getBase64(fileList[i].originFileObj as FileType);
-            file_to_send.push(fileList[i].preview?.toString() as string);
-        }
+        
 
 
-        axios.post('http://localhost:8080/api/CreateListing', {
-            title: title,
-            fullAddress: fullAddress,
-            price: price,
-            saleRent: saleRent,
-            description: description,
-            numOfBedroom: bedroom,
-            numOfBathroom: bathroom,
-            numOfRooms: roomCount,
-            area: area,
-            floor: floor,
-            totalFloor: totalFloor,
-            houseType: houseType,
-            distinct: distinct,
-            city: city,
-            street: street,
-            country: country,
-            lat: Cookies.get("latitude"),
-            lng: Cookies.get("longitude"),
-            ownerMail: Cookies.get("Email"),
-            keyFeatures: keyFeaturesToSend,
-            images: file_to_send
-            
-        })
-        .then(function (response) {
-            console.log(response);
-            setAddHouseLoading(false);
-            alert("House added successfully!");
-            Cookies.remove("latitude");
-            Cookies.remove("longitude");
-            Cookies.remove("homeCity");
-            Cookies.remove("homeDistinct");
-            Cookies.remove("homeStreet");
-            Cookies.remove("homeCountry");
-            Cookies.remove("homefullAddress");
-            Cookies.remove("isMapOpen");
-            window.location.href = '/myListings';
-        })
-        .catch(function (error) {
-            console.log(error);
-            //window.location.href = '/';
-        });
+        
     }
 
     //bu daha net ve hızlı ama limitli

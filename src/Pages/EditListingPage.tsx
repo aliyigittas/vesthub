@@ -283,7 +283,6 @@ function EditListingPage() {
         const streetFromCookie = Cookies.get("homeStreet");
         const distinctFromCookie = Cookies.get("homeDistinct");
         const saleRent = selectedValue;
-        var keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
 
         console.log("City from form:", data.get('city'));
         console.log("Distinct from form:", data.get('distinct'));
@@ -292,67 +291,76 @@ function EditListingPage() {
         console.log("Distinct from cookie:", distinctFromCookie);
         console.log("Street from cookie:", streetFromCookie);
 
-        if (fileList.length < 3) {
-            alert("Please upload at least three images.");
-            window.location.reload();
-            return;
-        }
+        if((fileList.length < 3) || (parseInt(floor) > parseInt(totalFloor)) || (parseInt(bedroom) > parseInt(roomCount.charAt(0))) ){
+            if (fileList.length < 3) {
+                message.error("Please upload at least 3 images.");
+                setAddHouseLoading(false);
+            }
 
-        if (parseInt(floor) > parseInt(totalFloor)) {
-            alert("Floor should be smaller than total floor.");
-            window.location.reload();
-            return;
-        }
+            //floor shouldnt be bigger than total floor
+            if(parseInt(floor) > parseInt(totalFloor)){
+                message.error("Floor should be smaller than total floor.");
+                setAddHouseLoading(false);
+            }
 
-        const file_to_send: string[] = [];
-        for (let i = 0; i < fileList.length; i++) {
-            fileList[i].preview = await getBase64(fileList[i].originFileObj as FileType);
-            file_to_send.push(fileList[i].preview?.toString() as string);
+            if(parseInt(bedroom) > parseInt(roomCount.charAt(0))){
+                message.error("Number of bedrooms cannot be bigger than room count.");
+                setAddHouseLoading(false);
+            }
         }
-        axios.post('http://localhost:8080/api/UpdateListing', {
-            id: homeDetails.id,
-            title: title,
-            fullAddress: fullAddress,
-            price: price,
-            saleRent: saleRent,
-            description: description,
-            numOfBedroom: bedroom,
-            numOfBathroom: bathroom,
-            numOfRooms: roomCount,
-            area: area,
-            floor: floor,
-            totalFloor: totalFloor,
-            houseType: houseType,
-            distinct: distinct ,
-            city: city,
-            street: street,
-            country: country,
-            lat: Cookies.get("latitude"),
-            lng: Cookies.get("longitude"),
-            ownerMail: Cookies.get("Email"),
-            keyFeatures: keyFeaturesToSend,
-            images: file_to_send
-        })
-        .then(function (response) {
-            console.log(response);
-            setAddHouseLoading(false);
-            alert("Listing updated successfully.");
-            Cookies.remove("latitude");
-            Cookies.remove("longitude");
-            Cookies.remove("homeCity");
-            Cookies.remove("homeDistinct");
-            Cookies.remove("homeStreet");
-            Cookies.remove("homeCountry");
-            Cookies.remove("homefullAddress");
-            Cookies.remove("isMapOpen");
-            window.location.href = '/myListings';
-        })
-        .catch(function (error) {
-            console.log(error);
-            setAddHouseLoading(false);
-            alert("Failed to update listing.");
-        });
-        
+        else
+        {
+            const file_to_send: string[] = [];
+            for (let i = 0; i < fileList.length; i++) {
+                fileList[i].preview = await getBase64(fileList[i].originFileObj as FileType);
+                file_to_send.push(fileList[i].preview?.toString() as string);
+            }
+            var keyFeaturesToSend = keyFeatures.filter(feature => feature.isAvailable).map(feature => feature.name);
+            
+            axios.post('http://localhost:8080/api/UpdateListing', {
+                id: homeDetails.id,
+                title: title,
+                fullAddress: fullAddress,
+                price: price,
+                saleRent: saleRent,
+                description: description,
+                numOfBedroom: bedroom,
+                numOfBathroom: bathroom,
+                numOfRooms: roomCount,
+                area: area,
+                floor: floor,
+                totalFloor: totalFloor,
+                houseType: houseType,
+                distinct: distinct ,
+                city: city,
+                street: street,
+                country: country,
+                lat: Cookies.get("latitude"),
+                lng: Cookies.get("longitude"),
+                ownerMail: Cookies.get("Email"),
+                keyFeatures: keyFeaturesToSend,
+                images: file_to_send
+            })
+            .then(function (response) {
+                console.log(response);
+                setAddHouseLoading(false);
+                alert("Listing updated successfully.");
+                Cookies.remove("latitude");
+                Cookies.remove("longitude");
+                Cookies.remove("homeCity");
+                Cookies.remove("homeDistinct");
+                Cookies.remove("homeStreet");
+                Cookies.remove("homeCountry");
+                Cookies.remove("homefullAddress");
+                Cookies.remove("isMapOpen");
+                window.location.href = '/myListings';
+            })
+            .catch(function (error) {
+                console.log(error);
+                setAddHouseLoading(false);
+                alert("Failed to update listing.");
+            });
+        }
     };
 
     async function ReverseGeoCodeFromGMaps(lat:number,lng:number) :Promise<string> {
@@ -615,7 +623,7 @@ function EditListingPage() {
                                     //console.log (feature);
                                     return (
                                         <div key={index} className="flex items-center">
-                                            <input id={feature.name} name={feature.name} type="checkbox" className="w-4 h-4 text-button-primary rounded focus:ring-0 accent-button-primary" onChange={(e) => keyFeatures[index].isAvailable = e.target.checked} defaultChecked={keyFeatures[index].isAvailable}/>
+                                            <input id={feature.name} name={feature.name} type="checkbox" className="w-4 h-4 text-button-primary rounded focus:ring-0 accent-button-primary" onChange={(e) => setKeyFeatures(keyFeatures.map((item, i) => i === index ? { ...item, isAvailable: e.target.checked } : item))} defaultChecked={keyFeatures[index].isAvailable}/>
                                             <label htmlFor={feature.name} className="ml-2 text-sm">{feature.name}</label>
                                         </div>
                                     );
