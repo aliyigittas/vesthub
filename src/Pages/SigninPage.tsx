@@ -70,7 +70,7 @@ function handleLogin(event: React.FormEvent<HTMLFormElement>) {
         console.log(response);
         //if there is no such a user
         if(response.data === ""){
-            alert("User not found");
+            alert("Please check your email and password!");
             return;
         }
         Cookies.set("Name", response.data.name, { expires: 1 }); //expires in 1 day

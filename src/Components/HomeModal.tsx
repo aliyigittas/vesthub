@@ -88,7 +88,7 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                             home.type === "Sale" ? home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " ₺" : home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₺/month"
                         }</h1>
                         {
-                        Cookies.get('Email') === home.ownerMail && home.status !== 'Rejected' && home.status !== 'Pending' &&
+                        Cookies.get('Email') === home.ownerMail && home.status !== 'Rejected' && home.status !== 'Pending' && 
                         <button className="text-white animate-pulse p-2 text-[18px] font-bold bg-button-primary rounded-lg" onClick={
                             () => {
                                 axios.post('http://localhost:8080/api/changeAvailability', {houseID: home.id, status: home.status === 'Available' ? home.type == 'Sale' ? 'Sold': 'Rented' : 'Available'})
