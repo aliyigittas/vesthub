@@ -3,9 +3,9 @@ import AddHomeMarker from '../Components/AddHomeMarker';
 import { InboxOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { Image, Upload } from 'antd';
+import { Image, message, Upload } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
 import { ButtonGroup } from 'reactstrap';
 import { button } from '@material-tailwind/react';
@@ -99,10 +99,16 @@ function EditListingPage() {
     const [selectedValue, setSelectedValue] = useState("Sale");
     const [address, setAddress] = useState<string | null>(null);
     const [getAddressLoading, setGetAddressLoading] = useState(false);
+    const [getReverseAddressLoading, setGetReverseAddressLoading] = useState(false);
+    const [addHouseLoading, setAddHouseLoading] = useState(false);
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [filters, setFilters] = useState({});
+    const fullAddressRef = useRef<HTMLInputElement>(null);
+    const [fullAddress, setFullAddress] = useState('');
+
+    
     
 
 
@@ -117,6 +123,9 @@ function EditListingPage() {
         if (homeDetails) {
             Cookies.set("latitude", homeDetails.coordinates.lat.toString(), { expires: (1 / 1440) * 60 }); // 1 hour
             Cookies.set("longitude", homeDetails.coordinates.lng.toString(), { expires: (1 / 1440) * 60 }); // 1 hour
+            Cookies.set("homeCity", homeDetails.city, { expires: (1 / 1440) * 60 }); // 1 hour
+            Cookies.set("homeDistinct", homeDetails.distinct, { expires: (1 / 1440) * 60 }); // 1 hour
+            Cookies.set("homeStreet", homeDetails.street, { expires: (1 / 1440) * 60 }); // 1 hour
             const loadImage = async (url:any, index:any) => {
                 const response = await fetch(url);
                 const blob = await response.blob();
@@ -137,7 +146,13 @@ function EditListingPage() {
             else {
                 setSelectedValue("Rent");
             }
+            setFullAddress(homeDetails.address);
+
             Promise.all(homeDetails.photo.map(loadImage)).then(images => {
+                //change file type to image type
+                images.forEach(image => {
+                    image.type = 'image/png';
+                });
                 setFileList(images);
             });
             //setFileList(images);
@@ -145,12 +160,58 @@ function EditListingPage() {
     }, [homeDetails]);
 
     const roomCount = [
-        { key: '1', label: '1+1', value: '1+1' },
-        { key: '2', label: '2+1', value: '2+1' },
-        { key: '3', label: '3+1', value: '3+1' },
-        { key: '4', label: '4+1', value: '4+1' },
-        { key: '5', label: '5+1', value: '5+1' },
-    ];
+        {
+            key: '1',
+            label: '1+0',
+            value: '1+0',
+        },
+        {
+          key: '2',
+          label: '1+1',
+          value: '1+1',
+        },
+        {
+          key: '3',
+          label: '2+0',
+          value: '2+0',
+        },
+
+        {
+          key: '4',
+          label: '2+1',
+          value: '2+1',
+        },
+        {
+          key: '5',
+          label: '3+1',
+          value: '3+1',
+        },
+        {
+            key: '6',
+            label: '3+2',
+            value: '3+2',
+        },
+        {
+          key: '7',
+          label: '4+1',
+          value: '4+1',
+        },
+        {
+          key: '8',
+          label: '5+1',
+          value: '5+1',
+        },
+        {
+          key: '9',
+          label: '6+1',
+          value: '6+1',
+        },
+        {
+          key: '10',
+          label: '7+1',
+          value: '7+1',
+        },
+      ];
     const homeType = [
         { key: '1', label: 'Apartment', value: 'Apartment' },
         { key: '2', label: 'Villa', value: 'Villa' },
@@ -165,7 +226,18 @@ function EditListingPage() {
         setPreviewOpen(true);
     };
 
-    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => setFileList(newFileList);
+    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => 
+        {
+        //check if the file is an image
+        for (let i = 0; i < newFileList.length; i++) {
+            if (!newFileList[i].type!.includes('image')) {
+                message.error(`${newFileList[i].name} is not an image file`);
+                //remove file from list with setting fileList except the file that is not an image
+                newFileList.splice(i, 1);
+            }
+        }
+        setFileList(newFileList);
+    }
     
     const uploadButton = (
         <button style={{ border: 0, background: 'none' }} type="button">
@@ -183,7 +255,14 @@ function EditListingPage() {
         });
     };
 
+    useEffect(() => {
+        if (fullAddressRef.current) {
+            fullAddressRef.current.value = fullAddress;
+        }
+    }, [fullAddress]);
+
     const handleUpdateListing = async (event: React.FormEvent<HTMLFormElement>) => {
+        setAddHouseLoading(true);
         event.preventDefault();
         Cookies.remove("homefullAddress");
         const data = new FormData(event.currentTarget);
@@ -218,11 +297,13 @@ function EditListingPage() {
 
         if (fileList.length < 3) {
             alert("Please upload at least three images.");
+            window.location.reload();
             return;
         }
 
         if (parseInt(floor) > parseInt(totalFloor)) {
             alert("Floor should be smaller than total floor.");
+            window.location.reload();
             return;
         }
 
@@ -257,33 +338,77 @@ function EditListingPage() {
         })
         .then(function (response) {
             console.log(response);
+            setAddHouseLoading(false);
             alert("Listing updated successfully.");
+            Cookies.remove("latitude");
+            Cookies.remove("longitude");
+            Cookies.remove("homeCity");
+            Cookies.remove("homeDistinct");
+            Cookies.remove("homeStreet");
+            Cookies.remove("homeCountry");
+            Cookies.remove("homefullAddress");
+            Cookies.remove("isMapOpen");
             window.location.href = '/myListings';
         })
         .catch(function (error) {
             console.log(error);
+            setAddHouseLoading(false);
             alert("Failed to update listing.");
         });
         
     };
 
-    async function GeoCodeFromGMaps(): Promise<string> {
-        setGetAddressLoading(true);
-        try {
-            const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${Cookies.get("latitude")},${Cookies.get("longitude")}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
+    async function ReverseGeoCodeFromGMaps(lat:number,lng:number) :Promise<string> {
+        //change city and distinct and street fields in the form
+        setGetReverseAddressLoading(true);
+        try
+        {
+            const response =await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
+            console.log(response.data.results);
             Cookies.set("homefullAddress", response.data.results[0].formatted_address, { expires: (1 / 1440) * 60 }); // 1 hour
             Cookies.set("homeCity", response.data.results[0].address_components[4].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
-            Cookies.set("homeDistinct", response.data.results
-
-[0].address_components[3].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
-            Cookies.set("homeCountry", response.data.results[0].address_components[6].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
-            setAddress(response.data.results[0].formatted_address);
+            Cookies.set("homeDistinct", response.data.results[0].address_components[3].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
+            Cookies.set("homeStreet", response.data.results[0].address_components[1].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
+            Cookies.set("homeCountry", response.data.results[0].address_components[5].long_name, { expires: (1 / 1440) * 60 }); // 1 hour
+            //change city and distinct and street fields in the form
+            var fullAddress = response.data.results[0].formatted_address;
+            var city = response.data.results[0].address_components[4].long_name;
+            var distinct = response.data.results[0].address_components[3].long_name;
+            var street = response.data.results[0].address_components[1].long_name;
+            document.getElementById("fullAddress")?.setAttribute("value", fullAddress);
+            document.getElementById("city")?.setAttribute("value", city);
+            document.getElementById("distinct")?.setAttribute("value", distinct);
+            document.getElementById("street")?.setAttribute("value", street);
+            setFullAddress(fullAddress);
+            setGetReverseAddressLoading(false);
             return response.data.results[0].formatted_address;
-        } catch (error) {
-            console.error(error);
-            return "Failed to get address";
-        } finally {
+        }
+        catch(error)
+        {
+            setGetReverseAddressLoading(false);
+            console.log(error);
+            setAddress("Address could not be found.");
+            return "Address could not be found.";
+        }
+    }
+
+    async function GeoCodeFromGMaps(fullAddress:string) :Promise<string> {
+        setGetAddressLoading(true);
+        try
+        {
+            const response =await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${fullAddress}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`);
+            console.log("GEOCODING: ",response.data.results);
+            Cookies.set("latitude", response.data.results[0].geometry.location.lat, { expires: (1 / 1440) * 60 }); // 1 hour
+            Cookies.set("longitude", response.data.results[0].geometry.location.lng, { expires: (1 / 1440) * 60 }); // 1 hour
             setGetAddressLoading(false);
+            return response.data.results[0].formatted_address;
+        }
+        catch(error)
+        {
+            setGetAddressLoading(false);
+            console.log(error);
+            setAddress("Address could not be found.");
+            return "Address could not be found.";
         }
     }
 
@@ -304,12 +429,13 @@ function EditListingPage() {
                 <div className='flex flex-col gap-3'>
                     <>
                         <Upload
-                            //action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                            accept=".jpg,.jpeg,.png"
                             listType="picture-card"
                             fileList={fileList}
                             onPreview={handlePreview}
                             onChange={handleChange}
                             beforeUpload={(file) => {
+                                
                                 setFileList([...fileList, file]);
                                 return false;
                             
@@ -342,23 +468,22 @@ function EditListingPage() {
                     <div className= "flex flex-row gap-2">
                         <div>
                             <label className="block text-sm font-medium ">City</label>
-                            <input id="city" name="city" type="text" autoComplete="city" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.city}/>
+                            <input id="city" name="city" type="text" autoComplete="city" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" readOnly value={homeDetails.city}/>
                         </div>
                         <div>
                             <label className="block text-sm font-medium ">District</label>
-                            <input id="distinct" name="distinct" type="text" autoComplete="distinct" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.distinct}/>
+                            <input id="distinct" name="distinct" type="text" autoComplete="distinct" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" readOnly value={homeDetails.distinct}/>
                         </div>
                         <div>
                             <label className="block text-sm font-medium ">Street</label>
-                            <input id="street" name="street" type="text" autoComplete="street" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.street}/>
+                            <input id="street" name="street" type="text" autoComplete="street" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" readOnly value={homeDetails.street}/>
                         </div>    
                     </div>
                     <div>
                         <label className="block text-sm font-medium ">Address</label>
-                        <input id="fullAddress" name="fullAddress" type="text" autoComplete="address" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.address}/>
-                        <button type="button" className="mt-2 flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover disabled:bg-opacity-50" 
-                        onClick={async ()=>{
-                            const address= await GeoCodeFromGMaps();
+                        <input id="fullAddress" name="fullAddress" type="text" autoComplete="address" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={fullAddress} ref={fullAddressRef}/>
+                        <button type="button" className="mt-2 flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover disabled:bg-opacity-50" onClick={async ()=>{
+                            const address= await ReverseGeoCodeFromGMaps(parseFloat(Cookies.get("latitude") as string),parseFloat(Cookies.get("longitude") as string));
                             if (address !== "Address could not be found.")
                             {
                                 
@@ -369,15 +494,36 @@ function EditListingPage() {
                                 alert("Address could not be found. Please make sure location services are enabled.");
                             }
                         }}
-                        disabled={getAddressLoading}
+                        disabled={getReverseAddressLoading}
                         
                         >
-                            {!getAddressLoading ? "Get Address from Current Location" : 
+                            {!getReverseAddressLoading ? "Get Address from Selected Location" : 
                             <div className="flex justify-center items-center gap-2">
                                 <LoadingOutlined />
                                 <span>Loading...</span>
                             </div>
                             }
+                        </button>
+                        <button type="button" className="mt-2 flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover disabled:bg-opacity-50"  onClick={async ()=>{
+                            //get the input value
+                            var fullAddress = (document.getElementById("fullAddress") as HTMLInputElement).value;
+                            await GeoCodeFromGMaps(fullAddress);
+                            const address= await ReverseGeoCodeFromGMaps(parseFloat(Cookies.get("latitude") as string),parseFloat(Cookies.get("longitude") as string));
+                            if (address !== "Address could not be found.")
+                            {
+                                document.getElementById("fullAddress")?.setAttribute("value", address);
+                            }
+                            else
+                            {
+                                alert("Address could not be found. Please make sure location services are enabled.");
+                            }
+                        } } disabled={getAddressLoading}> 
+                            {!getAddressLoading ? "Locate Address on Map" : 
+                            <div className="flex justify-center items-center gap-2">
+                                <LoadingOutlined />
+                                <span>Loading...</span>
+                            </div>
+                        }
                         </button>
                     </div>
                     <div className='flex flex-row gap-2'>
@@ -443,7 +589,22 @@ function EditListingPage() {
                     </div>
                     <div>
                         <label className="block text-sm font-medium ">Price</label>
-                        <input id="price" name="price" type="number" autoComplete="price" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.price}/>
+                        <input onWheel={
+                            (e) => {
+                                e.currentTarget.blur();
+                            }
+                        } id="price" name="price" type="number" autoComplete="price" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"
+                        defaultValue={homeDetails.price}
+                        onChange={
+                            (e) => {
+                                if(parseInt(e.target.value) <= 0)
+                                {
+                                    alert("Price cannot be negative or zero.");
+                                    e.target.value = "";
+                                }
+                            }
+                        }
+                        />
                     </div>
                     <div>
                         <label className="block text-sm font-medium ">Description</label>
@@ -466,9 +627,14 @@ function EditListingPage() {
                         </div>
 
                     </div>
-                    <input type="submit" className="flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover" value="Update House" onClick={()=>{
-                        
-                    }}/>
+                    <button type="submit" className="flex w-full justify-center rounded-md bg-button-primary py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover" value="Add House" disabled={addHouseLoading}>
+                    {!addHouseLoading ? "Update House" : 
+                            <div className="flex justify-center items-center gap-2">
+                                <LoadingOutlined />
+                                <span>Adding...</span>
+                            </div>
+                        } 
+                    </button>
                 </form>
                 <div className="mt-3 flex flex-row items-center justify-between">
                     <label>Return to the main page?</label>
