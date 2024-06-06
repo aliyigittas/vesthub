@@ -338,7 +338,12 @@ function CreateListingPage()
                     </div>
                     <div>
                         <label className="block text-sm font-medium ">Price</label>
-                        <input id="price" name="price" type="number" autoComplete="price" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"
+                        <input onWheel={
+                            (e) => {
+                                e.currentTarget.blur();
+                            }
+                        } id="price" name="price" type="number" autoComplete="price" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary"
+                        
                         onChange={
                             (e) => {
                                 if(parseInt(e.target.value) <= 0)

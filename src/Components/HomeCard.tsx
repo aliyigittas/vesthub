@@ -58,7 +58,6 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
         <div className="rounded-full bg-white w-11 h-11 flex items-center justify-center bg-transparent"
           onClick={
             (e) => {
-
               if (Cookies.get('loggedIn') === 'true') {
                 if (home.ownerMail === Cookies.get("Email")) {
                   window.location.href = '/editListing/' + home.id;
@@ -88,7 +87,7 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
                 }
               } else {
                 window.location.href = '/login';
-                window.location.reload();
+                //window.location.reload();
               }
               e.stopPropagation();
               

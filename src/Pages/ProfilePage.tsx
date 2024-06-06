@@ -167,7 +167,10 @@ function ProfilePage() {
 
     return (
       <form className="flex flex-col" onSubmit={handleSaveAddressSettings}>
-        <input type="text" name = "address" placeholder="Address" defaultValue={Cookies.get ("fullAddress")} onChange={(e) => {setAddress(e.target.value)}} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+        { /*
+          <input type="text" name = "address" placeholder="Address" defaultValue={Cookies.get ("fullAddress")} onChange={(e) => {setAddress(e.target.value)}} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
+          */
+          }
         <input type="text" name = "city" placeholder="City"  defaultValue={Cookies.get ("City")} onChange={(e) => {setCity(e.target.value)}} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
         <input type="text" name = "country" placeholder="Country" defaultValue={Cookies.get ("Country")} onChange={(e) => {setCountry(e.target.value)}} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm sm:text-sm sm:leading-6 focus:outline-button-primary" />
         <div className=' flex justify-center pt-4'>
@@ -261,11 +264,11 @@ function ProfilePage() {
 
   function handleSaveAddressSettings(event: React.FormEvent<HTMLFormElement>) {
     const data = new FormData(event.currentTarget);
-    const address = data.get('address') as string;
+    const address = 'Easter egg';
     const city = data.get('city') as string;
     const country = data.get('country') as string;
     console.log(address, city, country);
-    if (address == '' || city == '' || country == '') {
+    if (city == '' || country == '') {
       alert("Please fill all the fields!");
       return;
     }

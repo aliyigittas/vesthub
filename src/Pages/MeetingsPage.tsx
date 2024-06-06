@@ -343,7 +343,6 @@ function MeetingsPage() {
         try {
           console.log("Fetching waiting meetings sent to me...");
           const response = await axios.get(`http://localhost:8080/api/getReservations/${Cookies.get("Email")}`); // Adjust API endpoint as necessary
-          console.log("Meetings fetched successfully:", response.data);
           setWaitingMeetingsSentToMe(response.data);
           //filter waiting meetings sent to me
           var waitingMeetingsSentToMe: any[] = [];
@@ -389,7 +388,7 @@ function MeetingsPage() {
               }
             } home={homeDetails} />
           }
-            <div className="flex flex-col bg-gray-300 w-[512px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
+            <div className="flex flex-col bg-gray-300 w-[720px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
               {WaitingMeetingsSentToMe.length === 0
               ? (
                 <div className="flex flex-col items-center justify-items-center mt-2">
@@ -398,8 +397,8 @@ function MeetingsPage() {
               ) : ( WaitingMeetingsSentToMe.map((meeting, index) => {
                 return (
                   <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
-                    <img src={meeting.profilePicture === null ? DefaultProfilePhoto : meeting.profilePicture} alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
-                    <label className="flex justify-center items-center">{meeting.ownerName}</label>
+                    <img src={meeting.clientProfilePicture === null ? DefaultProfilePhoto : meeting.clientProfilePicture} alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
+                    <label className="flex justify-center items-center">{meeting.clientName}</label>
                     <div className="flex flex-col justify-center items-center text-center">
                       <label>{meeting.date}</label>
                       <label>{meeting.daytime}</label>
@@ -412,6 +411,9 @@ function MeetingsPage() {
                     }}>Home Details</button>
                     <button onClick={
                       () => {
+                        message.config({
+                          maxCount: 1,
+                        });
                         message.open({
                           //type: 'info',
                           duration: 0,
@@ -495,7 +497,7 @@ function MeetingsPage() {
     
     return (
       <div className="flex flex-col items-center space-y-2"> {/* Add flex and flex-col classes */}
-        <div className="flex flex-col bg-gray-300 w-[512px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
+        <div className="flex flex-col bg-gray-300 w-[720px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
         {show && <HomeModal show={show} setShow={() => 
             {
               window.history.pushState({}, "", "/meetings");
@@ -527,6 +529,9 @@ function MeetingsPage() {
                 }}>Home Details</button>
                 <button onClick={
                   () => {
+                    message.config({
+                      maxCount: 1,
+                    });
                     message.open({
                       //type: 'info',
                       duration: 0,
@@ -603,7 +608,7 @@ function MeetingsPage() {
     
     return (
       <div className="flex flex-col items-center space-y-2"> {/* Add flex and flex-col classes */}
-        <div className="flex flex-col bg-gray-300 w-[512px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
+        <div className="flex flex-col bg-gray-300 w-[720px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
         {show && <HomeModal show={show} setShow={() => 
             {
               window.history.pushState({}, "", "/meetings");
@@ -619,10 +624,11 @@ function MeetingsPage() {
           ) : ( upcomingMeetings.map((meeting, index) => {
             return (
               <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
-                <img src={meeting.profilePicture === null ? DefaultProfilePhoto : meeting.profilePicture} alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
-                <label className="flex justify-center items-center">{meeting.ownerName}</label>
+                <img src={Cookies.get("Email") == meeting.ownerMail ? (meeting.clientProfilePicture === null ? DefaultProfilePhoto : meeting.clientProfilePicture) : (meeting.profilePicture === undefined ? DefaultProfilePhoto : meeting.profilePicture)} alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
+                <label className="flex justify-center items-center">{Cookies.get("Email") === meeting.ownerMail ? meeting.clientName : meeting.ownerName}</label>
                 <div className="flex flex-col justify-center items-center text-center">
                   <label>{meeting.date}</label>
+                  <label>{meeting.daytime}</label>
                 </div>
                 <button className="bg-button-secondary text-white rounded-xl p-1 hover:bg-button-secondaryHover" onClick={() => {
                       console.log("Home ID: ",meeting.houseID);
@@ -631,6 +637,9 @@ function MeetingsPage() {
                     }}>Home Details</button>
                     <button onClick={
                       () => {
+                        message.config({
+                          maxCount: 1,
+                        });
                         message.open({
                           //type: 'info',
                           duration: 0,
@@ -698,7 +707,7 @@ function MeetingsPage() {
 
     return (
       <div className="flex flex-col items-center space-y-2"> {/* Add flex and flex-col classes */}
-        <div className="flex flex-col bg-gray-300 w-[512px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
+        <div className="flex flex-col bg-gray-300 w-[720px] h-[512px] rounded-xl p-2 gap-1 overflow-scroll">
         {show && <HomeModal show={show} setShow={() => 
             {
               window.history.pushState({}, "", "/meetings");
@@ -714,8 +723,8 @@ function MeetingsPage() {
           ) : ( PreviousMeetings.map((meeting, index) => {
             return (
               <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
-                <img src={meeting.profilePicture === null ? DefaultProfilePhoto : meeting.profilePicture} alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
-                <label className="flex justify-center items-center">{meeting.ownerName}</label>
+                <img src={Cookies.get("Email") == meeting.ownerMail ? (meeting.clientProfilePicture === null ? DefaultProfilePhoto : meeting.clientProfilePicture) : (meeting.profilePicture === undefined ? DefaultProfilePhoto : meeting.profilePicture)} alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
+                <label className="flex justify-center items-center">{Cookies.get("Email") === meeting.ownerMail ? meeting.clientName : meeting.ownerName}</label>
                 <div className="flex flex-col justify-center items-center text-center">
                   <label>{meeting.date}</label>
                   <label>{meeting.daytime}</label>
@@ -728,6 +737,9 @@ function MeetingsPage() {
                     }}>Home Details</button>
                     <button onClick={
                       () => {
+                        message.config({
+                          maxCount: 1,
+                        });
                         message.open({
                           //type: 'info',
                           duration: 0,
