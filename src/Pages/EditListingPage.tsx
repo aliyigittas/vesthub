@@ -468,15 +468,15 @@ function EditListingPage() {
                     <div className= "flex flex-row gap-2">
                         <div>
                             <label className="block text-sm font-medium ">City</label>
-                            <input id="city" name="city" type="text" autoComplete="city" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" readOnly value={homeDetails.city}/>
+                            <input id="city" name="city" type="text" autoComplete="city" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" readOnly value={Cookies.get("homeCity")}/>
                         </div>
                         <div>
                             <label className="block text-sm font-medium ">District</label>
-                            <input id="distinct" name="distinct" type="text" autoComplete="distinct" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" readOnly value={homeDetails.distinct}/>
+                            <input id="distinct" name="distinct" type="text" autoComplete="distinct" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" readOnly value={Cookies.get("homeDistinct")}/>
                         </div>
                         <div>
                             <label className="block text-sm font-medium ">Street</label>
-                            <input id="street" name="street" type="text" autoComplete="street" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" readOnly value={homeDetails.street}/>
+                            <input id="street" name="street" type="text" autoComplete="street" required className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" readOnly value={Cookies.get("homeStreet")}/>
                         </div>    
                     </div>
                     <div>
