@@ -21,6 +21,7 @@ import DefaultProfilePicture from './../DefaultProfilePhoto.png';
 function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void; home: { id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number, status:string, floor:number, totalFloor:number , houseType:string,}}) {
     const [value, setValue] = useState<Dayjs | null>(dayjs(null)); //eslint-disable-line
     const [isLiked, setIsLiked] = useState(false);
+    
     const daytime = [
         {
           key: '1',
@@ -95,7 +96,8 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                                 .then(response => {
                                     console.log(response.data);
                                     if (response.data === true) {
-                                        alert('House marked as sold');
+                                        alert('House marked as ' + (home.status === 'Available' ? home.type == 'Sale' ? 'Sold': 'Rented' : 'Available'));
+                                        window.history.pushState({}, '', currentUrl);
                                         window.location.reload();
                                     }
                                 });

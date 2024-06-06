@@ -119,7 +119,7 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
         }
       </div>
       <div className="px-4 py-2">
-        <div className="font-bold text-xl text-ellipsis line-clamp-3">{home.title}</div>
+        <div className="font-bold text-xl text-ellipsis line-clamp-2">{home.title}</div>
         <label className="font-bold text-[14px]">{
           home.type === "Sale" ? home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " ₺" : home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₺/month"
         }</label>
