@@ -45,9 +45,14 @@ const homeType = [
 
 const roomCountOpt = [
   {
-    key: '1',
+    key: '0',
     label: 'All',
     value: 'All',
+  },
+  {
+    key: '1',
+    label: '1+0',
+    value: '1+0',
   },
   {
     key: '2',
@@ -56,23 +61,44 @@ const roomCountOpt = [
   },
   {
     key: '3',
+    label: '2+0',
+    value: '2+0',
+  },
+
+  {
+    key: '4',
     label: '2+1',
     value: '2+1',
   },
   {
-    key: '4',
+    key: '5',
     label: '3+1',
     value: '3+1',
   },
   {
-    key: '5',
+      key: '6',
+      label: '3+2',
+      value: '3+2',
+  },
+  {
+    key: '7',
     label: '4+1',
     value: '4+1',
   },
   {
-    key: '6',
+    key: '8',
     label: '5+1',
     value: '5+1',
+  },
+  {
+    key: '9',
+    label: '6+1',
+    value: '6+1',
+  },
+  {
+    key: '10',
+    label: '7+1',
+    value: '7+1',
   },
 ];
 
@@ -309,14 +335,32 @@ function SearchPage() {
           <div className="flex gap-2 flex-row">
             <input type="number" id="minPrice" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Min" min={0} onChange={(e) => {
               //addSearchFilter('minPrice', e.target.value);
+              if(parseInt(e.target.value) <= 0)
+              {
+                  alert("Price cannot be negative or zero.");
+                  e.target.value = "";
+              }
               minPrice = parseInt(e.target.value);
             } }
+            onWheel={
+              (e) => {
+                  e.currentTarget.blur();
+              } }
             defaultValue={minPrice === -1 ? '' : minPrice}
             />
             <input type="number" id="maxPrice" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Max" min={0} onChange={(e) => {
               //addSearchFilter('maxPrice', e.target.value);
+              if(parseInt(e.target.value) <= 0)
+              {
+                  alert("Price cannot be negative or zero.");
+                  e.target.value = "";
+              }
               maxPrice = parseInt(e.target.value);
             } }
+            onWheel={
+              (e) => {
+                  e.currentTarget.blur();
+              } }
             defaultValue={maxPrice === -1 ? '' : maxPrice}
             />
           </div>
@@ -327,16 +371,35 @@ function SearchPage() {
           <div className="flex gap-2 flex-row">
             <input type="number" id="minArea" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Min" min={0} onChange={(e) => {
               //addSearchFilter('minArea', e.target.value);
+              if(parseInt(e.target.value) <= 0)
+              {
+                  alert("Area cannot be negative or zero.");
+                  e.target.value = "";
+              }
               minArea = parseInt(e.target.value);
               console.log(minArea);
             } }
+            onWheel={
+              (e) => {
+                  e.currentTarget.blur();
+              } }
             defaultValue={minArea === -1 ? '' : minArea}
+            
             />
             <input type="number" id="maxArea" className="max-w-[96px] p-1 text-gray-900 border border-gray-300 rounded-lg shadow-lg bg-gray-50 focus:outline-button-primary" placeholder="Max" min={0} onChange={(e) => {
               //addSearchFilter('maxArea', e.target.value);
+              if(parseInt(e.target.value) <= 0)
+              {
+                  alert("Area cannot be negative or zero.");
+                  e.target.value = "";
+              }
               maxArea = parseInt(e.target.value);
               console.log(maxArea);
             } }
+            onWheel={
+              (e) => {
+                  e.currentTarget.blur();
+              } }
             defaultValue={maxArea === -1 ? '' : maxArea}
             />
           </div>
@@ -417,12 +480,12 @@ function SearchPage() {
     if (Number.isNaN(maxArea))
       maxArea = -1;
 
-    if (minPrice > maxPrice) {
+    if ((maxPrice != -1) && (minPrice > maxPrice)){
       alert("Min price cannot be greater than max price!");
       return;
     }
 
-    if (minArea > maxArea) {
+    if ((maxArea != -1) && (minArea > maxArea)){
       alert("Min area cannot be greater than max area!");
       return;
     }

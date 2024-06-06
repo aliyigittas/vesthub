@@ -52,31 +52,58 @@ function CreateListingPage()
 
     const roomCount = [
         {
-          key: '1',
+            key: '1',
+            label: '1+0',
+            value: '1+0',
+        },
+        {
+          key: '2',
           label: '1+1',
           value: '1+1',
         },
         {
-          key: '2',
+          key: '3',
+          label: '2+0',
+          value: '2+0',
+        },
+
+        {
+          key: '4',
           label: '2+1',
           value: '2+1',
         },
         {
-          key: '3',
+          key: '5',
           label: '3+1',
           value: '3+1',
         },
         {
-          key: '4',
+            key: '6',
+            label: '3+2',
+            value: '3+2',
+        },
+        {
+          key: '7',
           label: '4+1',
           value: '4+1',
         },
         {
-          key: '5',
+          key: '8',
           label: '5+1',
           value: '5+1',
         },
+        {
+          key: '9',
+          label: '6+1',
+          value: '6+1',
+        },
+        {
+          key: '10',
+          label: '7+1',
+          value: '7+1',
+        },
       ];
+
       const homeType = [
         {
           key: '1',
