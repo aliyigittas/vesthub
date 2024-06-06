@@ -359,8 +359,8 @@ function CreateListingPage()
                     </div>
                     <div className=' flex justify-center items-center'>
                         <ButtonGroup className="p-[3.5px] mt-3 bg-gray-800 bg-opacity-60">
-                        <button className={`${selectedValue == "Sale" ? "bg-button-secondary" : "bg-opacity-40"} ${selectedValue == "Sale" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("Sale")}>Sale</button> {/*eslint-disable-line eqeqeq*/}
-                        <button className={`${selectedValue == "Rent" ? "bg-button-secondary" : "bg-opacity-10"} ${selectedValue == "Rent" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("Rent")}>Rent</button> {/*eslint-disable-line eqeqeq*/}
+                        <button type="button" className={`${selectedValue == "Sale" ? "bg-button-secondary" : "bg-opacity-40"} ${selectedValue == "Sale" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("Sale")}>Sale</button> {/*eslint-disable-line eqeqeq*/}
+                        <button type="button" className={`${selectedValue == "Rent" ? "bg-button-secondary" : "bg-opacity-10"} ${selectedValue == "Rent" ? "" : "hover:bg-gray-700"} text-white py-1.5 px-3 rounded transition duration-300 transform`} onClick={() => setSelectedValue("Rent")}>Rent</button> {/*eslint-disable-line eqeqeq*/}
                         </ButtonGroup>
                     </div>
                     <div>
