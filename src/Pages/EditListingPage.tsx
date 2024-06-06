@@ -88,6 +88,7 @@ function EditListingPage() {
                             { name: "Furnished", isAvailable: homedetails.keyFeatures.furnished },
                             { name: "Insulation", isAvailable: homedetails.keyFeatures.insulation }
                         ]);
+                        setSelectedValue(homedetails.type);
                     }
                 });
         }
