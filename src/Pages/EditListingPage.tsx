@@ -141,12 +141,8 @@ function EditListingPage() {
                 };
             };
 
-            if (homeDetails.saleRent === "Sale") {
-                setSelectedValue("Sale");
-            }
-            else {
-                setSelectedValue("Rent");
-            }
+            setSelectedValue(homeDetails.type);
+
             setFullAddress(homeDetails.address);
 
             Promise.all(homeDetails.photo.map(loadImage)).then(images => {
