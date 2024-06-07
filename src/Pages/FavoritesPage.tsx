@@ -1,15 +1,10 @@
 import { useEffect, useState } from "react";
 import HomeCard from "../Components/HomeCard";
 import axios from "axios";
-import H1 from "../homePhotos/home1/1.jpeg";
-import H2 from "../homePhotos/home1/2.jpeg";
-import H3 from "../homePhotos/home1/3.jpeg";
 import Cookies from "js-cookie";
 import vesthublogo from '../vesthublogo.png';
 
 function FavoritesPage() {
-    //const favoriteHomes =[homes[0], homes[2]]; 
-
     return (
         <div className="min-h-full place-items-center flex justify-top flex-col bg-backColor px-6 py-6 lg:px-8">
             <h1>Favorites</h1>
@@ -18,7 +13,6 @@ function FavoritesPage() {
     );
 }
 
-//(`http://localhost:8080/api/favorites/${Cookies.get('Email')}`)
 
 function ListMyHouse() {
     const [homes, setHomes] = useState<any[]>([]);
@@ -78,7 +72,7 @@ function ListMyHouse() {
                 <div className="text-center py-24">
                     <img src={vesthublogo} alt="VestHub Logo" className="mx-auto h-60 cursor-pointer animate-pulse" onClick={() => window.location.href = '/'} />
                     <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl pt-3">
-                        {loading ? "Loading..." : "No houses"}
+                        {loading ? "Loading..." : "No Favorites"}
                     </h1>          
                     <div className="mt-10">
                         <button className="rounded-md bg-button-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover" onClick={() => window.location.href = '/'}>Go back home</button>

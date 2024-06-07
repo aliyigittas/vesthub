@@ -4,6 +4,7 @@ import MultiMarkerMap from "../Components/MultiMarkerMap";
 import axios from "axios";
 import { ButtonGroup } from "reactstrap";
 import Cookies from "js-cookie";
+import loadingGif from '../loading.gif';
 
 
 export const currentUrl = window.location.href;
@@ -258,9 +259,9 @@ function SearchPage() {
           <div className="flex flex-wrap justify-center">
             
             { loading ? 
-              <div className="flex justify-center items-center h-48">
-                <h1>Loading...</h1>
-              </div> :
+              <div className="flex justify-center items-center h-48 flex-row">
+              <img src={loadingGif} alt="Loading" className='w-[576px] h-[324px]' />
+            </div> :
             homes.length === 0 ? 
               <div className="flex justify-center items-center h-48">
                 <h1>No results found</h1>

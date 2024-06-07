@@ -22,8 +22,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import MeetingsPage from './Pages/MeetingsPage';
 import EditListingPage from './Pages/EditListingPage';
 import AdminPanel from './Pages/AdminPanel';
-import { profile } from 'console';
-
 
 
 const items: MenuProps['items'] = [
@@ -93,9 +91,7 @@ function App() {
       profilePicture = defultProfile;
     }
 
-    //console.log("profilePicture:CCCCCC ",profilePicture);
-    //console.log("defult: DDDDD", defultProfile);
-    // Using useState to manage collapse state
+
     const [isCollapsed, setIsCollapsed] = useState(true);
     Cookies.get("loggedIn") ? console.log("Cookie found") : firstTimeVisited();
 
@@ -103,8 +99,6 @@ function App() {
       Cookies.set("loggedIn", "false", { expires: 1 })
       message.info("This website uses cookies to enhance the user experience. By using this website, you agree to our use of cookies.", 10);
     }
-    //Cookies.get("latitude") ? Cookies.remove("latitude") : console.log("No latitude cookie found");
-    //Cookies.get("longitude") ? Cookies.remove("longitude") : console.log("No longitude cookie found");
 
     if (Cookies.get("loggedIn") === "false" && (window.location.pathname === '/myListings' || window.location.pathname === '/profile' || window.location.pathname === '/addListing' || window.location.pathname === '/favorites' || window.location.pathname === '/meetings' || window.location.pathname === '/addHome' || window.location.pathname.includes('/editListing'))) {
       window.location.href = '/notFound';
@@ -116,7 +110,6 @@ function App() {
     const loggedIn=Cookies.get("loggedIn");
     //console.log("resim: ",profilePicture);
 
-    
     if(window.location.pathname!="/myListings"){
       Cookies.remove("currentPage");
     }
@@ -125,8 +118,6 @@ function App() {
       console.log("Logged in as "+name+" "+surname+" with email "+email);
     }
     
-
-    //Cookies.remove("Name");
     useEffect(() => {
       // Using useEffect to toggle collapse class when isCollapsed changes
       const toggleBtn = document.getElementById("navbar-toggle");

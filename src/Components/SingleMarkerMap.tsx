@@ -1,6 +1,7 @@
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import Homepin from '../homePin.png';
 import LoadMaps from "./GmapsHelper";
+import loadingGif from '../loading.gif';
 
 function SingleMarkerMap({marker} : {marker: { id: number, coordinates: {lat: number, lng: number}}}){
     const isLoaded = LoadMaps(); 
@@ -29,7 +30,9 @@ function SingleMarkerMap({marker} : {marker: { id: number, coordinates: {lat: nu
       </div>
     ) : (
         //buraya gif gelecek
-      <h1>Loading...</h1>
+        <div className="flex justify-center items-center h-48 flex-row">
+        <img src={loadingGif} alt="Loading" className='w-[576px] h-[324px]' />
+      </div>
     );
   }
 

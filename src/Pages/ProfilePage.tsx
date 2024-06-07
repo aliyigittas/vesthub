@@ -15,8 +15,6 @@ function ProfilePage() {
   if (profilePicture === null || profilePicture === undefined || profilePicture === "" || profilePicture === "null" || profilePicture === "undefined") {
     profilePicture = defultProfile;
   }
-
-  console.log("Profile AAAAA: ", profilePicture);
   
   useEffect(() => {
     AOS.init(); // Initialize AOS

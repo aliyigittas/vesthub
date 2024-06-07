@@ -1,10 +1,10 @@
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import LoadMaps from "./GmapsHelper";
 import Homepin from "../homePin.png";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { LoadingOutlined } from "@ant-design/icons";
+import loadingGif from '../loading.gif';
 
 
 function AddHomeMarker() {
@@ -87,7 +87,9 @@ function AddHomeMarker() {
       </div>
     ) : (
         //buraya gif gelecek
-      <h1>Loading...</h1>
+        <div className="flex justify-center items-center h-48 flex-row">
+        <img src={loadingGif} alt="Loading" className='w-[576px] h-[324px]' />
+      </div>
     );
 
   function getCurrentLocation() {

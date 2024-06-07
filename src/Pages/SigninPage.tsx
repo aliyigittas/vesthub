@@ -87,10 +87,6 @@ function handleLogin(event: React.FormEvent<HTMLFormElement>) {
 
         // save the profile picture to local data
         localStorage.setItem("profilePicture", profilePicture);
-
-
-
-
         window.location.href = '/profile';
     })
     .catch(function (error) {

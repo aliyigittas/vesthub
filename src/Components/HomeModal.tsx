@@ -203,10 +203,7 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                             <div className="flex flex-row items-center justify-center space-x-2">
                             <div className="flex flex-col items-start space-y-2">
                                 <DateTimePicker 
-                                    //mobiletoolbar hidden
-                                    
                                     label="Select Date"
-                                    
                                     //disable past dates
                                     shouldDisableDate={(date) => {
                                         //disble past dates
@@ -215,7 +212,6 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                                         }
                                         return false;
                                     }}
-                                    
                                     views={['year', 'month', 'day']}
                                     orientation='landscape'
                                     onChange={setValue}
@@ -354,7 +350,7 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                     onMouseEnter={() => setIsLikeHovered(true)}
                     onMouseLeave={() => setIsLikeHovered(false)}
                     >
-                        {home.ownerMail === Cookies.get("Email") ? ( // Check if the owner is 'Baran'
+                        {home.ownerMail === Cookies.get("Email") ? ( // Check owner is the same as the logged in user
                             isLiked ? <EditFilled className='text-[#6fa3f7]' /> : isLikeHovered ? <EditFilled className='text-[#6fa3f7]' /> : <EditFilled className='text-[#e2e9ef]' />
                             ) : ( //if the owner is not matching, use default heart icons
                             isLiked ? <HeartFilled className='text-red-500'/> : isLikeHovered ? <HeartTwoTone twoToneColor={'#ef4444'}/> : <HeartTwoTone twoToneColor={'#9ca3af'}/>)

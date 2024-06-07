@@ -9,7 +9,6 @@ function NotFoundPage() {
           <p className="mt-6 text-base leading-7 text-gray-600">Sorry, we couldn’t find the page you’re looking for.</p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <button className="rounded-md bg-button-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover" onClick={() => window.location.href = '/'}>Go back home</button>
-            {/*<button className="text-sm font-semibold text-gray-900">Contact support <span aria-hidden="true">&rarr;</span></button>*/}
           </div>
         </div>
       </main>

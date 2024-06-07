@@ -1,9 +1,7 @@
 import Cookies from 'js-cookie';
-import vesthublogo from '../vesthublogo.png';
 import defaultProfilePhoto from '../DefaultProfilePhoto.png';
 import axios from 'axios';
 import { useState } from 'react';
-import { profile } from 'console';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
 function RegisterPage(){
@@ -226,8 +224,5 @@ function termsPopup()
 {
     alert("Terms and conditions");
 }
-
-
-
 
 export default RegisterPage;

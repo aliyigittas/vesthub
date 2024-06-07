@@ -12,9 +12,6 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
   const [clickedHomeId, setClickedHomeId] = useState(null);
   const filteredHomes = home;
 
-  
-
-  
   useEffect(() => {
     if (Cookies.get('loggedIn') === 'true') {
       axios.get('http://localhost:8080/api/checkFavorite', {
@@ -31,14 +28,11 @@ function HomeCard({ home }: { home: { id: number, title: string, photo: string[]
       });
     }
   }, [home.id]);
-  
-
 
   const handleClick = (id:any) =>  {
     setClickedHomeId(id);
   };
 
-  
 
   return (
     <div className="w-[300px] rounded-lg shadow-sm m-2 bg-white cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"

@@ -3,13 +3,12 @@ import { GoogleMap, InfoBoxF, MarkerF } from "@react-google-maps/api";
 import Homepin from '../homePin.png';
 import HomeCard from "./HomeCard";
 import LoadMaps from "./GmapsHelper";
+import loadingGif from '../loading.gif';
 
 function MultiMarkerMap({homes}: {homes:{ id: number, title: string, photo: string[] , price: string, type: string, coordinates: {lat: number, lng: number}, ownerMail: string, description: string, address:string, keyFeatures: {fiberInternet: boolean , airConditioner: boolean, floorHeating: boolean, fireplace: boolean, terrace: boolean, satellite: boolean, parquet: boolean, steelDoor: boolean, furnished: boolean, insulation: boolean}, numOfBathroom:number, numOfBedroom:number, numOfRooms:string, area:number, floor:number, totalFloor:number, houseType:string ,status:string }[]} ,) {
 
     const isLoaded = LoadMaps();
-
     var center = useMemo(() => { return { lat: 41.0082, lng: 28.9784 }; }, []); 
-  
     const [activeMarker, setActiveMarker] = useState(null);
   
     const handleActiveMarker = (marker:any) => {
@@ -76,7 +75,9 @@ function MultiMarkerMap({homes}: {homes:{ id: number, title: string, photo: stri
         </GoogleMap>
       </div>
     ) : (
-      <h1>Loading...</h1>
+      <div className="flex justify-center items-center h-48 flex-row">
+          <img src={loadingGif} alt="Loading" className='w-[576px] h-[324px]' />
+        </div>
     );
   }
 

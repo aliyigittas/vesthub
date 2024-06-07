@@ -1,6 +1,5 @@
 import { useJsApiLoader } from "@react-google-maps/api";
 
-
 const api = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 const mapId = process.env.MAP_ID;
 

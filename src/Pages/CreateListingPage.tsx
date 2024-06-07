@@ -1,6 +1,4 @@
-import Dragger from 'antd/es/upload/Dragger';
 import AddHomeMarker from '../Components/AddHomeMarker';
-import { InboxOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useEffect, useRef, useState } from 'react';
@@ -8,9 +6,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
 import { Image, message, Upload } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
-import { get } from 'http';
 import { ButtonGroup } from 'reactstrap';
-import { button } from '@material-tailwind/react';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 const getBase64 = (file: FileType): Promise<string> =>
@@ -35,9 +31,6 @@ function CreateListingPage()
     const fullAddressRef = useRef<HTMLInputElement>(null);
     const [fullAddress, setFullAddress] = useState('');
 
-    //Cookies.remove("latitude");
-    //Cookies.remove("longitude");
-    //Cookies.remove("isMapOpen");
 
     useEffect(() => {
         Cookies.remove("latitude");
@@ -575,14 +568,8 @@ function CreateListingPage()
                 //window.location.href = '/';
             });
         }
-
-        
-
-
-        
     }
 
-    //bu daha net ve hızlı ama limitli
     async function ReverseGeoCodeFromGMaps(lat:number,lng:number) :Promise<string> {
         //change city and distinct and street fields in the form
         setGetReverseAddressLoading(true);

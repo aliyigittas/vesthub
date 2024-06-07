@@ -1,6 +1,4 @@
-import Dragger from 'antd/es/upload/Dragger';
 import AddHomeMarker from '../Components/AddHomeMarker';
-import { InboxOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useEffect, useRef, useState } from 'react';
@@ -8,7 +6,6 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Image, message, Upload } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
 import { ButtonGroup } from 'reactstrap';
-import { button } from '@material-tailwind/react';
 import { useParams } from 'react-router-dom';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
@@ -75,6 +72,10 @@ function EditListingPage() {
                             }
                         };
                         setHomeDetails(homedetails);
+                        if (Cookies.get("Email") !== homedetails.ownerMail) {
+                            alert("You are not authorized to edit this listing.");
+                            window.location.href = '/myListings';
+                        }
                         console.log(homedetails.keyFeatures);
                         setKeyFeatures([
                             { name: "Fiber Internet", isAvailable: homedetails.keyFeatures.fiberInternet },
@@ -109,17 +110,6 @@ function EditListingPage() {
     const fullAddressRef = useRef<HTMLInputElement>(null);
     const [fullAddress, setFullAddress] = useState('');
 
-    
-    
-
-
-
-    
-    //console.log("Teras: ", keyFeatures[4]);
-
-    //console.log("Key Features from DB: ", keyFeaturesFromDB);
-
-    //get the photos from homeDetails and append them to Upload component
     useEffect(() => {
         if (homeDetails) {
             Cookies.set("latitude", homeDetails.coordinates.lat.toString(), { expires: (1 / 1440) * 60 }); // 1 hour
@@ -244,7 +234,6 @@ function EditListingPage() {
     );
 
     
-
     const addSearchFilter = (key: string, value: string) => {
         setFilters({
             ...filters,
@@ -418,16 +407,9 @@ function EditListingPage() {
         }
     }
 
-    //get the photos from homeDetails and append them to Upload component
-    
-
-
-
     if (!homeDetails) {
         return <div>Loading...</div>;
     }
-
-    
 
     return (
         <div className="min-w-screen min-h-screen place-items-center flex sm:flex-row flex-col p-4 bg-backColor space-y-4 gap-4">

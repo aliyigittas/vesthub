@@ -15,7 +15,6 @@ function HomePage({ home }: { home?: boolean }) {
   const currentUrlLastPart = window.location.pathname?.split('/')?.pop(); //url'yi /'ye göre ayır ve sonuncuyu al
   const homeID = parseInt(currentUrlLastPart ?? ''); //sondaki id'yi al ve integer'a çevir
 
-
   //ev bilgilerini al varsa bir variable'a at
   const [homedetails, setHomeDetails] = useState<any>();
   useEffect(() => {

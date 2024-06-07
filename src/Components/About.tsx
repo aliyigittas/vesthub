@@ -28,6 +28,7 @@ function About() {
             imageUrl: 'https://media.licdn.com/dms/image/D4D03AQFb8mEzYCykhQ/profile-displayphoto-shrink_400_400/0/1680524183298?e=1719446400&v=beta&t=V3_Tk-04HQzUybAEzc-AuxtW8gmSjGJO2mlTXOmJP8I'
         }
       ];
+      
   return (
     <div>
         <div id="about" className="">

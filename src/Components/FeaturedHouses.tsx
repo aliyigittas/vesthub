@@ -3,6 +3,7 @@ import HomeCard from './HomeCard';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import loadingGif from '../loading.gif';
 
 
 
@@ -72,8 +73,8 @@ function FeaturedHouses() {
     }, []); // Empty dependency array means this effect runs once when the component mounts
 
     if (loading) {
-        return <div className="flex justify-center items-center h-48">
-          <h1>Loading...</h1>
+        return <div className="flex justify-center items-center h-48 flex-row">
+          <img src={loadingGif} alt="Loading" className='w-[576px] h-[324px]' />
         </div>;
     }
 
