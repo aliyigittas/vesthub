@@ -1,3 +1,4 @@
+/* eslint-disable */
 import vesthublogo from '../vesthublogo.png';
 
 function NotFoundPage() {

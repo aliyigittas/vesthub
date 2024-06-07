@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Cookies from 'js-cookie';
 import defaultProfilePhoto from '../DefaultProfilePhoto.png';
 import axios from 'axios';

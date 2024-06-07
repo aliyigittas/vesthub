@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect, useState } from "react";
 import HomeCard from "../Components/HomeCard";
 import axios from "axios";

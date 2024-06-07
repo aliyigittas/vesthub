@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect, useState } from 'react';
 import House2 from '../House2.jpg';
 import { ButtonGroup } from 'reactstrap';

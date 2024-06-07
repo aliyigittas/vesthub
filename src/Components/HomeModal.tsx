@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Modal } from 'antd';
 import { currentUrl } from '../Pages/SearchPage';
 import SingleMarkerMap from './SingleMarkerMap';

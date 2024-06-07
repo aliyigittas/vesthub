@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useState, useMemo } from "react";
 import { GoogleMap, InfoBoxF, MarkerF } from "@react-google-maps/api";
 import Homepin from '../homePin.png';

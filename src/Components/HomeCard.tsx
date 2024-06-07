@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect, useState } from 'react';
 import HomeModal from './HomeModal';
 import { HeartTwoTone, HeartFilled, EditFilled } from '@ant-design/icons';

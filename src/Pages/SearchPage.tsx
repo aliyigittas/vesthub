@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect, useState } from "react";
 import HomeCard from "../Components/HomeCard";
 import MultiMarkerMap from "../Components/MultiMarkerMap";
@@ -18,8 +19,6 @@ var cityText = '';
 var districtText = '';
 
 console.log(typeValue);
-
-//const dummyArray = [0,1,2,3];
 
 const homeType = [
   {

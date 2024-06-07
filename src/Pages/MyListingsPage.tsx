@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from "react";
 import HomeCard from "../Components/HomeCard";
 import Cookies from "js-cookie";

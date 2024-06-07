@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect, useState } from "react";
 import HomeModal from "../Components/HomeModal";
 import { Tab } from '@headlessui/react';

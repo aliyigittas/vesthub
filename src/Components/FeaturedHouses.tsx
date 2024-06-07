@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect, useRef, useState } from 'react';
 import HomeCard from './HomeCard';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';

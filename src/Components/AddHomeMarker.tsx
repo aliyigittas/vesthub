@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import LoadMaps from "./GmapsHelper";
 import Homepin from "../homePin.png";

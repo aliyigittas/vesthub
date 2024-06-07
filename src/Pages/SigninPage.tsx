@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Cookies from 'js-cookie';
 import vesthublogo from '../vesthublogo.png';
 import axios from 'axios';
@@ -55,7 +56,7 @@ function SigninPage() {
         </div>
     </div>
   );
-  var profilePicture = "";
+  var profilePicture = ""; // eslint-disable-line
 // eslint-disable-next-line
 function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

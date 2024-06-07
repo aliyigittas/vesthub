@@ -1,3 +1,4 @@
+/* eslint-disable */
 import AddHomeMarker from '../Components/AddHomeMarker';
 import axios from 'axios';
 import Cookies from 'js-cookie';

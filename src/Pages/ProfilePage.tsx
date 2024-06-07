@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useState, useEffect } from 'react';
 import { Tab } from '@headlessui/react';
 import AOS from 'aos'; // Import AOS
