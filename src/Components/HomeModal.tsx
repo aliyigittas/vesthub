@@ -205,7 +205,7 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                                 <DateTimePicker 
                                     //mobiletoolbar hidden
                                     
-                                    label="Select Date and Time"
+                                    label="Select Date"
                                     
                                     //disable past dates
                                     shouldDisableDate={(date) => {
@@ -221,17 +221,8 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                                     onChange={setValue}
                                     closeOnSelect={true}
                                     slotProps={{ textField: { size: 'small', color: 'success'}}}
-                                    //    shouldDisableTime={(date) => {
-                                    //        //disble tomorrow
-                                    //        if (date && date.isAfter(dayjs().add(1, 'day').startOf('day'))) {
-                                    //            return true;
-                                    //        }
-                                    //        return false;
-                                    //    }
-                                    //
-                                    //}
                                 />
-                                <select className="border-1 w-full border-[#c4c4c4] focus:border-button-primary hover:border-button-primary focus:ring-0 p-2 rounded-lg">
+                                <select className="border-1 w-full border-[#c4c4c4] focus:border-button-primary hover:border-button-primary focus:ring-0 p-2 rounded-lg" defaultValue={daytime[0].value}>
                                     {daytime.map((time) => {
                                         return (
                                             <option key={time.key} value={time.value}>{time.label}</option>
