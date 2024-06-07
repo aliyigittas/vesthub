@@ -3,6 +3,7 @@ import HomeModal from "../Components/HomeModal";
 import axios from "axios";
 import { message } from "antd";
 import vesthublogo from './../vesthublogo.png';
+import Cookies from "js-cookie";
 
 function AdminPanel() {
     const [show, setShow] = useState(false);
@@ -11,6 +12,10 @@ function AdminPanel() {
     const [reload, setReload] = useState(false);
     const [homeDetails, setHomeDetails] = useState<any>(null);
     const [keyFeatures, setKeyFeatures] = useState<any[]>([]);
+
+    if (Cookies.get('Email') !== 'admin@vesthub.com') {
+        window.location.href = '/';
+    }
 
     useEffect(() => {
         // Function to fetch data
