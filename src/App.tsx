@@ -101,7 +101,7 @@ function App() {
 
     function firstTimeVisited() {
       Cookies.set("loggedIn", "false", { expires: 1 })
-      message.info("This website uses cookies to enhance the user experience. By using this website, you agree to our use of cookies.", 5);
+      message.info("This website uses cookies to enhance the user experience. By using this website, you agree to our use of cookies.", 10);
     }
     //Cookies.get("latitude") ? Cookies.remove("latitude") : console.log("No latitude cookie found");
     //Cookies.get("longitude") ? Cookies.remove("longitude") : console.log("No longitude cookie found");

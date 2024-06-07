@@ -137,22 +137,6 @@ function MeetingsPage() {
     ]
   );
   
-/*
-  const [meetings, setMeetings] = useState([
-    {
-      id: 1,
-      homeid: 3,
-      date: '2022-01-01T10:00:00',
-      ownerMail: '',
-      customerMail: '',
-      status: 'Waiting',
-      daytime: 'Morning',
-      message: 'Hello, I would like to see the house.',
-    },
-  ]);
-*/
-
-
   useEffect(() => {
     const fetchMeetings = async () => {
       try {
@@ -172,63 +156,10 @@ function MeetingsPage() {
     };
 
     fetchMeetings();
-    /*
-    const getOwnerDetails = async () => {
-      try
-      {
-        for (var i = 0; i < meetings.length; i++)
-        {
-          axios.get(`http://localhost:8080/api/getUser/${meetings[i].ownerMail}`)
-            .then((response) => {
-              console.log(response.data);
-              meetings[i].ownerName = response.data.name;
-              meetings[i].ownerProfilePicture = response.data.profilePicture;
-              console.log("Owner: ",meetings[i].ownerName);
-            }
-            )
-            .catch((error) => {
-              console.log(error); 
-            });
-        }
-      }
-      catch (error) {
-        console.error("Failed to fetch owner details:", error);
-        message.error("Failed to fetch owner details");
-      }
-      //console.log("Updated meeting: ",meetings);
-    }
-    getOwnerDetails();
-    */
+
     
   }, []);
 
-  /*
-  useEffect(() => {
-    axios.get(`http://localhost:8080/api/getReservations/${Cookies.get("Email")}`)
-    .then((response) => {
-      console.log(response.data);
-      setMeetings(
-        response.data.map((meeting:any) => {
-          return {
-            id: meeting.id,
-            homeid: meeting.homeid,
-            date: meeting.date,
-            ownerMail: meeting.ownerMail,
-            customerMail: meeting.customerMail,
-            status: meeting.status,
-            daytime: meeting.daytime,
-            message: meeting.message,
-          }
-        })
-      );
-    }
-    )
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-  , []);
-*/
 
 
   return (
@@ -275,9 +206,6 @@ function MeetingsPage() {
           </Tab.Group>
         </div>
   );
-
-
-  
 
   function getHomeDetails(homeid: number) {
     axios.get(`http://localhost:8080/api/house/${homeid}`)

@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import HomeModal from "../Components/HomeModal";
 import axios from "axios";
-
+import { message } from "antd";
+import vesthublogo from './../vesthublogo.png';
 
 function AdminPanel() {
     const [show, setShow] = useState(false);
     const [homes, setHomes] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [reload, setReload] = useState(false);
+    const [homeDetails, setHomeDetails] = useState<any>(null);
+    const [keyFeatures, setKeyFeatures] = useState<any[]>([]);
 
     useEffect(() => {
         // Function to fetch data
         const fetchHomes = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get('http://localhost:8080/api/adminListings'); //`${Cookies.get('Email')}`
 
@@ -29,6 +35,10 @@ function AdminPanel() {
                   numOfRooms: home.numOfRooms,
                   area: home.area,
                   floor: home.floor,
+                  city: home.city,
+                  distinct: home.distinct,
+                  street: home.street,
+                  country: home.country,
                   totalFloor: home.totalFloor,
                   keyFeatures: {
                       fiberInternet: home.fiberInternet === 1 ? true : false,
@@ -47,26 +57,13 @@ function AdminPanel() {
                 setHomes(parsedHomes);
             } catch (error) {
                 console.error(error);
-            }
-        };
 
+            }
+            setLoading(false);
+        };
         fetchHomes();
-    }, []); // Empty dependency array means this effect runs once when the component mounts
-    /*
-    const updateStatus = async (id: number, status: string) => {
-        try {
-            const response = await axios.post(`http://localhost:8080/api/updateStatus`, null , { params: { id, status } });
-            console.log(response.data);
-            // Optionally, refresh the home listings after updating the status
-            const updatedHomes = homes.map(home => 
-                home.id === id ? { ...home, status } : home
-            );
-            setHomes(updatedHomes);
-        } catch (error) {
-            console.error("Error updating status:", error);
-        }
-    };
-    */
+    }, [reload]);
+
 
     // updateStatus function to update the status of a home listing
     function updateStatus(HomeID:number , Homestatus:String){
@@ -76,49 +73,135 @@ function AdminPanel() {
         })
         .then(response => {
             console.log(response);
-            window.location.reload();
+            setReload(!reload);
         })
     }
-     
+    const [selectedHome, setSelectedHome] = useState<any>(null);
+
+    useEffect(() => {
+        //show modal
+        show && selectedHome && setSelectedHome(selectedHome);
+    } , [show, selectedHome]);
+
+
+    function getHomeDetails(homeid: number) {
+        axios.get(`http://localhost:8080/api/house/${homeid}`)
+        .then(response => {
+            if (response.data) {
+                const homedetails = {
+                    id: response.data.id,
+                    title: response.data.title,
+                    photo: response.data.images, //[H1,H2,H3]
+                    price: response.data.price.toString(),
+                    type: response.data.saleRent,
+                    coordinates: { lat: response.data.lat, lng: response.data.lng },
+                    address: response.data.fullAddress,
+                    ownerMail: response.data.ownerMail,
+                    description: response.data.description,
+                    numOfBathroom: response.data.numOfBathroom,
+                    numOfBedroom: response.data.numOfBedroom,
+                    numOfRooms: response.data.numOfRooms,
+                    area: response.data.area,
+                    floor: response.data.floor,
+                    city: response.data.city,
+                    distinct: response.data.distinct,
+                    street: response.data.street,
+                    country: response.data.country,
+                    totalFloor: response.data.totalFloor,
+                    keyFeatures: {
+                        fiberInternet: response.data.fiberInternet === 1 ? true : false,
+                        airConditioner: response.data.airConditioner === 1 ? true : false,
+                        floorHeating: response.data.floorHeating === 1 ? true : false,
+                        fireplace: response.data.fireplace === 1 ? true : false,
+                        terrace: response.data.terrace === 1 ? true : false,
+                        satellite: response.data.satellite === 1 ? true : false,
+                        parquet: response.data.parquet === 1 ? true : false,
+                        steelDoor: response.data.steelDoor === 1 ? true : false,
+                        furnished: response.data.furnished === 1 ? true : false,
+                        insulation: response.data.insulation === 1 ? true : false
+                    }
+                };
+                setHomeDetails(homedetails);
+                console.log("EV DETAYLARI: ",homedetails);
+                setKeyFeatures([
+                    { name: "Fiber Internet", isAvailable: homedetails.keyFeatures.fiberInternet },
+                    { name: "Air Conditioner", isAvailable: homedetails.keyFeatures.airConditioner },
+                    { name: "Floor Heating", isAvailable: homedetails.keyFeatures.floorHeating },
+                    { name: "Fireplace", isAvailable: homedetails.keyFeatures.fireplace },
+                    { name: "Terrace", isAvailable: homedetails.keyFeatures.terrace },
+                    { name: "Satellite", isAvailable: homedetails.keyFeatures.satellite },
+                    { name: "Parquet", isAvailable: homedetails.keyFeatures.parquet },
+                    { name: "Steel Door", isAvailable: homedetails.keyFeatures.steelDoor },
+                    { name: "Furnished", isAvailable: homedetails.keyFeatures.furnished },
+                    { name: "Insulation", isAvailable: homedetails.keyFeatures.insulation }
+                ]);
+                setShow(true);
+            }
+        });
+        
+      }
+
   return (
     <div className="flex flex-col items-center justify-top min-h-full bg-inherit">
+        {show && <HomeModal show={show} setShow={() => 
+              {
+                window.history.pushState({}, "", "/adminPanel");
+                setShow(false);
+              }
+            } home={homeDetails} />
+          }
         <h1 className="text-4xl font-bold">Admin Panel</h1>
-        <label className="text-lg mt-4">Waiting for listing approval</label>
+        { homes.length > 0 && !loading &&
+            <label className="text-lg mt-4">Houses for approval are listed below:</label>}
         <div className="flex flex-wrap justify-center items-start">
-        {homes.map((Home) => (
-            <div>   
+        {homes.length === 0 && !loading &&
+            <div className="text-center py-24">
+            <img src={vesthublogo} alt="VestHub Logo" className="mx-auto h-60 cursor-pointer animate-pulse" onClick={() => window.location.href = '/'} />
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl pt-3">
+                {loading ? "Loading..." : "No houses to give approval"}
+            </h1>          
+            <div className="mt-10">
+                <button className="rounded-md bg-button-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-button-primaryHover" onClick={() => window.location.href = '/'}>Go back home</button>
+            </div>
+        </div>
+        }
+        {loading &&
+        <label className="text-lg mt-4">Loading...</label>}
+        {homes.length > 0 &&
+        homes.map((Home) => (
+            <div key={Home.id}>   
                 <div className="flex flex-col w-full max-w-[600px] p-4">
                     <div className="flex flex-col w-full p-4 bg-gray-300 rounded-2xl space-y-3">
                         <div className="flex flex-row space-x-2">
-                            <img src={Home.photo[0]} alt="placeholder" className="w-24 h-24 rounded-lg cursor-pointer" onClick={() => setShow(true)} />
+                            <img src={Home.photo[0]} alt="placeholder" className="w-24 h-24 rounded-lg cursor-pointer" onClick={() => {
+                                getHomeDetails(Home.id); 
+                                window.history.pushState({}, "", "/home/"+Home.id);
+                            }} />
                             <div className="flex flex-col">
-                                <label className="text-lg font-semibold">{Home.title}</label>
-                                <label className="text-sm">{Home.address}</label>
-                                <label className="text-sm">{Home.price}</label>
-                                <label className="text-sm text-ellipsis line-clamp-3">{Home.description}</label>
+                                <label className="text-lg font-semibold line-clamp-1">{Home.title}</label>
+                                <label className="text-sm line-clamp-1">Address: {Home.address}</label>
+                                <label className="text-sm line-clamp-1">Price: {Home.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".")} ₺</label>
+                                <label className="text-sm text-ellipsis line-clamp-3">Description: {Home.description}</label>
                             </div>
                         </div>
                         <div className="flex flex-row space-x-2">
                             <button className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500" type="button" onClick={() => {
                                     updateStatus(Home.id, 'Available');
-                                    alert('House accepted');
+                                    message.success('House accepted');
                                     }}>
                                 Approve
                             </button>
                             <button className="flex w-full justify-center rounded-md bg-red-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500" type="button" onClick={() => {
                                     updateStatus(Home.id, 'Rejected');
-                                    alert('House rejected');
+                                    message.success('House rejected');
                                     }}>
                                 Reject
                             </button>
                         </div>
                     </div>
                 </div>
-                <HomeModal show={show} setShow={() => setShow(false)} home={Home} />
             </div>  
             ))}
-        
-        
         </div>
         
     </div>
