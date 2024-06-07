@@ -15,7 +15,7 @@ function About() {
         {   
             name: 'Şafak Gün',
             role: 'Head of Backend',
-            imageUrl: 'https://pbs.twimg.com/profile_images/1379094653774008320/jwzwQYBS_400x400.jpg'
+            imageUrl: 'https://media.licdn.com/dms/image/D4D03AQFoC3EqM4zdJQ/profile-displayphoto-shrink_400_400/0/1708075535493?e=1723075200&v=beta&t=LaknkJF3H59xnjFac83ZtOe1VKJq010KywGMwVvJ-DU'
         },
         {
             name: 'Şevval Çetin',

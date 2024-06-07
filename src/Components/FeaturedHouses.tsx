@@ -80,7 +80,7 @@ function FeaturedHouses() {
     return (
       <div>
         <div className="flex justify-between p-4">
-          <label className="bottom-0 top-0 flex text-2xl font-semibold items-center">Featured Houses</label>
+          {Cookies.get("loggedIn") === "true" ? <label className="bottom-0 top-0 flex text-2xl font-semibold items-center">Featured Houses in {Cookies.get('City')}</label> : <label className="bottom-0 top-0 flex text-2xl font-semibold items-center">Recent Houses</label>}
           <div className="flex justify-center items-center space-x-2 pr-6">
             <button className="bg-button-primary hover:bg-button-primaryHover text-white flex justify-center items-center p-2 rounded-xl h-10 w-10" onClick={() => handleScrollLeft(200)}><LeftOutlined /></button>
             <button className="bg-button-primary hover:bg-button-primaryHover text-white flex justify-center items-center p-2 rounded-xl h-10 w-10" onClick={() => handleScrollRight(200)}><RightOutlined /></button>
