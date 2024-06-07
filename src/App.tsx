@@ -107,7 +107,7 @@ function App() {
     //Cookies.get("longitude") ? Cookies.remove("longitude") : console.log("No longitude cookie found");
 
     if (Cookies.get("loggedIn") === "false" && (window.location.pathname === '/myListings' || window.location.pathname === '/profile' || window.location.pathname === '/addListing' || window.location.pathname === '/favorites' || window.location.pathname === '/meetings' || window.location.pathname === '/addHome' || window.location.pathname.includes('/editListing'))) {
-      window.location.href = '/login';
+      window.location.href = '/notFound';
     }
 
     const name=Cookies.get("Name");

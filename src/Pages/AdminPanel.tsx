@@ -14,7 +14,7 @@ function AdminPanel() {
     const [keyFeatures, setKeyFeatures] = useState<any[]>([]);
 
     if (Cookies.get('Email') !== 'admin@vesthub.com') {
-        window.location.href = '/';
+        window.location.href = '/notFound';
     }
 
     useEffect(() => {
