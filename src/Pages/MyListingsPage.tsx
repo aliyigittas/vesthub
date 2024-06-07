@@ -32,6 +32,7 @@ function MyListingsPage() {
 function ListMyHouse() {
     const [homes, setHomes] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    Cookies.set('currentPage', 'myListings');
     useEffect(() => {
         // Function to fetch data
         const fetchHomes = async () => {

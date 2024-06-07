@@ -359,6 +359,7 @@ function EditListingPage() {
                 console.log(error);
                 setAddHouseLoading(false);
                 alert("Failed to update listing.");
+                window.location.reload();
             });
         }
     };
@@ -534,25 +535,90 @@ function EditListingPage() {
                     <div className='flex flex-row gap-2'>
                         <div>
                             <label className="block text-sm font-medium ">Number Of Bedrooms</label>
-                            <input id="bedroom" name="bedroom" type="number" autoComplete="bedroom" required min={0} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.numOfBedroom}/>
+                            <input onWheel={
+                            (e) => {
+                                e.currentTarget.blur();
+                            }
+                        }id="bedroom" name="bedroom" type="number" autoComplete="bedroom" required min={0} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.numOfBedroom}
+                        onChange={
+                            (e) => {
+                                if(parseInt(e.target.value) <= 0)
+                                {
+                                    message.error("Number of Bedrooms cannot be negative or zero.");
+                                    e.target.value = "";
+                                }
+                            }
+                        }/>
                         </div>
                         <div>
                             <label className="block text-sm font-medium ">Number Of Bathrooms</label>
-                            <input id="bathroom" name="bathroom" type="number" autoComplete="bathroom" required min={0} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.numOfBathroom}/>
+                            <input onWheel={
+                            (e) => {
+                                e.currentTarget.blur();
+                            }
+                        }id="bathroom" name="bathroom" type="number" autoComplete="bathroom" required min={0} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.numOfBathroom}
+                        onChange={
+                            (e) => {
+                                if(parseInt(e.target.value) <= 0)
+                                {
+                                    message.error("Number of Bathrooms cannot be negative or zero.");
+                                    e.target.value = "";
+                                }
+                            }
+                        }/>
                         </div>
                     </div>
                     <div className='flex flex-row gap-2'>
                         <div>
                             <label className="block text-sm font-medium ">Area</label>
-                            <input id="area" name="area" type="number" autoComplete="area" required min={0} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.area}/>
+                            <input onWheel={
+                            (e) => {
+                                e.currentTarget.blur();
+                            }
+                        }id="area" name="area" type="number" autoComplete="area" required min={0} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.area}
+                        onChange={
+                            (e) => {
+                                if(parseInt(e.target.value) <= 0)
+                                {
+                                    message.error("Area cannot be negative or zero.");
+                                    e.target.value = "";
+                                }
+                            }
+                        }/>
                         </div>
                         <div>
                             <label className="block text-sm font-medium ">Floor</label>
-                            <input id="floor" name="floor" type="number" autoComplete="floor" required min={-2} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.floor}/>
+                            <input onWheel={
+                            (e) => {
+                                e.currentTarget.blur();
+                            }
+                        }id="floor" name="floor" type="number" autoComplete="floor" required min={-2} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.floor}
+                        onChange={
+                            (e) => {
+                                if(parseInt(e.target.value) <= 0)
+                                {
+                                    message.error("Floor cannot be negative or zero.");
+                                    e.target.value = "";
+                                }
+                            }
+                        }/>
                         </div>
                         <div>
                             <label className="block text-sm font-medium ">Total Floor</label>
-                            <input id="totalFloor" name="totalFloor" type="number" autoComplete="totalFloor" required min={0} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.totalFloor}/>
+                            <input onWheel={
+                            (e) => {
+                                e.currentTarget.blur();
+                            }
+                        }id="totalFloor" name="totalFloor" type="number" autoComplete="totalFloor" required min={0} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.totalFloor}
+                        onChange={
+                            (e) => {
+                                if(parseInt(e.target.value) <= 0)
+                                {
+                                    message.error("Total Floor cannot be negative or zero.");
+                                    e.target.value = "";
+                                }
+                            }
+                        }/>
                         </div> 
                     </div>
                     <div className='flex'>
@@ -604,7 +670,7 @@ function EditListingPage() {
                             (e) => {
                                 if(parseInt(e.target.value) <= 0)
                                 {
-                                    alert("Price cannot be negative or zero.");
+                                    message.error("Price cannot be negative or zero.");
                                     e.target.value = "";
                                 }
                             }

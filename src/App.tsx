@@ -113,7 +113,9 @@ function App() {
     //console.log("resim: ",profilePicture);
 
     
-    
+    if(window.location.pathname!="/myListings"){
+      Cookies.remove("currentPage");
+    }
     
     if (loggedIn==="true"){
       console.log("Logged in as "+name+" "+surname+" with email "+email);
