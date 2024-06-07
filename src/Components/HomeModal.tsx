@@ -222,7 +222,7 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                                     closeOnSelect={true}
                                     slotProps={{ textField: { size: 'small', color: 'success'}}}
                                 />
-                                <select className="border-1 w-full border-[#c4c4c4] focus:border-button-primary hover:border-button-primary focus:ring-0 p-2 rounded-lg" defaultValue={daytime[0].value}>
+                                <select className="border-1 w-full border-[#c4c4c4] focus:border-button-primary hover:border-button-primary focus:ring-0 p-2 rounded-lg" defaultValue={daytime[1].value}>
                                     {daytime.map((time) => {
                                         return (
                                             <option key={time.key} value={time.value}>{time.label}</option>
@@ -238,6 +238,7 @@ function HomeModal({ show, setShow, home }: { show: boolean; setShow: () => void
                                     console.log(value?.format('YYYY-MM-DD'));
                                     console.log('Message:', document.querySelector('textarea')?.textContent);
                                     console.log('date:', value?.format('YYYY-MM-DD').toString());
+                                    console.log('daytime:', document.querySelector('select')?.value);
                                     if (value?.format('YYYY-MM-DD').toString() === 'Invalid Date') {
                                         alert('Please select a date and time');
                                         return;
