@@ -612,8 +612,9 @@ function MeetingsPage() {
         try {
           console.log("Fetching previous meetings...");
           const response = await axios.get(`http://localhost:8080/api/getReservations/${Cookies.get("Email")}`); // Adjust API endpoint as necessary
-          console.log("Meetings fetched successfully:", response.data);
+          console.log("PREV:", response.data);
           setPreviousMeetings(response.data);
+          console.log("Previous Meetings: ",PreviousMeetings);
           //filter previous meetings
           var previousMeetings: any[] = [];
           for (var i = 0; i < response.data.length; i++) {
@@ -652,9 +653,10 @@ function MeetingsPage() {
               <h3 className="text-gray-600">No meetings</h3>
             </div>
           ) : ( PreviousMeetings.map((meeting, index) => {
+            
             return (
               <div className="justify-between w-full h-fit items-center p-2 bg-[#e5e7e6] flex flex-row gap-3 rounded-xl shadow-md" key={index}>
-                <img src={Cookies.get("Email") == meeting.ownerMail ? (meeting.clientProfilePicture === null ? defultProfile : meeting.clientProfilePicture) : (meeting.profilePicture === null ? defultProfile : meeting.profilePicture)} alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
+                <img src={Cookies.get("Email") == meeting.ownerMail ? (meeting.clientProfilePicture === undefined ? defultProfile : meeting.clientProfilePicture) : (meeting.profilePicture === null ? defultProfile : meeting.profilePicture)} alt='Customer' className="w-12 h-12 rounded-full shadow-xl" />
                 <label className="flex justify-center items-center">{Cookies.get("Email") === meeting.ownerMail ? meeting.clientName : meeting.ownerName}</label>
                 <div className="flex flex-col justify-center items-center text-center">
                   <label>{meeting.date}</label>

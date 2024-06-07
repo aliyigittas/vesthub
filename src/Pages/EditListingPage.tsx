@@ -592,16 +592,7 @@ function EditListingPage() {
                             (e) => {
                                 e.currentTarget.blur();
                             }
-                        }id="floor" name="floor" type="number" autoComplete="floor" required min={-2} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.floor}
-                        onChange={
-                            (e) => {
-                                if(parseInt(e.target.value) <= 0)
-                                {
-                                    message.error("Floor cannot be negative or zero.");
-                                    e.target.value = "";
-                                }
-                            }
-                        }/>
+                        }id="floor" name="floor" type="number" autoComplete="floor" required min={-2} className="mt-2 block w-full rounded-md py-1.5 px-2 shadow-sm focus:outline-button-primary" defaultValue={homeDetails.floor}/>
                         </div>
                         <div>
                             <label className="block text-sm font-medium ">Total Floor</label>
