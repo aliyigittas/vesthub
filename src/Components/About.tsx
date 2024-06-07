@@ -12,15 +12,15 @@ function About() {
             role: 'Head of Frontend',
             imageUrl: 'https://media.licdn.com/dms/image/D4D03AQEaefuMTTa7Bw/profile-displayphoto-shrink_400_400/0/1676402963098?e=1719446400&v=beta&t=nXuuk9YFnu4GRiWSU7U81NWJyIilQ2-sD1FnsGqwgmw'    
         },
-        {   
-            name: 'Şafak Gün',
-            role: 'Head of Backend',
-            imageUrl: 'https://media.licdn.com/dms/image/D4D03AQFoC3EqM4zdJQ/profile-displayphoto-shrink_400_400/0/1708075535493?e=1723075200&v=beta&t=LaknkJF3H59xnjFac83ZtOe1VKJq010KywGMwVvJ-DU'
-        },
         {
             name: 'Şevval Çetin',
-            role: 'Head of Documentation',
+            role: 'Head of Backend',
             imageUrl: 'https://media.licdn.com/dms/image/D4D03AQG-7pkLxBnbFg/profile-displayphoto-shrink_400_400/0/1677058164198?e=1719446400&v=beta&t=QFQl874qdSo-2z6lFmS1fo3EuFy3g5K-koLi6hG0YAw'
+        },
+        {   
+            name: 'Şafak Gün',
+            role: 'Head of Documentation',
+            imageUrl: 'https://media.licdn.com/dms/image/D4D03AQFoC3EqM4zdJQ/profile-displayphoto-shrink_400_400/0/1708075535493?e=1723075200&v=beta&t=LaknkJF3H59xnjFac83ZtOe1VKJq010KywGMwVvJ-DU'
         },
         {   
             name: 'Baran Aslan',
