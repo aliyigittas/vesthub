@@ -74,11 +74,17 @@ To get started, make sure that Vesthub's backend server is running. You can find
 git clone https://github.com/aliyigittas/vesthub
 npm install
 ```
+(Optional) If you want to use Geocoding and maps features, you need to provide your Google Maps API key in the `.env` file. Create a new file named `.env` in the project directory and add the following lines. Replace YOUR_API_KEY with your Google Maps API key and YOUR_MAP_ID with your Google Maps Map ID for custom styling.
+
+```bash
+REACT_APP_GOOGLE_MAPS_API_KEY=YOUR_API_KEY
+MAP_ID=YOUR_MAP_ID
+```
 
 After installing the dependencies, you can start the development server by running `npm start`.
 
 ```bash
-npm run start
+npm start
 ```
 
 Now you can open your browser and navigate to `http://localhost:3000` to view the application.
