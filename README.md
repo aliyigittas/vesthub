@@ -1,46 +1,84 @@
-# Getting Started with Create React App
+<div align="center" style="display: flex; justify-content: center;">
+    <img width="100" alt="logo" src="https://github.com/user-attachments/assets/cbde4a41-a638-45a9-80ac-81a04378f737" />
+    <h1>Vesthub - E-estate platform</h1>
+</div>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+Vesthub is a comprehensive real estate listing platform that connects property owners/agents with potential buyers and renters. The platform is designed to provide a seamless experience for users to search for properties, view property details, and contact property owners/agents.
 
-## Available Scripts
+## Screenshots
+  
+<table>
+    <tr>
+        <td>
+        <img width="1512" alt="Home Page" src="https://github.com/user-attachments/assets/064ee9b0-17b2-40b9-950d-a3976ae196cc" />
+        </td>
+        <td>
+        <img width="1512" alt="Profile Page" src="https://github.com/user-attachments/assets/0d199793-b79e-4ed5-8b6b-595cd20f3069" />
+        </td>
+        <td>
+          <img width="1512" alt="detay" src="https://github.com/user-attachments/assets/0a2dfc60-664b-42de-ac5d-914099566163" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+          <img width="1512" alt="Search Page List View" src="https://github.com/user-attachments/assets/31eea95c-6a25-46aa-94f1-62b71e639984" />
+        </td>
+        <td>
+          <img width="1512" alt="Search Page Map View" src="https://github.com/user-attachments/assets/2bce264c-f733-4e40-b2d8-c3451ca58299" />
+        </td>
+        <td>
+          <img width="1512" alt="detay2" src="https://github.com/user-attachments/assets/65c7f479-9446-449e-b3f9-1f10a307225e" />
+        </td>
+    </tr>
+    <tr>
+          <td>
+            <img width="1512" alt="al" src="https://github.com/user-attachments/assets/31e2e49c-7170-4c59-a0ea-c9ad70987f8f" />
+          </td>
+          <td>
+            <img width="1512" alt="alll" src="https://github.com/user-attachments/assets/e12c704c-91aa-4bff-b6d0-c00b5c7d0a00" />
+          </td>
+          <td>
+            <img width="1512" alt="admin" src="https://github.com/user-attachments/assets/ea23700d-24ee-4ac2-b137-09db94e68ae8" />
+          </td>
+      </tr>
+</table>
 
-In the project directory, you can run:
 
-### `npm start`
+## Main Features
+- Search for properties by location, price, and property type
+- See search results on a map or card view
+- View property details including images, description, and contact information
+- Set an appointment with a message to the property owner/agent
+- Add property listings with images, description, and features
+- Edit property details (e.g., price, description, images, status)
+- Favorite properties to view later
+- Filter properties by features (e.g., fiber internet, terrace)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Additional Features
+- User roles (admin, user)
+- Admin panel to approve or reject property listings
+- Geocoding and reverse geocoding to get location data
+- Profile customization (e.g., profile picture, e-mail, phone number)
+- Advanced search filters (e.g., price range, listing date, number of rooms)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Tech Stack
+- React (create-react-app)
+- TypeScript
+- Tailwind CSS
 
-### `npm test`
+## Getting Started
+To get started, make sure that Vesthub's backend server is running. You can find the backend server in [this repository](https://github.com/aliyigittas/vesthub_backend). Then, clone the repository and install the necessary dependencies. After cloning, navigate to the project directory and run `npm install` to install the required packages.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+git clone https://github.com/aliyigittas/vesthub
+npm install
+```
 
-### `npm run build`
+After installing the dependencies, you can start the development server by running `npm start`.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm run start
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Now you can open your browser and navigate to `http://localhost:3000` to view the application.
